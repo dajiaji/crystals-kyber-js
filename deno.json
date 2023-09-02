@@ -1,0 +1,31 @@
+{
+  "imports": {
+    "testing/": "https://deno.land/std@0.198.0/testing/",
+    "dnt": "https://deno.land/x/dnt@0.38.0/mod.ts"
+  },
+  "fmt": {
+    "include": [
+      "README.md",
+      "deno.json",
+      "dnt.ts",
+      "mod.ts",
+      "src/",
+      "test/"
+    ],
+    "exclude": [
+      "**/*/node_modules"
+    ]
+  },
+  "lint": {
+    "include": ["mod.ts", "src/", "test/"],
+    "exclude": [
+      "**/*/node_modules"
+    ]
+  },
+  "tasks": {
+    "test": "deno fmt && deno lint && deno test test -A --fail-fast --doc --coverage=coverage --parallel --allow-read",
+    "cov": "deno coverage ./coverage --lcov --exclude='test'",
+    "dnt": "deno run -A dnt.ts $(git describe --tags $(git rev-list --tags --max-count=1))",
+    "minify": "esbuild npm/esm/mod.js --bundle --format=esm --minify"
+  }
+}
