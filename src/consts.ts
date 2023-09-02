@@ -1,5 +1,13 @@
+/**
+ * This implementation is based on https://github.com/antontutoveanu/crystals-kyber-javascript,
+ * which was deveploped under the MIT licence below:
+ * https://github.com/antontutoveanu/crystals-kyber-javascript/blob/main/LICENSE
+ */
+
 export const N = 256;
+
 export const Q = 3329;
+
 export const Q_INV = 62209;
 
 // deno-fmt-ignore

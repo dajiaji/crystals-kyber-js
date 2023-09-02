@@ -1,3 +1,8 @@
+/**
+ * This implementation is based on https://github.com/antontutoveanu/crystals-kyber-javascript,
+ * which was deveploped under the MIT licence below:
+ * https://github.com/antontutoveanu/crystals-kyber-javascript/blob/main/LICENSE
+ */
 import { N, Q } from "./consts.ts";
 import { KyberBase } from "./kyberBase.ts";
 import { byte, int16, uint16, uint32 } from "./utils.ts";
