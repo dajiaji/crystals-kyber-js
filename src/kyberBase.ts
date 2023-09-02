@@ -150,8 +150,8 @@ export class KyberBase {
   private _deriveCpaKeyPair(cpaSeed: Uint8Array): [Uint8Array, Uint8Array] {
     const [publicSeed, noiseSeed] = g(cpaSeed);
     const a = this._sampleMatrix(publicSeed, false);
-    const s = sampleNoise(noiseSeed, this._eta1, 0, this._k);
-    const e = sampleNoise(noiseSeed, this._eta1, this._k, this._k);
+    const s = this._sampleNoise1(noiseSeed, 0, this._k);
+    const e = this._sampleNoise1(noiseSeed, this._k, this._k);
 
     // perform number theoretic transform on secret s
     for (let i = 0; i < this._k; i++) {
@@ -200,9 +200,9 @@ export class KyberBase {
     }
     const rho = pk.subarray(this._skSize);
     const a = this._sampleMatrix(rho, true);
-    const r = sampleNoise(seed, this._eta1, 0, this._k);
-    const e1 = sampleNoise(seed, this._eta1, this._k, this._k);
-    const e2 = sampleNoise(seed, this._eta2, this._k * 2, 1)[0];
+    const r = this._sampleNoise1(seed, 0, this._k);
+    const e1 = this._sampleNoise1(seed, this._k, this._k);
+    const e2 = this._sampleNoise2(seed, this._k * 2, 1)[0];
 
     // perform number theoretic transform on random vector r
     for (let i = 0; i < this._k; i++) {
@@ -297,6 +297,32 @@ export class KyberBase {
       }
     }
     return a;
+  }
+
+  protected _sampleNoise1(
+    sigma: Uint8Array,
+    offset: number,
+    size: number,
+  ): Array<Array<number>> {
+    const r = new Array<Array<number>>(size);
+    for (let i = 0; i < size; i++) {
+      r[i] = byteopsCbd(prf(sigma, offset), this._eta1);
+      offset++;
+    }
+    return r;
+  }
+
+  protected _sampleNoise2(
+    sigma: Uint8Array,
+    offset: number,
+    size: number,
+  ): Array<Array<number>> {
+    const r = new Array<Array<number>>(size);
+    for (let i = 0; i < size; i++) {
+      r[i] = byteopsCbd(prf(sigma, offset), this._eta2);
+      offset++;
+    }
+    return r;
   }
 
   // polyvecFromBytes deserializes a vector of polynomials.
@@ -457,23 +483,6 @@ function indcpaRejUniform(
     }
   }
   return [r, ctr];
-}
-
-// sample samples a polynomial deterministically from a seed
-// and nonce, with the output polynomial being close to a centered
-// binomial distribution with parameter PARAMS_ETA = 2.
-function sampleNoise(
-  sigma: Uint8Array,
-  eta: number,
-  offset: number,
-  size: number,
-): Array<Array<number>> {
-  const r = new Array<Array<number>>(size);
-  for (let i = 0; i < size; i++) {
-    r[i] = byteopsCbd(prf(sigma, offset), eta);
-    offset++;
-  }
-  return r;
 }
 
 // prf provides a pseudo-random function (PRF) which returns
