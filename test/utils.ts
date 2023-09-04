@@ -1,4 +1,6 @@
-export const isDeno = () => typeof Deno !== "undefined";
+declare const Deno: undefined;
+
+const isDeno = () => typeof Deno !== "undefined";
 
 export function testVectorPath(): string {
   if (isDeno()) {
