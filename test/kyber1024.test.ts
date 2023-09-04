@@ -58,7 +58,7 @@ describe("Kyber1024", () => {
     console.log(`passed/total: ${count}/${sk.length}`);
   });
 
-  describe("PQCkemKAT_2400.rsp", () => {
+  describe("PQCkemKAT_3168.rsp", () => {
     it("should match demonstrated values", async () => {
       const kyber = new Kyber1024();
       for (let i = 0; i < 100; i++) {
