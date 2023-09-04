@@ -68,4 +68,18 @@ describe("Kyber512", () => {
       }
     });
   });
+
+  describe("A sample code in README.", () => {
+    it("should work normally", async () => {
+      const recipient = new Kyber512();
+      const [pkR, skR] = await recipient.generateKeyPair();
+
+      const sender = new Kyber512();
+      const [ct, ssS] = await sender.encap(pkR);
+
+      const ssR = await recipient.decap(skR, ct);
+
+      assertEquals(ssS, ssR);
+    });
+  });
 });
