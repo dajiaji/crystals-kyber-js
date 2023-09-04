@@ -15,12 +15,13 @@ import { N, NTT_ZETAS, NTT_ZETAS_INV, Q, Q_INV } from "./consts.ts";
 import { KyberError } from "./errors.ts";
 import {
   byte,
+  byteopsLoad32,
   constantTimeCompare,
   int16,
   int32,
   loadCrypto,
+  prf,
   uint16,
-  uint32,
 } from "./utils.ts";
 
 export class KyberBase {
@@ -201,7 +202,7 @@ export class KyberBase {
     const rho = pk.subarray(this._skSize);
     const a = this._sampleMatrix(rho, true);
     const r = this._sampleNoise1(seed, 0, this._k);
-    const e1 = this._sampleNoise1(seed, this._k, this._k);
+    const e1 = this._sampleNoise2(seed, this._k, this._k);
     const e2 = this._sampleNoise2(seed, this._k * 2, 1)[0];
 
     // perform number theoretic transform on random vector r
@@ -306,7 +307,7 @@ export class KyberBase {
   ): Array<Array<number>> {
     const r = new Array<Array<number>>(size);
     for (let i = 0; i < size; i++) {
-      r[i] = byteopsCbd(prf(sigma, offset), this._eta1);
+      r[i] = byteopsCbd(prf(this._eta1 * N / 4, sigma, offset), this._eta1);
       offset++;
     }
     return r;
@@ -319,7 +320,7 @@ export class KyberBase {
   ): Array<Array<number>> {
     const r = new Array<Array<number>>(size);
     for (let i = 0; i < size; i++) {
-      r[i] = byteopsCbd(prf(sigma, offset), this._eta2);
+      r[i] = byteopsCbd(prf(this._eta2 * N / 4, sigma, offset), this._eta2);
       offset++;
     }
     return r;
@@ -485,15 +486,6 @@ function indcpaRejUniform(
   return [r, ctr];
 }
 
-// prf provides a pseudo-random function (PRF) which returns
-// a byte array of length `l`, using the provided key and nonce
-// to instantiate the PRF's underlying hash function.
-function prf(seed: Uint8Array, nonce: number): Uint8Array {
-  return shake256.create({ dkLen: 2000 }).update(seed).update(
-    new Uint8Array([nonce]),
-  ).digest();
-}
-
 // byteopsCbd computes a polynomial with coefficients distributed
 // according to a centered binomial distribution with parameter PARAMS_ETA,
 // given an array of uniformly random bytes.
@@ -512,15 +504,6 @@ function byteopsCbd(buf: Uint8Array, eta: number): Array<number> {
     }
   }
   return r;
-}
-
-// byteopsLoad32 returns a 32-bit unsigned integer loaded from byte x.
-function byteopsLoad32(x: Uint8Array): number {
-  let r = uint32(x[0]);
-  r = ((r | (uint32(x[1]) << 8)) >>> 0) >>> 0;
-  r = ((r | (uint32(x[2]) << 16)) >>> 0) >>> 0;
-  r = ((r | (uint32(x[3]) << 24)) >>> 0) >>> 0;
-  return uint32(r);
 }
 
 // ntt performs an inplace number-theoretic transform (NTT) in `Rq`.
