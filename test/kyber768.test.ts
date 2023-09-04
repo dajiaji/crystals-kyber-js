@@ -59,13 +59,27 @@ describe("Kyber768", () => {
   });
 
   describe("PQCkemKAT_2400.rsp", () => {
-    it("should match demonstrated values", async () => {
+    it("should match values in test vectors", async () => {
       const kyber = new Kyber768();
       for (let i = 0; i < 100; i++) {
         const res = await kyber.decap(sk[i], ct[i]);
         assertEquals(res, ss[i]);
         count++;
       }
+    });
+  });
+
+  describe("A sample code in README.", () => {
+    it("should work normally", async () => {
+      const recipient = new Kyber768();
+      const [pkR, skR] = await recipient.generateKeyPair();
+
+      const sender = new Kyber768();
+      const [ct, ssS] = await sender.encap(pkR);
+
+      const ssR = await recipient.decap(skR, ct);
+
+      assertEquals(ssS, ssR);
     });
   });
 });
