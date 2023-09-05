@@ -62,7 +62,7 @@ describe("Kyber1024", () => {
     it("should match demonstrated values", async () => {
       const kyber = new Kyber1024();
       for (let i = 0; i < 100; i++) {
-        const res = await kyber.decap(sk[i], ct[i]);
+        const res = await kyber.decap(ct[i], sk[i]);
         assertEquals(res, ss[i]);
         count++;
       }
@@ -77,7 +77,7 @@ describe("Kyber1024", () => {
       const sender = new Kyber1024();
       const [ct, ssS] = await sender.encap(pkR);
 
-      const ssR = await recipient.decap(skR, ct);
+      const ssR = await recipient.decap(ct, skR);
 
       assertEquals(ssS, ssR);
     });
