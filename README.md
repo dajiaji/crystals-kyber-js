@@ -80,10 +80,10 @@ Using deno.land:
 
 ```js
 // use a specific version
-import { Kyber768 } from "https://deno.land/x/crystals-kyber@0.2.0/mod.ts";
+import { Kyber768 } from "https://deno.land/x/crystals_kyber@0.2.0/mod.ts";
 
 // use the latest stable version
-import { Kyber768 } from "https://deno.land/x/crystals-kyber/mod.ts";
+import { Kyber768 } from "https://deno.land/x/crystals_kyber/mod.ts";
 ```
 
 ### Web Browsers
@@ -160,7 +160,7 @@ try {
 ### Deno
 
 ```js
-import { Kyber512 } from "https://deno.land/x/crystals-kyber@0.2.0/mod.ts";
+import { Kyber512 } from "https://deno.land/x/crystals_kyber@0.2.0/mod.ts";
 
 async function doKyber() {
 
