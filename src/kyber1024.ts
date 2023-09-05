@@ -32,8 +32,8 @@ export class Kyber1024 extends KyberBase {
       for (let j = 0; j < N / 8; j++) {
         for (let k = 0; k < 8; k++) {
           t[k] = uint16(
-            (((uint32(u[i][8 * j + k]) << 11 >>> 0) + uint32(Q / 2)) /
-              uint32(Q)) & 0x7ff >>> 0,
+            (((uint32(u[i][8 * j + k]) << 11) + uint32(Q / 2)) /
+              uint32(Q)) & 0x7ff,
           );
         }
         r[rr++] = byte(t[0] >> 0);
@@ -58,7 +58,7 @@ export class Kyber1024 extends KyberBase {
     for (let rr = 0, i = 0; i < N / 8; i++) {
       for (let j = 0; j < 8; j++) {
         t[j] = byte(
-          ((uint32(v[8 * i + j]) << 5 >>> 0) + uint32(Q / 2)) / uint32(Q),
+          ((uint32(v[8 * i + j]) << 5) + uint32(Q / 2)) / uint32(Q),
         ) & 31;
       }
       r[rr++] = byte((t[0] >> 0) | (t[1] << 5));
@@ -118,7 +118,7 @@ export class Kyber1024 extends KyberBase {
       t[7] = a[aa + 4] >> 3;
       aa = aa + 5;
       for (let j = 0; j < 8; j++) {
-        r[8 * i + j] = int16(((uint32(t[j] & 31 >>> 0) * uint32(Q)) + 16) >> 5);
+        r[8 * i + j] = int16(((uint32(t[j] & 31) * uint32(Q)) + 16) >> 5);
       }
     }
     return r;
