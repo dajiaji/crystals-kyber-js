@@ -1,11 +1,26 @@
 <h1 align="center">crystals-kyber-js</h1>
 
 <div align="center">
+
+![Node.js CI](https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_node.yml/badge.svg)
+![Deno CI](https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_deno.yml/badge.svg)
+[![codecov](https://codecov.io/gh/dajiaji/crystals-kyber-js/branch/main/graph/badge.svg?token=7I7JGKDDJ2)](https://codecov.io/gh/dajiaji/crystals-kyber-js)
+
 </div>
 
 <div align="center">
 A CRYSTALS-KYBER implementation written in TypeScript for various JavaScript runtimes. This module is based on <a href="https://github.com/antontutoveanu/crystals-kyber-javascript">ntontutoveanu/crystals-kyber-javascript</a> published under <a href="https://github.com/antontutoveanu/crystals-kyber-javascript/blob/main/License">the MIT license</a>.
 </div>
+
+<p></p>
+
+For Node.js, you can install `crystals-kyber-js` via npm/yarn:
+
+```sh
+npm install crystals-kyber-js
+```
+
+Then, you can use it as follows:
 
 ```js
 import { Kyber768 } from "crystals-kyber-js";
@@ -15,13 +30,11 @@ async function doKyber() {
   const recipient = new Kyber768(); // Kyber512 and Kyber1024 are also available.
   const [pkR, skR] = await recipient.generateKeyPair();
 
-  // A sender generates a ciphertext and a shared secret
-  // by using the recipient's public key.
+  // A sender generates a ciphertext and a shared secret with pkR.
   const sender = new Kyber768();
   const [ct, ssS] = await sender.encap(pkR);
 
-  // The recipient decapsulates the ciphertext and generates the samle shared secret
-  // by using the recipient's private key.
+  // The recipient decapsulates the ciphertext and generates the samle shared secret with skR.
   const ssR = await recipient.decap(skR, ct);
 
   // ssS === ssR
