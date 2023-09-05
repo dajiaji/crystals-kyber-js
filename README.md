@@ -35,7 +35,7 @@ async function doKyber() {
   const [ct, ssS] = await sender.encap(pkR);
 
   // The recipient decapsulates the ciphertext and generates the samle shared secret with skR.
-  const ssR = await recipient.decap(skR, ct);
+  const ssR = await recipient.decap(ct, skR);
 
   // ssS === ssR
   return;
@@ -138,18 +138,13 @@ import { Kyber768 } from "crystals-kyber-js";
 // const { Kyber768 } = require("crystals-kyber-js");
 
 async function doKyber() {
-  // A recipient generates a key pair.
-  const recipient = new Kyber768(); // Kyber512 and Kyber1024 are also available.
+  const recipient = new Kyber768();
   const [pkR, skR] = await recipient.generateKeyPair();
 
-  // A sender generates a ciphertext and a shared secret
-  // by using the recipient's public key.
   const sender = new Kyber768();
   const [ct, ssS] = await sender.encap(pkR);
 
-  // The recipient decapsulates the ciphertext and generates the samle shared secret
-  // by using the recipient's private key.
-  const ssR = await recipient.decap(skR, ct);
+  const ssR = await recipient.decap(ct, skR);
 
   // ssS === ssR
   return;
@@ -169,18 +164,13 @@ import { Kyber512 } from "https://deno.land/x/crystals-kyber@0.1.0/mod.ts";
 
 async function doKyber() {
 
-  // A recipient generates a key pair.
   const recipient = new Kyber512();
   const [pkR, skR] = await recipient.generateKeyPair();
 
-  // A sender generates a ciphertext and a shared secret
-  // by using the recipient's public key.
   const sender = new Kyber512();
   const [ct, ssS] = await sender.encap(pkR);
 
-  // The recipient decapsulates the ciphertext and generates the samle shared secret
-  // by using the recipient's private key.
-  const ssR = await recipient.decap(skR, ct);
+  const ssR = await recipient.decap(ct, skR);
 
   // ssS === ssR
   return;
@@ -204,18 +194,13 @@ try {
 
       globalThis.doKyber = async () => {
         try {
-          // A recipient generates a key pair.
           const recipient = new Kyber1024();
           const [pkR, skR] = await recipient.generateKeyPair();
 
-          // A sender generates a ciphertext and a shared secret
-          // by using the recipient's public key.
           const sender = new Kyber1024();
           const [ct, ssS] = await sender.encap(pkR);
 
-          // The recipient decapsulates the ciphertext and generates the samle shared secret
-          // by using the recipient's private key.
-          const ssR = await recipient.decap(skR, ct);
+          const ssR = await recipient.decap(ct, skR);
 
           // ssS === ssR
           return;

@@ -82,7 +82,7 @@ export class KyberBase {
     }
   }
 
-  public async decap(sk: Uint8Array, ct: Uint8Array): Promise<Uint8Array> {
+  public async decap(ct: Uint8Array, sk: Uint8Array): Promise<Uint8Array> {
     await this._setup();
 
     try {
@@ -100,7 +100,7 @@ export class KyberBase {
         this._skSize + this._pkSize + 64,
       );
 
-      const m2 = this._decap(sk2, ct);
+      const m2 = this._decap(ct, sk2);
       const [kBar2, r2] = g(m2, p);
       const ct2 = this._encap(pk, m2, r2);
       if (constantTimeCompare(ct, ct2) == 1) {
@@ -237,7 +237,7 @@ export class KyberBase {
 
   // indcpaDecrypt is the decryption function of the CPA-secure
   // public-key encryption scheme underlying Kyber.
-  private _decap(sk: Uint8Array, ct: Uint8Array): Uint8Array {
+  private _decap(ct: Uint8Array, sk: Uint8Array): Uint8Array {
     // extract ciphertext
     const u = this._decompressU(ct.subarray(0, this._compressedUSize));
     const v = this._decompressV(ct.subarray(this._compressedUSize));

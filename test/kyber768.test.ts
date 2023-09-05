@@ -62,7 +62,7 @@ describe("Kyber768", () => {
     it("should match values in test vectors", async () => {
       const kyber = new Kyber768();
       for (let i = 0; i < 100; i++) {
-        const res = await kyber.decap(sk[i], ct[i]);
+        const res = await kyber.decap(ct[i], sk[i]);
         assertEquals(res, ss[i]);
         count++;
       }
@@ -77,7 +77,7 @@ describe("Kyber768", () => {
       const sender = new Kyber768();
       const [ct, ssS] = await sender.encap(pkR);
 
-      const ssR = await recipient.decap(skR, ct);
+      const ssR = await recipient.decap(ct, skR);
 
       assertEquals(ssS, ssR);
     });
