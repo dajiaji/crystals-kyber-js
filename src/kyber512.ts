@@ -89,8 +89,7 @@ export class Kyber512 extends KyberBase {
         aa = aa + 5;
         for (let k = 0; k < 4; k++) {
           r[i][4 * j + k] = int16(
-            (((uint32(t[k] & 0x3FF) >>> 0) * (uint32(Q) >>> 0) >>> 0) +
-                  512) >> 10 >>> 0,
+            (((uint32(t[k] & 0x3FF)) * (uint32(Q))) + 512) >> 10,
           );
         }
       }

@@ -494,12 +494,12 @@ function byteopsCbd(buf: Uint8Array, eta: number): Array<number> {
   let a, b;
   const r = new Array<number>(384).fill(0);
   for (let i = 0; i < N / 8; i++) {
-    t = byteopsLoad32(buf.subarray(4 * i, buf.length)) >>> 0;
-    d = (t & 0x55555555) >>> 0;
-    d = d + ((((t >> 1) >>> 0) & 0x55555555) >>> 0) >>> 0;
+    t = byteopsLoad32(buf.subarray(4 * i, buf.length));
+    d = t & 0x55555555;
+    d = d + ((t >> 1) & 0x55555555);
     for (let j = 0; j < 8; j++) {
-      a = int16((((d >> (4 * j + 0)) >>> 0) & 0x3) >>> 0);
-      b = int16((((d >> (4 * j + eta)) >>> 0) & 0x3) >>> 0);
+      a = int16((d >> (4 * j + 0)) & 0x3);
+      b = int16((d >> (4 * j + eta)) & 0x3);
       r[8 * i + j] = a - b;
     }
   }
@@ -566,7 +566,7 @@ function byteopsMontgomeryReduce(a: number): number {
 // polyToMont performs the in-place conversion of all coefficients
 // of a polynomial from the normal domain to the Montgomery domain.
 function polyToMont(r: Array<number>): Array<number> {
-  // let f = int16(((uint64(1) << 32) >>> 0) % uint64(Q));
+  // let f = int16(((uint64(1) << 32)) % uint64(Q));
   const f = 1353; // if Q changes then this needs to be updated
   for (let i = 0; i < N; i++) {
     r[i] = byteopsMontgomeryReduce(int32(r[i]) * int32(f));
