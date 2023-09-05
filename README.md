@@ -11,7 +11,6 @@ A CRYSTALS-KYBER implementation written in TypeScript for various JavaScript run
 import { Kyber768 } from "crystals-kyber-js";
 
 async function doKyber() {
-
   // A recipient generates a key pair.
   const recipient = new Kyber768(); // Kyber512 and Kyber1024 are also available.
   const [pkR, skR] = await recipient.generateKeyPair();
@@ -126,7 +125,6 @@ import { Kyber768 } from "crystals-kyber-js";
 // const { Kyber768 } = require("crystals-kyber-js");
 
 async function doKyber() {
-
   // A recipient generates a key pair.
   const recipient = new Kyber768(); // Kyber512 and Kyber1024 are also available.
   const [pkR, skR] = await recipient.generateKeyPair();
