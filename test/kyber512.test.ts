@@ -80,6 +80,7 @@ describe("Kyber512", () => {
 
       const ssR = await recipient.decap(ct, skR);
 
+      console.assert(ssS === ssR, "The two shared secrets must match.");
       assertEquals(ssS, ssR);
     });
 
