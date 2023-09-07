@@ -10,10 +10,18 @@
 </div>
 
 <div align="center">
-A CRYSTALS-KYBER implementation written in TypeScript for various JavaScript runtimes. This module is based on <a href="https://github.com/antontutoveanu/crystals-kyber-javascript">ntontutoveanu/crystals-kyber-javascript</a> published under <a href="https://github.com/antontutoveanu/crystals-kyber-javascript/blob/main/License">the MIT license</a>.
+A CRYSTALS-KYBER implementation written in TypeScript for various JavaScript runtimes.<br>
 </div>
-
 <p></p>
+
+This module is based on <a href="https://github.com/antontutoveanu/crystals-kyber-javascript">ntontutoveanu/crystals-kyber-javascript</a>, but includes the following improvements:<br>
+
+- ✅ Various JavaScript runtime support (Browsers, Node.js, Deno, Cloudflare Workers, etc.)<br>
+- ✅ TypeScript support<br>
+- ✅ Deterministic key generation<br>
+- ✅ Constant-time ciphertext validation<br>
+- ✅ Performance enhancements<br>
+- ✅ Tree-shaking friendly<br>
 
 For Node.js, you can install `crystals-kyber-js` via npm/yarn:
 
@@ -30,6 +38,10 @@ async function doKyber() {
   // A recipient generates a key pair.
   const recipient = new Kyber768(); // Kyber512 and Kyber1024 are also available.
   const [pkR, skR] = await recipient.generateKeyPair();
+  //// Deterministic key generation is also supported
+  // const seed = new Uint8Array(64);
+  // globalThis.crypto.getRandomValues(seed); // node >= 19
+  // const [pkR, skR] = await recipient.deriveKeyPair(seed);
 
   // A sender generates a ciphertext and a shared secret with pkR.
   const sender = new Kyber768();
