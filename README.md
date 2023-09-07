@@ -2,6 +2,7 @@
 
 <div align="center">
 
+[![deno doc](https://doc.deno.land/badge.svg)](https://doc.deno.land/https/deno.land/x/crystals_kyber/mod.ts)
 ![Node.js CI](https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_node.yml/badge.svg)
 ![Deno CI](https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_deno.yml/badge.svg)
 [![codecov](https://codecov.io/gh/dajiaji/crystals-kyber-js/branch/main/graph/badge.svg?token=7I7JGKDDJ2)](https://codecov.io/gh/dajiaji/crystals-kyber-js)
