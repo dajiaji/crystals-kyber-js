@@ -14,9 +14,12 @@ A CRYSTALS-KYBER implementation written in TypeScript for various JavaScript run
 </div>
 <p></p>
 
-This module is based on <a href="https://github.com/antontutoveanu/crystals-kyber-javascript">ntontutoveanu/crystals-kyber-javascript</a>, but includes the following improvements:<br>
+This module is based on
+<a href="https://github.com/antontutoveanu/crystals-kyber-javascript">ntontutoveanu/crystals-kyber-javascript</a>,
+but includes the following improvements:<br>
 
-- ✅ Various JavaScript runtime support (Browsers, Node.js, Deno, Cloudflare Workers, etc.)<br>
+- ✅ Various JavaScript runtime support (Browsers, Node.js, Deno, Cloudflare
+  Workers, etc.)<br>
 - ✅ TypeScript support<br>
 - ✅ Deterministic key generation<br>
 - ✅ Constant-time ciphertext validation<br>
