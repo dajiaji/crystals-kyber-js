@@ -706,7 +706,7 @@ function add(a: Array<number>, b: Array<number>): Array<number> {
 // subtracts two polynomials.
 function subtract(a: Array<number>, b: Array<number>): Array<number> {
   for (let i = 0; i < N; i++) {
-    a[i] = a[i] - b[i];
+    a[i] -= b[i];
   }
   return a;
 }
@@ -739,11 +739,11 @@ function nttInverse(r: Array<number>): Array<number> {
 // Returns:     a - q if a >= q, else a
 function subtractQ(r: Array<number>): Array<number> {
   for (let i = 0; i < N; i++) {
-    r[i] = r[i] - Q; // should result in a negative integer
+    r[i] -= Q; // should result in a negative integer
     // push left most signed bit to right most position
     // javascript does bitwise operations in signed 32 bit
     // add q back again if left most bit was 0 (positive number)
-    r[i] = r[i] + ((r[i] >> 31) & Q);
+    r[i] += (r[i] >> 31) & Q;
   }
   return r;
 }
