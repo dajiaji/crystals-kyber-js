@@ -5,9 +5,29 @@
  */
 import { N, Q } from "./consts.ts";
 import { KyberBase } from "./kyberBase.ts";
+import { KyberInterface } from "./kyberInterface.ts";
 import { byte, int16, uint16, uint32 } from "./utils.ts";
 
-export class Kyber1024 extends KyberBase {
+/**
+ * The Kyber1024 implementation.
+ *
+ * See {@link KyberInterface}.
+ *
+ * @example
+ *
+ * ```ts
+ * const recipient = new Kyber1024();
+ * const [pkR, skR] = await recipient.generateKeyPair();
+
+ * const sender = new Kyber1024();
+ * const [ct, ssS] = await sender.encap(pkR);
+
+ * const ssR = await recipient.decap(ct, skR);
+
+ * console.assert(ssS === ssR, "The two shared secrets must match.");
+ * ```
+ */
+export class Kyber1024 extends KyberBase implements KyberInterface {
   protected _k = 4;
   protected _du = 11;
   protected _dv = 5;

@@ -97,16 +97,16 @@ export function prf(len: number, seed: Uint8Array, nonce: number): Uint8Array {
 // byteopsLoad24 returns a 32-bit unsigned integer loaded from byte x.
 export function byteopsLoad24(x: Uint8Array): number {
   let r = uint32(x[0]);
-  r = r | (uint32(x[1]) << 8);
-  r = r | (uint32(x[2]) << 16);
+  r |= uint32(x[1]) << 8;
+  r |= uint32(x[2]) << 16;
   return r;
 }
 
 // byteopsLoad32 returns a 32-bit unsigned integer loaded from byte x.
 export function byteopsLoad32(x: Uint8Array): number {
   let r = uint32(x[0]);
-  r = ((r | (uint32(x[1]) << 8)) >>> 0) >>> 0;
-  r = ((r | (uint32(x[2]) << 16)) >>> 0) >>> 0;
-  r = ((r | (uint32(x[3]) << 24)) >>> 0) >>> 0;
+  r |= uint32(x[1]) << 8;
+  r |= uint32(x[2]) << 16;
+  r |= uint32(x[3]) << 24;
   return uint32(r);
 }

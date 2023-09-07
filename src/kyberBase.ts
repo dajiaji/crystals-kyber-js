@@ -52,15 +52,15 @@ export class KyberBase {
   }
 
   public async deriveKeyPair(
-    ikm: Uint8Array,
+    seed: Uint8Array,
   ): Promise<[Uint8Array, Uint8Array]> {
     await this._setup();
 
     try {
-      if (ikm.byteLength !== 64) {
-        throw new Error("ikm must be 64 bytes in length");
+      if (seed.byteLength !== 64) {
+        throw new Error("seed must be 64 bytes in length");
       }
-      return this._deriveKeyPair(ikm);
+      return this._deriveKeyPair(seed);
     } catch (e: unknown) {
       throw new KyberError(e);
     }
@@ -132,9 +132,9 @@ export class KyberBase {
     return seed;
   }
 
-  private _deriveKeyPair(ikm: Uint8Array): [Uint8Array, Uint8Array] {
-    const cpaSeed = ikm.subarray(0, 32);
-    const z = ikm.subarray(32, 64);
+  private _deriveKeyPair(seed: Uint8Array): [Uint8Array, Uint8Array] {
+    const cpaSeed = seed.subarray(0, 32);
+    const z = seed.subarray(32, 64);
 
     const [pk, skBody] = this._deriveCpaKeyPair(cpaSeed);
 
@@ -688,9 +688,9 @@ function nttBaseMul(
   const r = new Array<number>(2);
   r[0] = nttFqMul(a1, b1);
   r[0] = nttFqMul(r[0], zeta);
-  r[0] = r[0] + nttFqMul(a0, b0);
+  r[0] += nttFqMul(a0, b0);
   r[1] = nttFqMul(a0, b1);
-  r[1] = r[1] + nttFqMul(a1, b0);
+  r[1] += nttFqMul(a1, b0);
   return r;
 }
 
@@ -706,7 +706,7 @@ function add(a: Array<number>, b: Array<number>): Array<number> {
 // subtracts two polynomials.
 function subtract(a: Array<number>, b: Array<number>): Array<number> {
   for (let i = 0; i < N; i++) {
-    a[i] = a[i] - b[i];
+    a[i] -= b[i];
   }
   return a;
 }
@@ -739,11 +739,11 @@ function nttInverse(r: Array<number>): Array<number> {
 // Returns:     a - q if a >= q, else a
 function subtractQ(r: Array<number>): Array<number> {
   for (let i = 0; i < N; i++) {
-    r[i] = r[i] - Q; // should result in a negative integer
+    r[i] -= Q; // should result in a negative integer
     // push left most signed bit to right most position
     // javascript does bitwise operations in signed 32 bit
     // add q back again if left most bit was 0 (positive number)
-    r[i] = r[i] + ((r[i] >> 31) & Q);
+    r[i] += (r[i] >> 31) & Q;
   }
   return r;
 }

@@ -2,6 +2,7 @@ import { assertEquals } from "testing/asserts.ts";
 import { afterAll, beforeAll, describe, it } from "testing/bdd.ts";
 
 import { Kyber768 } from "../mod.ts";
+import { loadCrypto } from "../src/utils.ts";
 
 import { hexToDec, testVectorPath } from "./utils.ts";
 
@@ -79,6 +80,26 @@ describe("Kyber768", () => {
 
       const ssR = await recipient.decap(ct, skR);
 
+      console.assert(ssS === ssR, "The two shared secrets must match.");
+      assertEquals(ssS, ssR);
+    });
+
+    it("should work normally with deriveKeyPair", async () => {
+      const recipient = new Kyber768();
+      const api = await loadCrypto();
+      const seed = new Uint8Array(64);
+      api.getRandomValues(seed);
+      const [pkR, skR] = await recipient.deriveKeyPair(seed);
+      const [pkR2, skR2] = await recipient.deriveKeyPair(seed);
+      assertEquals(pkR, pkR2);
+      assertEquals(skR, skR2);
+
+      const sender = new Kyber768();
+      const [ct, ssS] = await sender.encap(pkR);
+
+      const ssR = await recipient.decap(ct, skR);
+
+      console.assert(ssS === ssR, "The two shared secrets must match.");
       assertEquals(ssS, ssR);
     });
   });
