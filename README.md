@@ -18,12 +18,12 @@ This module is based on
 <a href="https://github.com/antontutoveanu/crystals-kyber-javascript">ntontutoveanu/crystals-kyber-javascript</a>,
 but includes the following improvements:<br>
 
-- ✅ Various JavaScript runtime support (Browsers, Node.js, Deno, Cloudflare
-  Workers, etc.)<br>
-- ✅ TypeScript support<br>
-- ✅ Deterministic key generation<br>
-- ✅ Constant-time ciphertext validation<br>
-- ✅ Performance enhancements<br>
+- ✅ Available on various JavaScript runtimes (Browsers, Node.js, Deno,
+  Cloudflare Workers, etc.)<br>
+- ✅ Written in TypeScript<br>
+- ✅ Deterministic key generation support<br>
+- ✅ Constant-time validation for ciphertext<br>
+- ✅ Better performance<br>
 - ✅ Tree-shaking friendly<br>
 
 For Node.js, you can install `crystals-kyber-js` via npm/yarn:
@@ -50,7 +50,7 @@ async function doKyber() {
   const sender = new Kyber768();
   const [ct, ssS] = await sender.encap(pkR);
 
-  // The recipient decapsulates the ciphertext and generates the samle shared secret with skR.
+  // The recipient decapsulates the ciphertext and generates the same shared secret with skR.
   const ssR = await recipient.decap(ct, skR);
 
   console.assert(ssS === ssR, "The two shared secrets must match.");
