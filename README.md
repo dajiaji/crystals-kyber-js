@@ -97,7 +97,7 @@ Using deno.land:
 
 ```js
 // use a specific version
-import { Kyber768 } from "https://deno.land/x/crystals_kyber@0.3.0/mod.ts";
+import { Kyber768 } from "https://deno.land/x/crystals_kyber@0.3.1/mod.ts";
 
 // use the latest stable version
 import { Kyber768 } from "https://deno.land/x/crystals_kyber/mod.ts";
@@ -113,7 +113,7 @@ Using esm.sh:
 ```html
 <!-- use a specific version -->
 <script type="module">
-  import { Kyber768 } from "https://esm.sh/crystals-kyber-js@0.3.0";
+  import { Kyber768 } from "https://esm.sh/crystals-kyber-js@0.3.1";
   // ...
 </script>
 
@@ -129,7 +129,7 @@ Using unpkg:
 ```html
 <!-- use a specific version -->
 <script type="module">
-  import { Kyber768 } from "https://unpkg.com/crystals-kyber-js@0.3.0";
+  import { Kyber768 } from "https://unpkg.com/crystals-kyber-js@0.3.1";
   // ...
 </script>
 ```
@@ -177,7 +177,7 @@ try {
 ### Deno
 
 ```js
-import { Kyber512 } from "https://deno.land/x/crystals_kyber@0.3.0/mod.ts";
+import { Kyber512 } from "https://deno.land/x/crystals_kyber@0.3.1/mod.ts";
 
 async function doKyber() {
 
@@ -207,7 +207,7 @@ try {
   <head></head>
   <body>
     <script type="module">
-      import { Kyber1024 } from "https://esm.sh/crystals-kyber@0.3.0";
+      import { Kyber1024 } from "https://esm.sh/crystals-kyber@0.3.1";
 
       globalThis.doKyber = async () => {
         try {
