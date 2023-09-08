@@ -1,5 +1,12 @@
 # Changes
 
+## Version 0.3.1
+
+Released 2023-09-07
+
+- [(#15) Add benchmark.](https://github.com/dajiaji/crystals-kyber-js/pull/15)
+- [(#13) Refine README.](https://github.com/dajiaji/crystals-kyber-js/pull/13)
+
 ## Version 0.3.0
 
 Released 2023-09-07
