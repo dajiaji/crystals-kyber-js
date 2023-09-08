@@ -10,14 +10,15 @@
       "dnt.ts",
       "mod.ts",
       "src/",
-      "test/"
+      "test/",
+      "bench/"
     ],
     "exclude": [
       "**/*/node_modules"
     ]
   },
   "lint": {
-    "include": ["mod.ts", "src/", "test/"],
+    "include": ["mod.ts", "src/", "test/", "bench/"],
     "exclude": [
       "**/*/node_modules"
     ]

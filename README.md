@@ -18,13 +18,14 @@ This module is based on
 <a href="https://github.com/antontutoveanu/crystals-kyber-javascript">ntontutoveanu/crystals-kyber-javascript</a>,
 but includes the following improvements:<br>
 
-- ✅ Available on various JavaScript runtimes (Browsers, Node.js, Deno,
-  Cloudflare Workers, etc.)<br>
-- ✅ Written in TypeScript<br>
-- ✅ Deterministic key generation support<br>
-- ✅ Constant-time validation for ciphertext<br>
-- ✅ Better performance<br>
-- ✅ Tree-shaking friendly<br>
+- ✅ Available on various JavaScript runtimes: Browsers, Node.js, Deno,
+  Cloudflare Workers, etc.<br>
+- ✅ Written in TypeScript.<br>
+- ✅ Deterministic key generation support.<br>
+- ✅ Constant-time validation for ciphertext.<br>
+- ✅ Better performance: 1.4 to 1.8 times faster than the original
+  implementation.<br>
+- ✅ Tree-shaking friendly.<br>
 
 For Node.js, you can install `crystals-kyber-js` via npm/yarn:
 
