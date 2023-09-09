@@ -1,0 +1,33 @@
+name: Browsers CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  pages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+      - run: |
+          npm install -g typescript
+          npm install -g typedoc
+          npx typedoc --name "crystals-kyber-js $(git describe --tags --abbrev=0)" --out pages/docs mod.ts
+          # deno task dnt
+          # cp npm/esm/*.js test/runtimes/browsers/pages/src/
+          # cp -rf npm/esm/src test/runtimes/browsers/pages/src/
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          publish_dir: ./pages
