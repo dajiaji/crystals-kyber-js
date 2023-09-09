@@ -5,16 +5,16 @@
  */
 import { N } from "./consts.ts";
 import { KyberBase } from "./kyberBase.ts";
-import { KyberInterface } from "./kyberInterface.ts";
 
 /**
  * The Kyber768 implementation.
  *
- * See {@link KyberInterface}.
- *
  * @example
  *
  * ```ts
+ * // import { Kyber768 } from "crystals-kyber-js"; // Node.js
+ * import { Kyber768 } from "http://deno.land/x/crystals_kyber/mod.ts"; // Deno
+ *
  * const recipient = new Kyber768();
  * const [pkR, skR] = await recipient.generateKeyPair();
 
@@ -26,7 +26,7 @@ import { KyberInterface } from "./kyberInterface.ts";
  * console.assert(ssS === ssR, "The two shared secrets must match.");
  * ```
  */
-export class Kyber768 extends KyberBase implements KyberInterface {
+export class Kyber768 extends KyberBase {
   protected _k = 3;
   protected _du = 10;
   protected _dv = 4;
