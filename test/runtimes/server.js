@@ -1,8 +1,6 @@
 import { Kyber1024, Kyber512, Kyber768 } from "./crystals-kyber.js";
 
-// compares two arrays and returns 1 if they are the same or 0 if not
 function compare(x, y) {
-  // check array lengths
   if (x.length != y.length) {
     return false;
   }
@@ -10,7 +8,6 @@ function compare(x, y) {
   for (let i = 0; i < x.length; i++) {
     v[0] |= x[i] ^ y[i];
   }
-  // constantTimeByteEq
   const z = new Uint8Array([0]);
   z[0] = ~(v[0] ^ z[0]);
   z[0] &= z[0] >> 4;
