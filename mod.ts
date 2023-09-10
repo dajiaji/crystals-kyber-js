@@ -1,4 +1,3 @@
-export type { KyberInterface } from "./src/kyberInterface.ts";
 export { KyberError } from "./src/errors.ts";
 export { Kyber512 } from "./src/kyber512.ts";
 export { Kyber768 } from "./src/kyber768.ts";
