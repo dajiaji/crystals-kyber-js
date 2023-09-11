@@ -1,0 +1,94 @@
+<html>
+  <head><title>crystals-kyber-js test</title></head>
+  <body>
+    <script type="module">
+      import { Kyber1024, Kyber512, Kyber768 } from './src/crystals-kyber.js';
+
+      function isEqual(x, y) {
+        if (x.length !== y.length) {
+          return false;
+        }
+        for (let i = 0; i < x.length; i++) {
+          if (x[i] !== y[i]) {
+            return false;
+          }
+        }
+        return true;
+      }
+
+      async function doKyber(ctx) {
+        // generateKeyPair/encap/decap
+        const [pkR, skR] = await ctx.generateKeyPair();
+        const [ct, ssS] = await ctx.encap(pkR);
+        const ssR = await ctx.decap(ct, skR);
+        if (!isEqual(ssS, ssR)) {
+          return false;
+        }
+
+        // deriveKeyPair
+        const seed = new Uint8Array(64);
+        globalThis.crypto.getRandomValues(seed);
+        const [dPkR, dSkR] = await ctx.deriveKeyPair(seed);
+        const [dPkR2, dSkR2] = await ctx.deriveKeyPair(seed);
+        if (!isEqual(dPkR, dPkR2) || !isEqual(dSkR, dSkR2)) {
+          return false;
+        }
+        return true;
+      }
+
+      globalThis.run = async () => {
+        let pass = 0;
+        let fail = 0;
+
+        // Kyber512
+        if (await doKyber(new Kyber512())) {
+          pass++;
+        } else {
+          fail++;
+        }
+        // Kyber768
+        if (await doKyber(new Kyber768())) {
+          pass++;
+        } else {
+          fail++;
+        }
+        // Kyber1024
+        if (await doKyber(new Kyber1024())) {
+          pass++;
+        } else {
+          fail++;
+        }
+        document.getElementById("pass").innerHTML = pass;
+        document.getElementById("fail").innerHTML = fail;
+      }
+
+      globalThis.reset = () => {
+        document.getElementById("pass").innerHTML = "-";
+        document.getElementById("fail").innerHTML = "-";
+      }
+      
+    </script>
+
+    <h1><a href="https://github.com/dajiaji/crystals-kyber-js">crystals-kyber-js</a> test</h1>
+
+    <div id="operation">
+      <button type="button" onclick="run()">run</button>
+      <button type="button" onclick="reset()">reset</button>
+    </div>
+
+    <br>
+
+    <div id="test">  
+      <table>
+        <tr>
+          <th><font color="green">pass: </font></th>
+          <td id="pass">-</td>
+        </tr>
+        <tr>
+          <th><font color="red">fail: </font></th>
+          <td id="fail">-</td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>
