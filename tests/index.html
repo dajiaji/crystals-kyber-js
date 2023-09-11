@@ -5,7 +5,7 @@
       import { Kyber1024, Kyber512, Kyber768 } from './src/crystals-kyber.js';
 
       function isEqual(x, y) {
-        if (x.length != y.length) {
+        if (x.length !== y.length) {
           return false;
         }
         for (let i = 0; i < x.length; i++) {
@@ -16,7 +16,7 @@
         return true;
       }
 
-      function doKyber(ctx) {
+      function async doKyber(ctx) {
         // generateKeyPair/encap/decap
         const [pkR, skR] = await ctx.generateKeyPair();
         const [ct, ssS] = await ctx.encap(pkR);
@@ -39,20 +39,21 @@
       globalThis.run = async () => {
         let pass = 0;
         let fail = 0;
+
         // Kyber512
-        if (doKyber(new Kyber512())) {
+        if (await doKyber(new Kyber512())) {
           pass++;
         } else {
           fail++;
         }
         // Kyber768
-        if (doKyber(new Kyber768())) {
+        if (await doKyber(new Kyber768())) {
           pass++;
         } else {
           fail++;
         }
         // Kyber1024
-        if (doKyber(new Kyber1024())) {
+        if (await doKyber(new Kyber1024())) {
           pass++;
         } else {
           fail++;
