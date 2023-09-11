@@ -1,5 +1,12 @@
 # Changes
 
+## Version 1.0.0
+
+Released 2023-09-11
+
+- [(#19) Add CI for various JavaScript runtimes.](https://github.com/dajiaji/crystals-kyber-js/pull/19)
+- [(#18) Remove KyberInterface.](https://github.com/dajiaji/crystals-kyber-js/pull/18)
+
 ## Version 0.3.1
 
 Released 2023-09-07

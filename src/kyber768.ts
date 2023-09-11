@@ -17,13 +17,12 @@ import { KyberBase } from "./kyberBase.ts";
  *
  * const recipient = new Kyber768();
  * const [pkR, skR] = await recipient.generateKeyPair();
-
+ *
  * const sender = new Kyber768();
  * const [ct, ssS] = await sender.encap(pkR);
-
+ *
  * const ssR = await recipient.decap(ct, skR);
-
- * console.assert(ssS === ssR, "The two shared secrets must match.");
+ * // ssS === ssR
  * ```
  */
 export class Kyber768 extends KyberBase {

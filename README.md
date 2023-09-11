@@ -3,7 +3,7 @@
 <div align="center">
 
 [![deno doc](https://doc.deno.land/badge.svg)](https://doc.deno.land/https/deno.land/x/crystals_kyber/mod.ts)
-![Browser CI](https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_browser.yml/badge.svg)
+![Browser CI](https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_browsers.yml/badge.svg)
 ![Node.js CI](https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_node.yml/badge.svg)
 ![Deno CI](https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_deno.yml/badge.svg)
 ![Cloudflare Workers CI](https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_cloudflare.yml/badge.svg)
@@ -57,7 +57,7 @@ async function doKyber() {
   // The recipient decapsulates the ciphertext and generates the same shared secret with skR.
   const ssR = await recipient.decap(ct, skR);
 
-  console.assert(ssS === ssR, "The two shared secrets must match.");
+  // ssS === ssR
   return;
 }
 
@@ -100,7 +100,7 @@ Using deno.land:
 
 ```js
 // use a specific version
-import { Kyber768 } from "https://deno.land/x/crystals_kyber@0.3.1/mod.ts";
+import { Kyber768 } from "https://deno.land/x/crystals_kyber@1.0.0/mod.ts";
 
 // use the latest stable version
 import { Kyber768 } from "https://deno.land/x/crystals_kyber/mod.ts";
@@ -116,7 +116,7 @@ Using esm.sh:
 ```html
 <!-- use a specific version -->
 <script type="module">
-  import { Kyber768 } from "https://esm.sh/crystals-kyber-js@0.3.1";
+  import { Kyber768 } from "https://esm.sh/crystals-kyber-js@1.0.0";
   // ...
 </script>
 
@@ -132,7 +132,7 @@ Using unpkg:
 ```html
 <!-- use a specific version -->
 <script type="module">
-  import { Kyber768 } from "https://unpkg.com/crystals-kyber-js@0.3.1";
+  import { Kyber768 } from "https://unpkg.com/crystals-kyber-js@1.0.0";
   // ...
 </script>
 ```
@@ -166,7 +166,7 @@ async function doKyber() {
 
   const ssR = await recipient.decap(ct, skR);
 
-  console.assert(ssS === ssR, "The two shared secrets must match.");
+  // ssS === ssR
   return;
 }
 
@@ -180,7 +180,7 @@ try {
 ### Deno
 
 ```js
-import { Kyber512 } from "https://deno.land/x/crystals_kyber@0.3.1/mod.ts";
+import { Kyber512 } from "https://deno.land/x/crystals_kyber@1.0.0/mod.ts";
 
 async function doKyber() {
 
@@ -192,7 +192,7 @@ async function doKyber() {
 
   const ssR = await recipient.decap(ct, skR);
 
-  console.assert(ssS === ssR, "The two shared secrets must match.");
+  // ssS === ssR
   return;
 }
 
@@ -210,7 +210,7 @@ try {
   <head></head>
   <body>
     <script type="module">
-      import { Kyber1024 } from "https://esm.sh/crystals-kyber@0.3.1";
+      import { Kyber1024 } from "https://esm.sh/crystals-kyber@1.0.0";
 
       globalThis.doKyber = async () => {
         try {
@@ -222,7 +222,7 @@ try {
 
           const ssR = await recipient.decap(ct, skR);
 
-          console.assert(ssS === ssR, "The two shared secrets must match.");
+          // ssS === ssR
           return;
         } catch (err) {
           alert("failed: ", err.message);

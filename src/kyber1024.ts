@@ -23,8 +23,7 @@ import { byte, int16, uint16, uint32 } from "./utils.ts";
  * const [ct, ssS] = await sender.encap(pkR);
 
  * const ssR = await recipient.decap(ct, skR);
-
- * console.assert(ssS === ssR, "The two shared secrets must match.");
+ * // ssS === ssR
  * ```
  */
 export class Kyber1024 extends KyberBase {
