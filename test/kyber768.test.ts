@@ -79,8 +79,6 @@ describe("Kyber768", () => {
       const [ct, ssS] = await sender.encap(pkR);
 
       const ssR = await recipient.decap(ct, skR);
-
-      console.assert(ssS === ssR, "The two shared secrets must match.");
       assertEquals(ssS, ssR);
     });
 
@@ -98,8 +96,6 @@ describe("Kyber768", () => {
       const [ct, ssS] = await sender.encap(pkR);
 
       const ssR = await recipient.decap(ct, skR);
-
-      console.assert(ssS === ssR, "The two shared secrets must match.");
       assertEquals(ssS, ssR);
     });
   });

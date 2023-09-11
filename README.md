@@ -57,7 +57,7 @@ async function doKyber() {
   // The recipient decapsulates the ciphertext and generates the same shared secret with skR.
   const ssR = await recipient.decap(ct, skR);
 
-  console.assert(ssS === ssR, "The two shared secrets must match.");
+  // ssS === ssR
   return;
 }
 
@@ -166,7 +166,7 @@ async function doKyber() {
 
   const ssR = await recipient.decap(ct, skR);
 
-  console.assert(ssS === ssR, "The two shared secrets must match.");
+  // ssS === ssR
   return;
 }
 
@@ -192,7 +192,7 @@ async function doKyber() {
 
   const ssR = await recipient.decap(ct, skR);
 
-  console.assert(ssS === ssR, "The two shared secrets must match.");
+  // ssS === ssR
   return;
 }
 
@@ -222,7 +222,7 @@ try {
 
           const ssR = await recipient.decap(ct, skR);
 
-          console.assert(ssS === ssR, "The two shared secrets must match.");
+          // ssS === ssR
           return;
         } catch (err) {
           alert("failed: ", err.message);

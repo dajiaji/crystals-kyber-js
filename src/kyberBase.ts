@@ -163,7 +163,7 @@ export class KyberBase {
    * const [pk, sk] = await kyber.generateKeyPair();
    * const [ct, ssS] = await kyber.encap(pk);
    * const ssR = await kyber.decap(ct, sk);
-   * console.assert(ssS === ssR, "The two shared secrets must match.");
+   * // ssS === ssR
    * ```
    */
   public async decap(ct: Uint8Array, sk: Uint8Array): Promise<Uint8Array> {
