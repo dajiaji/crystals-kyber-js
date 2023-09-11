@@ -21,7 +21,7 @@
         const [pkR, skR] = await ctx.generateKeyPair();
         const [ct, ssS] = await ctx.encap(pkR);
         const ssR = await ctx.decap(ct, skR);
-        if (!compare(ssS, ssR)) {
+        if (!isEqual(ssS, ssR)) {
           return false;
         }
 
@@ -30,7 +30,7 @@
         globalThis.crypto.getRandomValues(seed);
         const [dPkR, dSkR] = await ctx.deriveKeyPair(seed);
         const [dPkR2, dSkR2] = await ctx.deriveKeyPair(seed);
-        if (!compare(dPkR, dPkR2) || !compare(dSkR, dSkR2)) {
+        if (!isEqual(dPkR, dPkR2) || !isEqual(dSkR, dSkR2)) {
           return false;
         }
         return true;
