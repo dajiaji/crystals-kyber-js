@@ -16,7 +16,7 @@
         return true;
       }
 
-      function async doKyber(ctx) {
+      async function doKyber(ctx) {
         // generateKeyPair/encap/decap
         const [pkR, skR] = await ctx.generateKeyPair();
         const [ct, ssS] = await ctx.encap(pkR);
