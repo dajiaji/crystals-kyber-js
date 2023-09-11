@@ -3,7 +3,7 @@
 <div align="center">
 
 [![deno doc](https://doc.deno.land/badge.svg)](https://doc.deno.land/https/deno.land/x/crystals_kyber/mod.ts)
-![Browser CI](https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_browser.yml/badge.svg)
+![Browser CI](https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_browsers.yml/badge.svg)
 ![Node.js CI](https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_node.yml/badge.svg)
 ![Deno CI](https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_deno.yml/badge.svg)
 ![Cloudflare Workers CI](https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_cloudflare.yml/badge.svg)
