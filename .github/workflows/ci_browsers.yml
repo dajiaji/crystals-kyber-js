@@ -23,7 +23,8 @@ jobs:
       - run: |
           npm install -g typescript
           npm install -g typedoc
-          npx typedoc --name "crystals-kyber-js $(git describe --tags --abbrev=0)" --out pages/docs mod.ts
+          # npx typedoc --name "crystals-kyber-js $(git describe --tags --abbrev=0)" --out pages/docs/main mod.ts
+          npx typedoc --name "API reference for main" --out pages/docs/main mod.ts
           npm install -g esbuild
           deno task dnt
           deno task minify > test/runtimes/browsers/pages/src/crystals-kyber.js

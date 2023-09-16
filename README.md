@@ -19,7 +19,7 @@ A CRYSTALS-KYBER implementation written in TypeScript for various JavaScript run
 
 <div align="center">
 
-[Documentation for main](https://dajiaji.github.io/hpke-js/docs/)
+[Documentation for main](https://dajiaji.github.io/hpke-js/docs/main/)
 
 </div>
 
