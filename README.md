@@ -17,6 +17,12 @@ A CRYSTALS-KYBER implementation written in TypeScript for various JavaScript run
 </div>
 <p></p>
 
+<div align="center">
+
+[Documentation for main](https://dajiaji.github.io/hpke-js/docs/)
+
+</div>
+
 This module is based on
 <a href="https://github.com/antontutoveanu/crystals-kyber-javascript">ntontutoveanu/crystals-kyber-javascript</a>,
 but includes the following improvements:<br>
