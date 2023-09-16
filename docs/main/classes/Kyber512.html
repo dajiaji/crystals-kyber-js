@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Kyber768 | crystals-kyber-js </title><meta name="description" content="Documentation for crystals-kyber-js "/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Kyber512 | API reference for main</title><meta name="description" content="Documentation for API reference for main"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script defer src="../assets/main.js"></script><script async src="../assets/search.js" id="tsd-search-script"></script><script async src="../assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
 <div class="tsd-toolbar-contents container">
 <div class="table-cell" id="tsd-search" data-base="..">
 <div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#icon-search"></use></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
@@ -6,20 +6,20 @@
 <div id="tsd-toolbar-links"></div></div>
 <ul class="results">
 <li class="state loading">Preparing search index...</li>
-<li class="state failure">The search index is not available</li></ul><a href="../index.html" class="title">crystals-kyber-js </a></div>
+<li class="state failure">The search index is not available</li></ul><a href="../index.html" class="title">API reference for main</a></div>
 <div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="#icon-menu"></use></svg></a></div></div></header>
 <div class="container container-main">
 <div class="col-content">
 <div class="tsd-page-title">
 <ul class="tsd-breadcrumb">
-<li><a href="../modules.html">crystals-kyber-js </a></li>
-<li><a href="Kyber768.html">Kyber768</a></li></ul>
-<h1>Class Kyber768</h1></div>
+<li><a href="../modules.html">API reference for main</a></li>
+<li><a href="Kyber512.html">Kyber512</a></li></ul>
+<h1>Class Kyber512</h1></div>
 <section class="tsd-panel tsd-comment">
-<div class="tsd-comment tsd-typography"><p>The Kyber768 implementation.</p>
+<div class="tsd-comment tsd-typography"><p>The Kyber512 implementation.</p>
 </div>
 <div class="tsd-comment tsd-typography">
-<h4>Example</h4><pre><code class="language-ts"><span class="hl-6">// import { Kyber768 } from &quot;crystals-kyber-js&quot;; // Node.js</span><br/><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">Kyber768</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;http://deno.land/x/crystals_kyber/mod.ts&quot;</span><span class="hl-1">; </span><span class="hl-6">// Deno</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-7">recipient</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">Kyber768</span><span class="hl-1">();</span><br/><span class="hl-5">const</span><span class="hl-1"> [</span><span class="hl-7">pkR</span><span class="hl-1">, </span><span class="hl-7">skR</span><span class="hl-1">] = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">recipient</span><span class="hl-1">.</span><span class="hl-0">generateKeyPair</span><span class="hl-1">();</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-7">sender</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">Kyber768</span><span class="hl-1">();</span><br/><span class="hl-5">const</span><span class="hl-1"> [</span><span class="hl-7">ct</span><span class="hl-1">, </span><span class="hl-7">ssS</span><span class="hl-1">] = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">sender</span><span class="hl-1">.</span><span class="hl-0">encap</span><span class="hl-1">(</span><span class="hl-4">pkR</span><span class="hl-1">);</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-7">ssR</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">recipient</span><span class="hl-1">.</span><span class="hl-0">decap</span><span class="hl-1">(</span><span class="hl-4">ct</span><span class="hl-1">, </span><span class="hl-4">skR</span><span class="hl-1">);</span><br/><span class="hl-6">// ssS === ssR</span>
+<h4>Example</h4><pre><code class="language-ts"><span class="hl-6">// import { Kyber512 } from &quot;crystals-kyber-js&quot;; // Node.js</span><br/><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">Kyber512</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;http://deno.land/x/crystals_kyber/mod.ts&quot;</span><span class="hl-1">; </span><span class="hl-6">// Deno</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-7">recipient</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">Kyber512</span><span class="hl-1">();</span><br/><span class="hl-5">const</span><span class="hl-1"> [</span><span class="hl-7">pkR</span><span class="hl-1">, </span><span class="hl-7">skR</span><span class="hl-1">] = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">recipient</span><span class="hl-1">.</span><span class="hl-0">generateKeyPair</span><span class="hl-1">();</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-7">sender</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">Kyber512</span><span class="hl-1">();</span><br/><span class="hl-5">const</span><span class="hl-1"> [</span><span class="hl-7">ct</span><span class="hl-1">, </span><span class="hl-7">ssS</span><span class="hl-1">] = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">sender</span><span class="hl-1">.</span><span class="hl-0">encap</span><span class="hl-1">(</span><span class="hl-4">pkR</span><span class="hl-1">);</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-7">ssR</span><span class="hl-1"> = </span><span class="hl-3">await</span><span class="hl-1"> </span><span class="hl-4">recipient</span><span class="hl-1">.</span><span class="hl-0">decap</span><span class="hl-1">(</span><span class="hl-4">ct</span><span class="hl-1">, </span><span class="hl-4">skR</span><span class="hl-1">);</span><br/><span class="hl-6">// ssS === ssR</span>
 </code><button>Copy</button></pre>
 </div></section>
 <section class="tsd-panel tsd-hierarchy">
@@ -27,9 +27,9 @@
 <ul class="tsd-hierarchy">
 <li><span class="tsd-signature-type ">KyberBase</span>
 <ul class="tsd-hierarchy">
-<li><span class="target">Kyber768</span></li></ul></li></ul></section><aside class="tsd-sources">
+<li><span class="target">Kyber512</span></li></ul></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/d5efe76/src/kyber768.ts#L28">src/kyber768.ts:28</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/8403d54/src/kyber512.ts#L29">src/kyber512.ts:29</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -37,44 +37,44 @@
 <div class="tsd-accordion-details">
 <section class="tsd-index-section">
 <h3 class="tsd-index-heading">Constructors</h3>
-<div class="tsd-index-list"><a href="Kyber768.html#constructor" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-512"></use></svg><span>constructor</span></a>
+<div class="tsd-index-list"><a href="Kyber512.html#constructor" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-512"></use></svg><span>constructor</span></a>
 </div></section>
 <section class="tsd-index-section">
 <h3 class="tsd-index-heading">Properties</h3>
-<div class="tsd-index-list"><a href="Kyber768.html#_compressedUSize" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>_compressedUSize</span></a>
-<a href="Kyber768.html#_compressedVSize" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>_compressedVSize</span></a>
-<a href="Kyber768.html#_du" class="tsd-index-link tsd-is-protected"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>_du</span></a>
-<a href="Kyber768.html#_dv" class="tsd-index-link tsd-is-protected"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>_dv</span></a>
-<a href="Kyber768.html#_eta1" class="tsd-index-link tsd-is-protected"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>_eta1</span></a>
-<a href="Kyber768.html#_eta2" class="tsd-index-link tsd-is-protected"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>_eta2</span></a>
-<a href="Kyber768.html#_k" class="tsd-index-link tsd-is-protected"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>_k</span></a>
-<a href="Kyber768.html#_pkSize" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>_pk<wbr/>Size</span></a>
-<a href="Kyber768.html#_skSize" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>_sk<wbr/>Size</span></a>
+<div class="tsd-index-list"><a href="Kyber512.html#_compressedUSize" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>_compressedUSize</span></a>
+<a href="Kyber512.html#_compressedVSize" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>_compressedVSize</span></a>
+<a href="Kyber512.html#_du" class="tsd-index-link tsd-is-protected"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>_du</span></a>
+<a href="Kyber512.html#_dv" class="tsd-index-link tsd-is-protected"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>_dv</span></a>
+<a href="Kyber512.html#_eta1" class="tsd-index-link tsd-is-protected"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>_eta1</span></a>
+<a href="Kyber512.html#_eta2" class="tsd-index-link tsd-is-protected"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>_eta2</span></a>
+<a href="Kyber512.html#_k" class="tsd-index-link tsd-is-protected"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>_k</span></a>
+<a href="Kyber512.html#_pkSize" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>_pk<wbr/>Size</span></a>
+<a href="Kyber512.html#_skSize" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1024"></use></svg><span>_sk<wbr/>Size</span></a>
 </div></section>
 <section class="tsd-index-section">
 <h3 class="tsd-index-heading">Methods</h3>
-<div class="tsd-index-list"><a href="Kyber768.html#_compressU" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>_compressU</span></a>
-<a href="Kyber768.html#_compressV" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>_compressV</span></a>
-<a href="Kyber768.html#_decompressU" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>_decompressU</span></a>
-<a href="Kyber768.html#_decompressV" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>_decompressV</span></a>
-<a href="Kyber768.html#_sampleNoise1" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>_sample<wbr/>Noise1</span></a>
-<a href="Kyber768.html#_sampleNoise2" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>_sample<wbr/>Noise2</span></a>
-<a href="Kyber768.html#decap" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>decap</span></a>
-<a href="Kyber768.html#deriveKeyPair" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>derive<wbr/>Key<wbr/>Pair</span></a>
-<a href="Kyber768.html#encap" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>encap</span></a>
-<a href="Kyber768.html#generateKeyPair" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>generate<wbr/>Key<wbr/>Pair</span></a>
+<div class="tsd-index-list"><a href="Kyber512.html#_compressU" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>_compressU</span></a>
+<a href="Kyber512.html#_compressV" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>_compressV</span></a>
+<a href="Kyber512.html#_decompressU" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>_decompressU</span></a>
+<a href="Kyber512.html#_decompressV" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>_decompressV</span></a>
+<a href="Kyber512.html#_sampleNoise1" class="tsd-index-link tsd-is-protected"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>_sample<wbr/>Noise1</span></a>
+<a href="Kyber512.html#_sampleNoise2" class="tsd-index-link tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>_sample<wbr/>Noise2</span></a>
+<a href="Kyber512.html#decap" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>decap</span></a>
+<a href="Kyber512.html#deriveKeyPair" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>derive<wbr/>Key<wbr/>Pair</span></a>
+<a href="Kyber512.html#encap" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>encap</span></a>
+<a href="Kyber512.html#generateKeyPair" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>generate<wbr/>Key<wbr/>Pair</span></a>
 </div></section></div></details></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Constructors</h2>
 <section class="tsd-panel tsd-member"><a id="constructor" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>constructor</span><a href="#constructor" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
-<li class="tsd-signature tsd-anchor-link" id="constructor.new_Kyber768"><span class="tsd-kind-constructor-signature">new <wbr/>Kyber768</span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Kyber768.html" class="tsd-signature-type tsd-kind-class">Kyber768</a><a href="#constructor.new_Kyber768" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="constructor.new_Kyber512"><span class="tsd-kind-constructor-signature">new <wbr/>Kyber512</span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Kyber512.html" class="tsd-signature-type tsd-kind-class">Kyber512</a><a href="#constructor.new_Kyber512" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
-<h4 class="tsd-returns-title">Returns <a href="Kyber768.html" class="tsd-signature-type tsd-kind-class">Kyber768</a></h4><aside class="tsd-sources">
+<h4 class="tsd-returns-title">Returns <a href="Kyber512.html" class="tsd-signature-type tsd-kind-class">Kyber512</a></h4><aside class="tsd-sources">
 <p>Overrides KyberBase.constructor</p>
 <ul>
-<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/d5efe76/src/kyber768.ts#L35">src/kyber768.ts:35</a></li></ul></aside></li></ul></section></section>
+<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/8403d54/src/kyber512.ts#L36">src/kyber512.ts:36</a></li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Properties</h2>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="_compressedUSize" class="tsd-anchor"></a>
@@ -82,55 +82,55 @@
 <div class="tsd-signature"><span class="tsd-kind-property">_compressedUSize</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></div><aside class="tsd-sources">
 <p>Inherited from KyberBase._compressedUSize</p>
 <ul>
-<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/d5efe76/src/kyberBase.ts#L37">src/kyberBase.ts:37</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/8403d54/src/kyberBase.ts#L37">src/kyberBase.ts:37</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="_compressedVSize" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>_compressedVSize</span><a href="#_compressedVSize" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">_compressedVSize</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></div><aside class="tsd-sources">
 <p>Inherited from KyberBase._compressedVSize</p>
 <ul>
-<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/d5efe76/src/kyberBase.ts#L38">src/kyberBase.ts:38</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/8403d54/src/kyberBase.ts#L38">src/kyberBase.ts:38</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="_du" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>_du</span><a href="#_du" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">_du</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 10</span></div><aside class="tsd-sources">
 <p>Overrides KyberBase._du</p>
 <ul>
-<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/d5efe76/src/kyber768.ts#L30">src/kyber768.ts:30</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/8403d54/src/kyber512.ts#L31">src/kyber512.ts:31</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="_dv" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>_dv</span><a href="#_dv" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">_dv</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 4</span></div><aside class="tsd-sources">
 <p>Overrides KyberBase._dv</p>
 <ul>
-<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/d5efe76/src/kyber768.ts#L31">src/kyber768.ts:31</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/8403d54/src/kyber512.ts#L32">src/kyber512.ts:32</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="_eta1" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>_eta1</span><a href="#_eta1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
-<div class="tsd-signature"><span class="tsd-kind-property">_eta1</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 2</span></div><aside class="tsd-sources">
+<div class="tsd-signature"><span class="tsd-kind-property">_eta1</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 3</span></div><aside class="tsd-sources">
 <p>Overrides KyberBase._eta1</p>
 <ul>
-<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/d5efe76/src/kyber768.ts#L32">src/kyber768.ts:32</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/8403d54/src/kyber512.ts#L33">src/kyber512.ts:33</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="_eta2" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>_eta2</span><a href="#_eta2" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">_eta2</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 2</span></div><aside class="tsd-sources">
 <p>Overrides KyberBase._eta2</p>
 <ul>
-<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/d5efe76/src/kyber768.ts#L33">src/kyber768.ts:33</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/8403d54/src/kyber512.ts#L34">src/kyber512.ts:34</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-is-protected"><a id="_k" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>_k</span><a href="#_k" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
-<div class="tsd-signature"><span class="tsd-kind-property">_k</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 3</span></div><aside class="tsd-sources">
+<div class="tsd-signature"><span class="tsd-kind-property">_k</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 2</span></div><aside class="tsd-sources">
 <p>Overrides KyberBase._k</p>
 <ul>
-<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/d5efe76/src/kyber768.ts#L29">src/kyber768.ts:29</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/8403d54/src/kyber512.ts#L30">src/kyber512.ts:30</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="_pkSize" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>_pk<wbr/>Size</span><a href="#_pkSize" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">_pk<wbr/>Size</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></div><aside class="tsd-sources">
 <p>Inherited from KyberBase._pkSize</p>
 <ul>
-<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/d5efe76/src/kyberBase.ts#L36">src/kyberBase.ts:36</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/8403d54/src/kyberBase.ts#L36">src/kyberBase.ts:36</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="_skSize" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>_sk<wbr/>Size</span><a href="#_skSize" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">_sk<wbr/>Size</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></div><aside class="tsd-sources">
 <p>Inherited from KyberBase._skSize</p>
 <ul>
-<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/d5efe76/src/kyberBase.ts#L35">src/kyberBase.ts:35</a></li></ul></aside></section></section>
+<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/8403d54/src/kyberBase.ts#L35">src/kyberBase.ts:35</a></li></ul></aside></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Methods</h2>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="_compressU" class="tsd-anchor"></a>
@@ -148,7 +148,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Uint8Array</span></h4><aside class="tsd-sources">
 <p>Inherited from KyberBase._compressU</p>
 <ul>
-<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/d5efe76/src/kyberBase.ts#L423">src/kyberBase.ts:423</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/8403d54/src/kyberBase.ts#L423">src/kyberBase.ts:423</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="_compressV" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>_compressV</span><a href="#_compressV" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
@@ -164,7 +164,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Uint8Array</span></h4><aside class="tsd-sources">
 <p>Inherited from KyberBase._compressV</p>
 <ul>
-<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/d5efe76/src/kyberBase.ts#L448">src/kyberBase.ts:448</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/8403d54/src/kyberBase.ts#L448">src/kyberBase.ts:448</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="_decompressU" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>_decompressU</span><a href="#_decompressU" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
@@ -178,7 +178,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span></h4><aside class="tsd-sources">
 <p>Inherited from KyberBase._decompressU</p>
 <ul>
-<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/d5efe76/src/kyberBase.ts#L466">src/kyberBase.ts:466</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/8403d54/src/kyberBase.ts#L466">src/kyberBase.ts:466</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="_decompressV" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>_decompressV</span><a href="#_decompressV" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
@@ -192,10 +192,10 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></h4><aside class="tsd-sources">
 <p>Inherited from KyberBase._decompressV</p>
 <ul>
-<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/d5efe76/src/kyberBase.ts#L493">src/kyberBase.ts:493</a></li></ul></aside></li></ul></section>
-<section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="_sampleNoise1" class="tsd-anchor"></a>
+<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/8403d54/src/kyberBase.ts#L493">src/kyberBase.ts:493</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-protected"><a id="_sampleNoise1" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>_sample<wbr/>Noise1</span><a href="#_sampleNoise1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
-<ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
+<ul class="tsd-signatures tsd-is-protected">
 <li class="tsd-signature tsd-anchor-link" id="_sampleNoise1._sampleNoise1-1"><span class="tsd-kind-call-signature">_sample<wbr/>Noise1</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">sigma</span>, <span class="tsd-kind-parameter">offset</span>, <span class="tsd-kind-parameter">size</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span><a href="#_sampleNoise1._sampleNoise1-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-parameters">
@@ -208,9 +208,9 @@
 <li>
 <h5><span class="tsd-kind-parameter">size</span>: <span class="tsd-signature-type">number</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span></h4><aside class="tsd-sources">
-<p>Inherited from KyberBase._sampleNoise1</p>
+<p>Overrides KyberBase._sampleNoise1</p>
 <ul>
-<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/d5efe76/src/kyberBase.ts#L387">src/kyberBase.ts:387</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/8403d54/src/kyber512.ts#L44">src/kyber512.ts:44</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-protected tsd-is-inherited"><a id="_sampleNoise2" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>_sample<wbr/>Noise2</span><a href="#_sampleNoise2" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-protected tsd-is-inherited">
@@ -228,7 +228,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">[]</span></h4><aside class="tsd-sources">
 <p>Inherited from KyberBase._sampleNoise2</p>
 <ul>
-<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/d5efe76/src/kyberBase.ts#L400">src/kyberBase.ts:400</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/8403d54/src/kyberBase.ts#L400">src/kyberBase.ts:400</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-inherited"><a id="decap" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>decap</span><a href="#decap" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-inherited">
@@ -261,7 +261,7 @@
 </div><aside class="tsd-sources">
 <p>Inherited from KyberBase.decap</p>
 <ul>
-<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/d5efe76/src/kyberBase.ts#L169">src/kyberBase.ts:169</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/8403d54/src/kyberBase.ts#L169">src/kyberBase.ts:169</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-inherited"><a id="deriveKeyPair" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>derive<wbr/>Key<wbr/>Pair</span><a href="#deriveKeyPair" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-inherited">
@@ -289,7 +289,7 @@
 </div><aside class="tsd-sources">
 <p>Inherited from KyberBase.deriveKeyPair</p>
 <ul>
-<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/d5efe76/src/kyberBase.ts#L93">src/kyberBase.ts:93</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/8403d54/src/kyberBase.ts#L93">src/kyberBase.ts:93</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-inherited"><a id="encap" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>encap</span><a href="#encap" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-inherited">
@@ -322,7 +322,7 @@
 </div><aside class="tsd-sources">
 <p>Inherited from KyberBase.encap</p>
 <ul>
-<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/d5efe76/src/kyberBase.ts#L129">src/kyberBase.ts:129</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/8403d54/src/kyberBase.ts#L129">src/kyberBase.ts:129</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-is-inherited"><a id="generateKeyPair" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>generate<wbr/>Key<wbr/>Pair</span><a href="#generateKeyPair" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-is-inherited">
@@ -342,7 +342,7 @@
 </div><aside class="tsd-sources">
 <p>Inherited from KyberBase.generateKeyPair</p>
 <ul>
-<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/d5efe76/src/kyberBase.ts#L60">src/kyberBase.ts:60</a></li></ul></aside></li></ul></section></section></div>
+<li>Defined in <a href="https://github.com/dajiaji/crystals-kyber-js/blob/8403d54/src/kyberBase.ts#L60">src/kyberBase.ts:60</a></li></ul></aside></li></ul></section></section></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
@@ -376,18 +376,18 @@
 <li><a href="#_compressV" class="tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>_compressV</span></a></li>
 <li><a href="#_decompressU" class="tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>_decompressU</span></a></li>
 <li><a href="#_decompressV" class="tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>_decompressV</span></a></li>
-<li><a href="#_sampleNoise1" class="tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>_sample<wbr/>Noise1</span></a></li>
+<li><a href="#_sampleNoise1" class="tsd-is-protected"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>_sample<wbr/>Noise1</span></a></li>
 <li><a href="#_sampleNoise2" class="tsd-is-protected tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>_sample<wbr/>Noise2</span></a></li>
 <li><a href="#decap" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>decap</span></a></li>
 <li><a href="#deriveKeyPair" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>derive<wbr/>Key<wbr/>Pair</span></a></li>
 <li><a href="#encap" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>encap</span></a></li>
 <li><a href="#generateKeyPair" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2048"></use></svg><span>generate<wbr/>Key<wbr/>Pair</span></a></li></ul></div></details></div>
 <div class="site-menu">
-<nav class="tsd-navigation"><a href="../modules.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1"></use></svg><span>crystals-kyber-js </span></a>
+<nav class="tsd-navigation"><a href="../modules.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1"></use></svg><span>API reference for main</span></a>
 <ul class="tsd-small-nested-navigation" id="tsd-nav-container" data-base="..">
 <li><a href="Kyber1024.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-128"></use></svg>Kyber1024</a></li>
-<li><a href="Kyber512.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-128"></use></svg>Kyber512</a></li>
-<li><a href="Kyber768.html" class="current"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-128"></use></svg>Kyber768</a></li>
+<li><a href="Kyber512.html" class="current"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-128"></use></svg>Kyber512</a></li>
+<li><a href="Kyber768.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-128"></use></svg>Kyber768</a></li>
 <li><a href="KyberError.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-128"></use></svg>KyberError</a></li></ul></nav></div></div></div>
 <div class="tsd-generator">
 <p>Generated using <a href="https://typedoc.org/" rel="noopener" target="_blank">TypeDoc</a></p></div>
