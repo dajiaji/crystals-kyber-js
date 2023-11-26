@@ -8,7 +8,9 @@ import { KyberBase } from "./kyberBase.ts";
 import { byte, int16, uint16, uint32 } from "./utils.ts";
 
 /**
- * The Kyber1024 implementation.
+ * Represents the Kyber1024 class.
+ *
+ * Kyber1024 is a subclass of KyberBase and implements specific methods for the Kyber-1024 parameter set.
  *
  * @example
  *
@@ -33,6 +35,9 @@ export class Kyber1024 extends KyberBase {
   protected _eta1 = 2;
   protected _eta2 = 2;
 
+  /**
+   * Constructs a new instance of the Kyber1024 class.
+   */
   constructor() {
     super();
     this._skSize = 12 * this._k * N / 8;
@@ -42,6 +47,13 @@ export class Kyber1024 extends KyberBase {
   }
 
   // compressU lossily compresses and serializes a vector of polynomials.
+
+  /**
+   * Lossily compresses and serializes a vector of polynomials.
+   *
+   * @param u - The vector of polynomials to compress.
+   * @returns The compressed and serialized data as a Uint8Array.
+   */
   protected override _compressU(
     r: Uint8Array,
     u: Array<Array<number>>,
@@ -72,6 +84,14 @@ export class Kyber1024 extends KyberBase {
   }
 
   // compressV lossily compresses and subsequently serializes a polynomial.
+
+  /**
+   * Lossily compresses and serializes a polynomial.
+   *
+   * @param r - The output buffer to store the compressed data.
+   * @param v - The polynomial to compress.
+   * @returns The compressed and serialized data as a Uint8Array.
+   */
   protected override _compressV(r: Uint8Array, v: Array<number>): Uint8Array {
     const t = new Uint8Array(8);
     for (let rr = 0, i = 0; i < N / 8; i++) {
@@ -92,6 +112,15 @@ export class Kyber1024 extends KyberBase {
   // decompressU de-serializes and decompresses a vector of polynomials and
   // represents the approximate inverse of compress1. Since compression is lossy,
   // the results of decompression will may not match the original vector of polynomials.
+
+  /**
+   * Deserializes and decompresses a vector of polynomials.
+   * This is the approximate inverse of the `_compressU` method.
+   * Since compression is lossy, the decompressed data may not match the original vector of polynomials.
+   *
+   * @param a - The compressed and serialized data as a Uint8Array.
+   * @returns The decompressed vector of polynomials.
+   */
   protected override _decompressU(a: Uint8Array): Array<Array<number>> {
     const r = new Array<Array<number>>(this._k);
     for (let i = 0; i < this._k; i++) {
@@ -123,6 +152,17 @@ export class Kyber1024 extends KyberBase {
   // representing the approximate inverse of compress2.
   // Note that compression is lossy, and thus decompression will not match the
   // original input.
+
+  /**
+   * Decompresses a given polynomial, representing the approximate inverse of
+   * compress2, in Uint8Array into an array of numbers.
+   *
+   * Note that compression is lossy, and thus decompression will not match the
+   * original input.
+   *
+   * @param a - The Uint8Array to decompress.
+   * @returns An array of numbers obtained from the decompression process.
+   */
   protected override _decompressV(a: Uint8Array): Array<number> {
     const r = new Array<number>(384);
     const t = new Array<number>(8);

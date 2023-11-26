@@ -7,7 +7,13 @@ import { N } from "./consts.ts";
 import { KyberBase } from "./kyberBase.ts";
 
 /**
- * The Kyber768 implementation.
+ * Represents the Kyber768 class, which extends the KyberBase class.
+ *
+ * Kyber768 is a specific implementation of the Kyber key encapsulation mechanism.
+ *
+ * @remarks
+ *
+ * This class extends the KyberBase class and provides specific implementation for Kyber768.
  *
  * @example
  *

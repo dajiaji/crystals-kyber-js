@@ -8,7 +8,13 @@ import { KyberBase } from "./kyberBase.ts";
 import { byteopsLoad24, int16, prf } from "./utils.ts";
 
 /**
- * The Kyber512 implementation.
+ * Represents the Kyber512 class.
+ *
+ * This class extends the KyberBase class and provides specific implementation for Kyber512.
+ *
+ * @remarks
+ *
+ * Kyber512 is a specific implementation of the Kyber key encapsulation mechanism.
  *
  * @example
  *
@@ -33,6 +39,9 @@ export class Kyber512 extends KyberBase {
   protected _eta1 = 3;
   protected _eta2 = 2;
 
+  /**
+   * Constructs a new instance of the Kyber512 class.
+   */
   constructor() {
     super();
     this._skSize = 12 * this._k * N / 8;
@@ -41,6 +50,14 @@ export class Kyber512 extends KyberBase {
     this._compressedVSize = this._dv * N / 8;
   }
 
+  /**
+   * Samples a vector of polynomials from a seed.
+   * @internal
+   * @param sigma - The seed.
+   * @param offset - The offset.
+   * @param size - The size.
+   * @returns The sampled vector of polynomials.
+   */
   protected override _sampleNoise1(
     sigma: Uint8Array,
     offset: number,
@@ -55,6 +72,13 @@ export class Kyber512 extends KyberBase {
   }
 }
 
+/**
+ * Performs the byte operations for the Cbd function.
+ *
+ * @param buf - The input buffer.
+ * @param eta - The value of eta.
+ * @returns An array of numbers representing the result of the byte operations.
+ */
 function byteopsCbd(buf: Uint8Array, eta: number): Array<number> {
   let t, d;
   let a, b;
