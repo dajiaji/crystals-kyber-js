@@ -1,5 +1,17 @@
 # Changes
 
+## Version 1.1.0
+
+Released 2023-11-26
+
+- [(#26) Add ECDH key generation benchmark.](https://github.com/dajiaji/crystals-kyber-js/pull/26)
+- [(#25) Fix dnt.ts to emit type declaration inline.](https://github.com/dajiaji/crystals-kyber-js/pull/25)
+- [(#24) Loosen Deno version on CI for bun and Cloudflare Workers.](https://github.com/dajiaji/crystals-kyber-js/pull/24)
+- [(#23) Bump deno.land/std to 0.208.0.](https://github.com/dajiaji/crystals-kyber-js/pull/23)
+- [(#23) Bump deno.land/x/dnt to 0.39.0.](https://github.com/dajiaji/crystals-kyber-js/pull/23)
+- [(#22) Bump actions/{checkout, setup-node} to v4.](https://github.com/dajiaji/crystals-kyber-js/pull/22)
+- [(#21) Add link to doc.](https://github.com/dajiaji/crystals-kyber-js/pull/21)
+
 ## Version 1.0.0
 
 Released 2023-09-11
