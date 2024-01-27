@@ -25,6 +25,40 @@ import {
   uint32,
 } from "./utils.ts";
 
+/**
+ * Represents the base class for the Kyber key encapsulation mechanism.
+ *
+ * This class provides the base implementation for the Kyber key encapsulation mechanism.
+ *
+ * @remarks
+ *
+ * This class is not intended to be used directly. Instead, use one of the subclasses:
+ *
+ * @example
+ *
+ * ```ts
+ * // import { KyberBase } from "crystals-kyber-js"; // Node.js
+ * import { KyberBase } from "http://deno.land/x/crystals_kyber/mod.ts"; // Deno
+ *
+ * class Kyber768 extends KyberBase {
+ *   protected _k = 3;
+ *   protected _du = 10;
+ *   protected _dv = 4;
+ *   protected _eta1 = 2;
+ *   protected _eta2 = 2;
+ *
+ *   constructor() {
+ *     super();
+ *     this._skSize = 12 * this._k * N / 8;
+ *     this._pkSize = this._skSize + 32;
+ *     this._compressedUSize = this._k * this._du * N / 8;
+ *     this._compressedVSize = this._dv * N / 8;
+ *   }
+ * }
+ *
+ * const kyber = new Kyber768();
+ * ```
+ */
 export class KyberBase {
   private _api: Crypto | undefined = undefined;
   protected _k = 0;
@@ -37,6 +71,9 @@ export class KyberBase {
   protected _compressedUSize = 0;
   protected _compressedVSize = 0;
 
+  /**
+   * Creates a new instance of the KyberBase class.
+   */
   constructor() {}
 
   /**
@@ -196,6 +233,11 @@ export class KyberBase {
     }
   }
 
+  /**
+   * Sets up the KyberBase instance by loading the necessary crypto library.
+   * If the crypto library is already loaded, this method does nothing.
+   * @returns {Promise<void>} A promise that resolves when the setup is complete.
+   */
   private async _setup() {
     if (this._api !== undefined) {
       return;
@@ -203,6 +245,15 @@ export class KyberBase {
     this._api = await loadCrypto();
   }
 
+  /**
+   * Returns a Uint8Array seed for cryptographic operations.
+   * If no seed is provided, a random seed of length 32 bytes is generated.
+   * If a seed is provided, it must be exactly 32 bytes in length.
+   *
+   * @param seed - Optional seed for cryptographic operations.
+   * @returns A Uint8Array seed.
+   * @throws Error if the provided seed is not 32 bytes in length.
+   */
   private _getSeed(seed?: Uint8Array): Uint8Array {
     if (seed == undefined) {
       const s = new Uint8Array(32);
@@ -215,6 +266,12 @@ export class KyberBase {
     return seed;
   }
 
+  /**
+   * Derives a key pair from a given seed.
+   *
+   * @param seed - The seed used for key derivation.
+   * @returns An array containing the public key and secret key.
+   */
   private _deriveKeyPair(seed: Uint8Array): [Uint8Array, Uint8Array] {
     const cpaSeed = seed.subarray(0, 32);
     const z = seed.subarray(32, 64);
@@ -232,6 +289,13 @@ export class KyberBase {
 
   // indcpaKeyGen generates public and private keys for the CPA-secure
   // public-key encryption scheme underlying Kyber.
+
+  /**
+   * Derives a CPA key pair using the provided CPA seed.
+   *
+   * @param cpaSeed - The CPA seed used for key derivation.
+   * @returns An array containing the public key and private key.
+   */
   private _deriveCpaKeyPair(cpaSeed: Uint8Array): [Uint8Array, Uint8Array] {
     const [publicSeed, noiseSeed] = g(cpaSeed);
     const a = this._sampleMatrix(publicSeed, false);
@@ -274,6 +338,15 @@ export class KyberBase {
 
   // _encap is the encapsulation function of the CPA-secure
   // public-key encryption scheme underlying Kyber.
+
+  /**
+   * Encapsulates a message using the Kyber encryption scheme.
+   *
+   * @param pk - The public key.
+   * @param msg - The message to be encapsulated.
+   * @param seed - The seed used for generating random values.
+   * @returns The encapsulated message as a Uint8Array.
+   */
   private _encap(
     pk: Uint8Array,
     msg: Uint8Array,
@@ -321,6 +394,14 @@ export class KyberBase {
 
   // indcpaDecrypt is the decryption function of the CPA-secure
   // public-key encryption scheme underlying Kyber.
+
+  /**
+   * Decapsulates the ciphertext using the provided secret key.
+   *
+   * @param ct - The ciphertext to be decapsulated.
+   * @param sk - The secret key used for decapsulation.
+   * @returns The decapsulated message as a Uint8Array.
+   */
   private _decap(ct: Uint8Array, sk: Uint8Array): Uint8Array {
     // extract ciphertext
     const u = this._decompressU(ct.subarray(0, this._compressedUSize));
@@ -342,6 +423,14 @@ export class KyberBase {
   // generateMatrixA deterministically generates a matrix `A` (or the transpose of `A`)
   // from a seed. Entries of the matrix are polynomials that look uniformly random.
   // Performs rejection sampling on the output of an extendable-output function (XOF).
+
+  /**
+   * Generates a sample matrix based on the provided seed and transposition flag.
+   *
+   * @param seed - The seed used for generating the matrix.
+   * @param transposed - A flag indicating whether the matrix should be transposed or not.
+   * @returns The generated sample matrix.
+   */
   private _sampleMatrix(
     seed: Uint8Array,
     transposed: boolean,
@@ -384,6 +473,14 @@ export class KyberBase {
     return a;
   }
 
+  /**
+   * Generates a 2D array of noise samples.
+   *
+   * @param sigma - The noise parameter.
+   * @param offset - The offset value.
+   * @param size - The size of the array.
+   * @returns The generated 2D array of noise samples.
+   */
   protected _sampleNoise1(
     sigma: Uint8Array,
     offset: number,
@@ -397,6 +494,14 @@ export class KyberBase {
     return r;
   }
 
+  /**
+   * Generates a 2-dimensional array of noise samples.
+   *
+   * @param sigma - The noise parameter.
+   * @param offset - The offset value.
+   * @param size - The size of the array.
+   * @returns The generated 2-dimensional array of noise samples.
+   */
   protected _sampleNoise2(
     sigma: Uint8Array,
     offset: number,
@@ -411,6 +516,13 @@ export class KyberBase {
   }
 
   // polyvecFromBytes deserializes a vector of polynomials.
+
+  /**
+   * Converts a Uint8Array to a 2D array of numbers representing a polynomial vector.
+   * Each element in the resulting array represents a polynomial.
+   * @param a The Uint8Array to convert.
+   * @returns The 2D array of numbers representing the polynomial vector.
+   */
   private _polyvecFromBytes(a: Uint8Array): Array<Array<number>> {
     const r = new Array<Array<number>>(this._k);
     for (let i = 0; i < this._k; i++) {
@@ -420,6 +532,14 @@ export class KyberBase {
   }
 
   // compressU lossily compresses and serializes a vector of polynomials.
+
+  /**
+   * Compresses the given array of coefficients into a Uint8Array.
+   *
+   * @param r - The output Uint8Array.
+   * @param u - The array of coefficients.
+   * @returns The compressed Uint8Array.
+   */
   protected _compressU(
     r: Uint8Array,
     u: Array<Array<number>>,
@@ -445,6 +565,14 @@ export class KyberBase {
   }
 
   // compressV lossily compresses and subsequently serializes a polynomial.
+
+  /**
+   * Compresses the given array of numbers into a Uint8Array.
+   *
+   * @param r - The Uint8Array to store the compressed values.
+   * @param v - The array of numbers to compress.
+   * @returns The compressed Uint8Array.
+   */
   protected _compressV(r: Uint8Array, v: Array<number>): Uint8Array {
     // const r = new Uint8Array(128);
     const t = new Uint8Array(8);
@@ -463,6 +591,13 @@ export class KyberBase {
   // decompressU de-serializes and decompresses a vector of polynomials and
   // represents the approximate inverse of compress1. Since compression is lossy,
   // the results of decompression will may not match the original vector of polynomials.
+
+  /**
+   * Decompresses a Uint8Array into a two-dimensional array of numbers.
+   *
+   * @param a The Uint8Array to decompress.
+   * @returns The decompressed two-dimensional array.
+   */
   protected _decompressU(a: Uint8Array): Array<Array<number>> {
     const r = new Array<Array<number>>(this._k);
     for (let i = 0; i < this._k; i++) {
@@ -490,6 +625,13 @@ export class KyberBase {
   // representing the approximate inverse of compress2.
   // Note that compression is lossy, and thus decompression will not match the
   // original input.
+
+  /**
+   * Decompresses a Uint8Array into an array of numbers.
+   *
+   * @param a - The Uint8Array to decompress.
+   * @returns An array of numbers.
+   */
   protected _decompressV(a: Uint8Array): Array<number> {
     const r = new Array<number>(384);
     for (let aa = 0, i = 0; i < N / 2; i++, aa++) {
@@ -500,6 +642,13 @@ export class KyberBase {
   }
 }
 
+/**
+ * Computes the hash of the input array `a` and an optional input array `b`.
+ * Returns an array containing two Uint8Arrays, representing the first 32 bytes and the next 32 bytes of the hash digest.
+ * @param a - The input array to be hashed.
+ * @param b - An optional input array to be hashed along with `a`.
+ * @returns An array containing two Uint8Arrays representing the hash digest.
+ */
 function g(a: Uint8Array, b?: Uint8Array): [Uint8Array, Uint8Array] {
   const hash = sha3_512.create().update(a);
   if (b !== undefined) {
@@ -509,10 +658,24 @@ function g(a: Uint8Array, b?: Uint8Array): [Uint8Array, Uint8Array] {
   return [res.subarray(0, 32), res.subarray(32, 64)];
 }
 
+/**
+ * Computes the SHA3-256 hash of the given message.
+ *
+ * @param msg - The input message as a Uint8Array.
+ * @returns The computed hash as a Uint8Array.
+ */
 function h(msg: Uint8Array): Uint8Array {
   return sha3_256.create().update(msg).digest();
 }
 
+/**
+ * Key Derivation Function (KDF) that takes an input array `a` and an optional input array `b`.
+ * It uses the SHAKE256 hash function to derive a 32-byte output.
+ *
+ * @param a - The input array.
+ * @param b - The optional input array.
+ * @returns The derived key as a Uint8Array.
+ */
 function kdf(a: Uint8Array, b?: Uint8Array): Uint8Array {
   const hash = shake256.create({ dkLen: 32 }).update(a);
   if (b !== undefined) {
@@ -521,12 +684,27 @@ function kdf(a: Uint8Array, b?: Uint8Array): Uint8Array {
   return hash.digest();
 }
 
+/**
+ * Computes the extendable-output function (XOF) using the SHAKE128 algorithm.
+ *
+ * @param seed - The seed value for the XOF.
+ * @param transpose - The transpose value for the XOF.
+ * @returns The computed XOF value as a Uint8Array.
+ */
 function xof(seed: Uint8Array, transpose: Uint8Array): Uint8Array {
   return shake128.create({ dkLen: 672 }).update(seed).update(transpose)
     .digest();
 }
 
 // polyToBytes serializes a polynomial into an array of bytes.
+
+/**
+ * Converts a polynomial represented by an array of numbers to a Uint8Array.
+ * Each coefficient of the polynomial is reduced modulo q.
+ *
+ * @param a - The array representing the polynomial.
+ * @returns The Uint8Array representation of the polynomial.
+ */
 function polyToBytes(a: Array<number>): Uint8Array {
   let t0 = 0;
   let t1 = 0;
@@ -548,6 +726,15 @@ function polyToBytes(a: Array<number>): Uint8Array {
 
 // polyFromBytes de-serialises an array of bytes into a polynomial,
 // and represents the inverse of polyToBytes.
+
+/**
+ * Converts a Uint8Array to an array of numbers representing a polynomial.
+ * Each element in the array represents a coefficient of the polynomial.
+ * The input array `a` should have a length of 384.
+ * The function performs bitwise operations to extract the coefficients from the input array.
+ * @param a The Uint8Array to convert to a polynomial.
+ * @returns An array of numbers representing the polynomial.
+ */
 function polyFromBytes(a: Uint8Array): Array<number> {
   const r = new Array<number>(384).fill(0);
   for (let i = 0; i < N / 2; i++) {
@@ -563,6 +750,12 @@ function polyFromBytes(a: Uint8Array): Array<number> {
 
 // polyToMsg converts a polynomial to a 32-byte message
 // and represents the inverse of polyFromMsg.
+
+/**
+ * Converts a polynomial to a message represented as a Uint8Array.
+ * @param a - The polynomial to convert.
+ * @returns The message as a Uint8Array.
+ */
 function polyToMsg(a: Array<number>): Uint8Array {
   const msg = new Uint8Array(32);
   let t;
@@ -579,6 +772,14 @@ function polyToMsg(a: Array<number>): Uint8Array {
 }
 
 // polyFromMsg converts a 32-byte message to a polynomial.
+
+/**
+ * Converts a Uint8Array message to an array of numbers representing a polynomial.
+ * Each element in the array is an int16 (0-65535).
+ *
+ * @param msg - The Uint8Array message to convert.
+ * @returns An array of numbers representing the polynomial.
+ */
 function polyFromMsg(msg: Uint8Array): Array<number> {
   const r = new Array<number>(384).fill(0); // each element is int16 (0-65535)
   let mask; // int16
@@ -593,6 +794,15 @@ function polyFromMsg(msg: Uint8Array): Array<number> {
 
 // indcpaRejUniform runs rejection sampling on uniform random bytes
 // to generate uniform random integers modulo `Q`.
+
+/**
+ * Generates an array of random numbers from a given buffer, rejecting values greater than a specified threshold.
+ *
+ * @param buf - The input buffer containing random bytes.
+ * @param bufl - The length of the input buffer.
+ * @param len - The desired length of the output array.
+ * @returns An array of random numbers and the actual length of the output array.
+ */
 function indcpaRejUniform(
   buf: Uint8Array,
   bufl: number,
@@ -628,6 +838,13 @@ function indcpaRejUniform(
 // byteopsCbd computes a polynomial with coefficients distributed
 // according to a centered binomial distribution with parameter PARAMS_ETA,
 // given an array of uniformly random bytes.
+
+/**
+ * Converts a Uint8Array buffer to an array of numbers using the CBD operation.
+ * @param buf - The input Uint8Array buffer.
+ * @param eta - The value used in the CBD operation.
+ * @returns An array of numbers obtained from the CBD operation.
+ */
 function byteopsCbd(buf: Uint8Array, eta: number): Array<number> {
   let t, d;
   let a, b;
@@ -647,6 +864,13 @@ function byteopsCbd(buf: Uint8Array, eta: number): Array<number> {
 
 // ntt performs an inplace number-theoretic transform (NTT) in `Rq`.
 // The input is in standard order, the output is in bit-reversed order.
+
+/**
+ * Performs the Number Theoretic Transform (NTT) on an array of numbers.
+ *
+ * @param r - The input array of numbers.
+ * @returns The transformed array of numbers.
+ */
 function ntt(r: Array<number>): Array<number> {
   // 128, 64, 32, 16, 8, 4, 2
   for (let j = 0, k = 1, l = 128; l >= 2; l >>= 1) {
@@ -670,11 +894,25 @@ function ntt(r: Array<number>): Array<number> {
 
 // nttFqMul performs multiplication followed by Montgomery reduction
 // and returns a 16-bit integer congruent to `a*b*R^{-1} mod Q`.
+
+/**
+ * Performs an NTT (Number Theoretic Transform) multiplication on two numbers in Fq.
+ * @param a The first number.
+ * @param b The second number.
+ * @returns The result of the NTT multiplication.
+ */
 function nttFqMul(a: number, b: number): number {
   return byteopsMontgomeryReduce(a * b);
 }
 
 // reduce applies Barrett reduction to all coefficients of a polynomial.
+
+/**
+ * Reduces each element in the given array using the barrett function.
+ *
+ * @param r - The array to be reduced.
+ * @returns The reduced array.
+ */
 function reduce(r: Array<number>): Array<number> {
   for (let i = 0; i < N; i++) {
     r[i] = barrett(r[i]);
@@ -685,6 +923,13 @@ function reduce(r: Array<number>): Array<number> {
 // barrett computes a Barrett reduction; given
 // a integer `a`, returns a integer congruent to
 // `a mod Q` in {0,...,Q}.
+
+/**
+ * Performs the Barrett reduction algorithm on the given number.
+ *
+ * @param a - The number to be reduced.
+ * @returns The result of the reduction.
+ */
 function barrett(a: number): number {
   const v = ((1 << 24) + Q / 2) / Q;
   let t = v * a >> 24;
@@ -694,6 +939,12 @@ function barrett(a: number): number {
 
 // byteopsMontgomeryReduce computes a Montgomery reduction; given
 // a 32-bit integer `a`, returns `a * R^-1 mod Q` where `R=2^16`.
+
+/**
+ * Performs Montgomery reduction on a given number.
+ * @param a - The number to be reduced.
+ * @returns The reduced number.
+ */
 function byteopsMontgomeryReduce(a: number): number {
   const u = int16(int32(a) * Q_INV);
   let t = u * Q;
@@ -704,6 +955,13 @@ function byteopsMontgomeryReduce(a: number): number {
 
 // polyToMont performs the in-place conversion of all coefficients
 // of a polynomial from the normal domain to the Montgomery domain.
+
+/**
+ * Converts a polynomial to the Montgomery domain.
+ *
+ * @param r - The polynomial to be converted.
+ * @returns The polynomial in the Montgomery domain.
+ */
 function polyToMont(r: Array<number>): Array<number> {
   // let f = int16(((uint64(1) << 32)) % uint64(Q));
   const f = 1353; // if Q changes then this needs to be updated
@@ -715,6 +973,13 @@ function polyToMont(r: Array<number>): Array<number> {
 
 // pointwise-multiplies elements of polynomial-vectors
 // `a` and `b`, accumulates the results into `r`, and then multiplies by `2^-16`.
+
+/**
+ * Multiplies two matrices element-wise and returns the result.
+ * @param a - The first matrix.
+ * @param b - The second matrix.
+ * @returns The resulting matrix after element-wise multiplication.
+ */
 function multiply(
   a: Array<Array<number>>,
   b: Array<Array<number>>,
@@ -730,6 +995,13 @@ function multiply(
 
 // polyBaseMulMontgomery performs the multiplication of two polynomials
 // in the number-theoretic transform (NTT) domain.
+
+/**
+ * Performs polynomial base multiplication in Montgomery domain.
+ * @param a - The first polynomial array.
+ * @param b - The second polynomial array.
+ * @returns The result of the polynomial base multiplication.
+ */
 function polyBaseMulMontgomery(
   a: Array<number>,
   b: Array<number>,
@@ -761,6 +1033,17 @@ function polyBaseMulMontgomery(
 // nttBaseMul performs the multiplication of polynomials
 // in `Zq[X]/(X^2-zeta)`. Used for multiplication of elements
 // in `Rq` in the number-theoretic transformation domain.
+
+/**
+ * Performs NTT base multiplication.
+ *
+ * @param a0 - The first coefficient of the first polynomial.
+ * @param a1 - The second coefficient of the first polynomial.
+ * @param b0 - The first coefficient of the second polynomial.
+ * @param b1 - The second coefficient of the second polynomial.
+ * @param zeta - The zeta value used in the multiplication.
+ * @returns An array containing the result of the multiplication.
+ */
 function nttBaseMul(
   a0: number,
   a1: number,
@@ -778,6 +1061,13 @@ function nttBaseMul(
 }
 
 // adds two polynomials.
+
+/**
+ * Adds two arrays element-wise.
+ * @param a - The first array.
+ * @param b - The second array.
+ * @returns The resulting array after element-wise addition.
+ */
 function add(a: Array<number>, b: Array<number>): Array<number> {
   const c = new Array<number>(384);
   for (let i = 0; i < N; i++) {
@@ -787,6 +1077,14 @@ function add(a: Array<number>, b: Array<number>): Array<number> {
 }
 
 // subtracts two polynomials.
+
+/**
+ * Subtracts the elements of array b from array a.
+ *
+ * @param a - The array from which to subtract.
+ * @param b - The array to subtract.
+ * @returns The resulting array after subtraction.
+ */
 function subtract(a: Array<number>, b: Array<number>): Array<number> {
   for (let i = 0; i < N; i++) {
     a[i] -= b[i];
@@ -797,6 +1095,13 @@ function subtract(a: Array<number>, b: Array<number>): Array<number> {
 // nttInverse performs an inplace inverse number-theoretic transform (NTT)
 // in `Rq` and multiplication by Montgomery factor 2^16.
 // The input is in bit-reversed order, the output is in standard order.
+
+/**
+ * Performs the inverse Number Theoretic Transform (NTT) on the given array.
+ *
+ * @param r - The input array to perform the inverse NTT on.
+ * @returns The array after performing the inverse NTT.
+ */
 function nttInverse(r: Array<number>): Array<number> {
   let j = 0;
   for (let k = 0, l = 2; l <= 128; l <<= 1) {
@@ -820,6 +1125,15 @@ function nttInverse(r: Array<number>): Array<number> {
 // subtractQ applies the conditional subtraction of q to each coefficient of a polynomial.
 // if a is 3329 then convert to 0
 // Returns:     a - q if a >= q, else a
+
+/**
+ * Subtracts the value of Q from each element in the given array.
+ * The result should be a negative integer for each element.
+ * If the leftmost bit is 0 (positive number), the value of Q is added back.
+ *
+ * @param r - The array to subtract Q from.
+ * @returns The resulting array after the subtraction.
+ */
 function subtractQ(r: Array<number>): Array<number> {
   for (let i = 0; i < N; i++) {
     r[i] -= Q; // should result in a negative integer
