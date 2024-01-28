@@ -1,5 +1,18 @@
 # Changes
 
+## Version 1.1.1
+
+Released 2024-01-28
+
+- [(#30) Add noEmit to tsconfig.json.](https://github.com/dajiaji/crystals-kyber-js/pull/30)
+- [(#29) Add docstring.](https://github.com/dajiaji/crystals-kyber-js/pull/29)
+- [(#28) Add Node 21 to CI.](https://github.com/dajiaji/crystals-kyber-js/pull/28)
+- Update Dependencies:
+  - [(#31) Bump @noble/hashes to 1.3.3.](https://github.com/dajiaji/crystals-kyber-js/pull/31)
+- Update devDependencies:
+  - [(#31) Bump wrangler to 3.19.0.](https://github.com/dajiaji/crystals-kyber-js/pull/31)
+  - [(#31) Bump deno.land/std to 0.213.0.](https://github.com/dajiaji/crystals-kyber-js/pull/31)
+
 ## Version 1.1.0
 
 Released 2023-11-26
