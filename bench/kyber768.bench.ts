@@ -1,8 +1,8 @@
 import * as kyber from "npm:crystals-kyber";
-import { Kyber768 } from "../mod.ts";
+import { MlKem768 } from "../mod.ts";
 
 Deno.bench("deriveKeyPair", async (b) => {
-  const ctx = new Kyber768();
+  const ctx = new MlKem768();
   const seed = new Uint8Array(64);
   globalThis.crypto.getRandomValues(seed);
   b.start();
@@ -11,7 +11,7 @@ Deno.bench("deriveKeyPair", async (b) => {
 });
 
 Deno.bench("generateKeyPair", async (b) => {
-  const ctx = new Kyber768();
+  const ctx = new MlKem768();
   b.start();
   const [_pk, _sk] = await ctx.generateKeyPair();
   b.end();
@@ -22,7 +22,7 @@ Deno.bench("crystals-kyber:KeyGen768", () => {
 });
 
 Deno.bench("encap", async (b) => {
-  const ctx = new Kyber768();
+  const ctx = new MlKem768();
   const [pk, _sk] = await ctx.generateKeyPair();
   b.start();
   const [_ct, _ss] = await ctx.encap(pk);
@@ -37,7 +37,7 @@ Deno.bench("crystals-kyber:Encrypt768", (b) => {
 });
 
 Deno.bench("decap", async (b) => {
-  const ctx = new Kyber768();
+  const ctx = new MlKem768();
   const [pk, sk] = await ctx.generateKeyPair();
   const [ct, _ss1] = await ctx.encap(pk);
   b.start();
@@ -54,7 +54,7 @@ Deno.bench("crystals-kyber:Decrypt768", (b) => {
 });
 
 Deno.bench("all - generateKeyPair/encap/decap", async (b) => {
-  const ctx = new Kyber768();
+  const ctx = new MlKem768();
   b.start();
   const [pk, sk] = await ctx.generateKeyPair();
   const [ct, _ss1] = await ctx.encap(pk);
