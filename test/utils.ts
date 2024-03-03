@@ -1,5 +1,4 @@
 declare const Deno: undefined;
-
 const isDeno = () => typeof Deno !== "undefined";
 
 export function testVectorPath(): string {
@@ -28,4 +27,22 @@ export function bytesToHex(v: Uint8Array): string {
 
 export function hexToDec(hexString: string): number {
   return parseInt(hexString, 16);
+}
+
+export function parseKAT(data: string) {
+  const textByLine = data.trim().split("\n");
+  const parsed: { [label: string]: Uint8Array[] } = {};
+
+  for (let i = 0; i < textByLine.length; i++) {
+    const [label, hexValue] = textByLine[i].split(" = ");
+    if (label === "count") continue;
+    const value = hexToBytes(hexValue);
+    if (parsed[label]) {
+      parsed[label].push(value);
+    } else {
+      parsed[label] = [value];
+    }
+  }
+
+  return parsed;
 }
