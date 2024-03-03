@@ -25,6 +25,7 @@
   },
   "tasks": {
     "test": "deno fmt && deno lint && deno test test -A --fail-fast --doc --coverage=coverage --parallel --allow-read",
+    "test-browser": "cd test/runtimes/browsers && deno task dnt && npm i && npm run test",
     "cov": "deno coverage ./coverage --lcov --exclude='test'",
     "dnt": "rm -rf test/runtimes/browsers/node_modules && deno run -A dnt.ts $(git describe --tags $(git rev-list --tags --max-count=1))",
     "minify": "esbuild npm/esm/mod.js --bundle --format=esm --minify"
