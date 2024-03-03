@@ -1,8 +1,8 @@
 import * as kyber from "npm:crystals-kyber";
-import { Kyber1024 } from "../mod.ts";
+import { MlKem1024 } from "../mod.ts";
 
 Deno.bench("deriveKeyPair", async (b) => {
-  const ctx = new Kyber1024();
+  const ctx = new MlKem1024();
   const seed = new Uint8Array(64);
   globalThis.crypto.getRandomValues(seed);
   b.start();
@@ -11,7 +11,7 @@ Deno.bench("deriveKeyPair", async (b) => {
 });
 
 Deno.bench("generateKeyPair", async (b) => {
-  const ctx = new Kyber1024();
+  const ctx = new MlKem1024();
   b.start();
   const [_pk, _sk] = await ctx.generateKeyPair();
   b.end();
@@ -22,7 +22,7 @@ Deno.bench("crystals-kyber:KeyGen1024", () => {
 });
 
 Deno.bench("encap", async (b) => {
-  const ctx = new Kyber1024();
+  const ctx = new MlKem1024();
   const [pk, _sk] = await ctx.generateKeyPair();
   b.start();
   const [_ct, _ss] = await ctx.encap(pk);
@@ -37,7 +37,7 @@ Deno.bench("crystals-kyber:Encrypt1024", (b) => {
 });
 
 Deno.bench("decap", async (b) => {
-  const ctx = new Kyber1024();
+  const ctx = new MlKem1024();
   const [pk, sk] = await ctx.generateKeyPair();
   const [ct, _ss1] = await ctx.encap(pk);
   b.start();
@@ -54,7 +54,7 @@ Deno.bench("crystals-kyber:Decrypt1024", (b) => {
 });
 
 Deno.bench("all - generateKeyPair/encap/decap", async (b) => {
-  const ctx = new Kyber1024();
+  const ctx = new MlKem1024();
   b.start();
   const [pk, sk] = await ctx.generateKeyPair();
   const [ct, _ss1] = await ctx.encap(pk);

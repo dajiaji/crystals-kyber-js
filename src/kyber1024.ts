@@ -8,27 +8,27 @@ import { KyberBase } from "./kyberBase.ts";
 import { byte, int16, uint16, uint32 } from "./utils.ts";
 
 /**
- * Represents the Kyber1024 class.
+ * Represents the MlKem1024 class.
  *
- * Kyber1024 is a subclass of KyberBase and implements specific methods for the Kyber-1024 parameter set.
+ * MlKem1024 is a subclass of KyberBase and implements specific methods for the Kyber-1024 parameter set.
  *
  * @example
  *
  * ```ts
- * // import { Kyber1024 } from "crystals-kyber-js"; // Node.js
- * import { Kyber1024 } from "http://deno.land/x/crystals_kyber/mod.ts"; // Deno
+ * // import { MlKem1024 } from "crystals-kyber-js"; // Node.js
+ * import { MlKem1024 } from "http://deno.land/x/crystals_kyber/mod.ts"; // Deno
  *
- * const recipient = new Kyber1024();
+ * const recipient = new MlKem1024();
  * const [pkR, skR] = await recipient.generateKeyPair();
 
- * const sender = new Kyber1024();
+ * const sender = new MlKem1024();
  * const [ct, ssS] = await sender.encap(pkR);
 
  * const ssR = await recipient.decap(ct, skR);
  * // ssS === ssR
  * ```
  */
-export class Kyber1024 extends KyberBase {
+export class MlKem1024 extends KyberBase {
   protected _k = 4;
   protected _du = 11;
   protected _dv = 5;
@@ -36,7 +36,7 @@ export class Kyber1024 extends KyberBase {
   protected _eta2 = 2;
 
   /**
-   * Constructs a new instance of the Kyber1024 class.
+   * Constructs a new instance of the MlKem1024 class.
    */
   constructor() {
     super();

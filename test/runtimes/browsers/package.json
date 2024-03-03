@@ -1,5 +1,19 @@
 {
   "devDependencies": {
-    "@playwright/test": "^1.36.1"
+    "@esm-bundle/chai": "^4.3.4-fix.0",
+    "@playwright/test": "^1.41.2",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-replace": "^5.0.5",
+    "@web/dev-server-esbuild": "^1.0.2",
+    "@web/dev-server-rollup": "^0.6.1",
+    "@web/test-runner": "^0.18.0",
+    "@web/test-runner-browserstack": "^0.7.1",
+    "@web/test-runner-playwright": "^0.11.0",
+    "crystals-kyber": "file:../../../npm"
+  },
+  "scripts": {
+    "test": "web-test-runner ./test/*.spec.js --playwright --browsers chromium firefox webkit",
+    "test-browserstack": "web-test-runner ./test/*.spec.js --config web-test-runner.browserstack.mjs"
   }
 }
