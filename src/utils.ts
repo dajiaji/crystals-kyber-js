@@ -1,5 +1,4 @@
-// @ts-ignore: for "npm:"
-import { shake256 } from "npm:@noble/hashes@1.3.3/sha3";
+import { shake256 } from "./deps.ts";
 
 export function byte(n: number): number {
   return n % 256;
@@ -51,7 +50,10 @@ export function uint32(n: number): number {
   return n % 4294967296;
 }
 
-// compares two arrays and returns 1 if they are the same or 0 if not
+/**
+ * compares two arrays
+ * @returns 1 if they are the same or 0 if not
+ */
 export function constantTimeCompare(x: Uint8Array, y: Uint8Array): number {
   // check array lengths
   if (x.length != y.length) {
@@ -70,8 +72,20 @@ export function constantTimeCompare(x: Uint8Array, y: Uint8Array): number {
   return z[0];
 }
 
+export function equalUint8Array(x: Uint8Array, y: Uint8Array) {
+  if (x.length != y.length) {
+    return false;
+  }
+  for (let i = 0; i < x.length; i++) {
+    if (x[i] !== y[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
 export async function loadCrypto(): Promise<Crypto> {
-  if (globalThis !== undefined && globalThis.crypto !== undefined) {
+  if (typeof globalThis !== "undefined" && globalThis.crypto !== undefined) {
     // Browsers, Node.js >= v19, Cloudflare Workers, Bun, etc.
     return globalThis.crypto;
   }
