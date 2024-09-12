@@ -759,12 +759,17 @@ function polyFromBytes(a: Uint8Array): Array<number> {
 function polyToMsg(a: Array<number>): Uint8Array {
   const msg = new Uint8Array(32);
   let t;
-  const a2 = subtractQ(a);
+  // const a2 = subtractQ(a);
   for (let i = 0; i < N / 8; i++) {
     msg[i] = 0;
     for (let j = 0; j < 8; j++) {
-      t = (((uint16(a2[8 * i + j]) << 1) + uint16(Q / 2)) /
-        uint16(Q)) & 1;
+      // t = (((uint16(a2[8 * i + j]) << 1) + uint16(Q / 2)) / uint16(Q)) & 1;
+      t = a[8 * i + j];
+      t = t << 1;
+      t += 1665;
+      t = Math.imul(t, 80635);
+      t = t >>> 28;
+      t &= 1;
       msg[i] |= byte(t << j);
     }
   }
