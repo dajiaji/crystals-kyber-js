@@ -1,4 +1,7 @@
 {
+  "name": "@dajiaji/crystals-kyber-js",
+  "version": "1.1.1",
+  "exports": "./mod.ts",
   "imports": {
     "@deno/dnt": "jsr:@deno/dnt@^0.41.3",
     "testing/": "https://deno.land/std@0.213.0/testing/"
