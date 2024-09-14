@@ -8,31 +8,31 @@ import { KyberBase } from "./kyberBase.ts";
 import { byteopsLoad24, int16, prf } from "./utils.ts";
 
 /**
- * Represents the Kyber512 class.
+ * Represents the MlKem512 class.
  *
- * This class extends the KyberBase class and provides specific implementation for Kyber512.
+ * This class extends the KyberBase class and provides specific implementation for MlKem512.
  *
  * @remarks
  *
- * Kyber512 is a specific implementation of the Kyber key encapsulation mechanism.
+ * MlKem512 is a specific implementation of the Kyber key encapsulation mechanism.
  *
  * @example
  *
  * ```ts
- * // import { Kyber512 } from "crystals-kyber-js"; // Node.js
- * import { Kyber512 } from "http://deno.land/x/crystals_kyber/mod.ts"; // Deno
+ * // import { MlKem512 } from "crystals-kyber-js"; // Node.js
+ * import { MlKem512 } from "http://deno.land/x/crystals_kyber/mod.ts"; // Deno
  *
- * const recipient = new Kyber512();
+ * const recipient = new MlKem512();
  * const [pkR, skR] = await recipient.generateKeyPair();
  *
- * const sender = new Kyber512();
+ * const sender = new MlKem512();
  * const [ct, ssS] = await sender.encap(pkR);
  *
  * const ssR = await recipient.decap(ct, skR);
  * // ssS === ssR
  * ```
  */
-export class Kyber512 extends KyberBase {
+export class MlKem512 extends KyberBase {
   protected _k = 2;
   protected _du = 10;
   protected _dv = 4;
@@ -40,7 +40,7 @@ export class Kyber512 extends KyberBase {
   protected _eta2 = 2;
 
   /**
-   * Constructs a new instance of the Kyber512 class.
+   * Constructs a new instance of the MlKem512 class.
    */
   constructor() {
     super();
