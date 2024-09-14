@@ -1,7 +1,10 @@
 {
+  "name": "@dajiaji/crystals-kyber-js",
+  "version": "1.1.1",
+  "exports": "./mod.ts",
   "imports": {
-    "testing/": "https://deno.land/std@0.213.0/testing/",
-    "dnt": "https://deno.land/x/dnt@0.39.0/mod.ts"
+    "@deno/dnt": "jsr:@deno/dnt@^0.41.3",
+    "testing/": "https://deno.land/std@0.213.0/testing/"
   },
   "fmt": {
     "include": [
@@ -25,8 +28,12 @@
   },
   "tasks": {
     "test": "deno fmt && deno lint && deno test test -A --fail-fast --doc --coverage=coverage --parallel --allow-read",
+    "test:cloudflare": "cd test/runtimes/cloudflare && npm install && npm link crystals-kyber-js && npm run test",
     "cov": "deno coverage ./coverage --lcov --exclude='test'",
-    "dnt": "deno run -A dnt.ts $(git describe --tags $(git rev-list --tags --max-count=1))",
+    "npm": "deno task dnt && deno task npm-link && deno task npm-pack",
+    "dnt": "deno run -A dnt.ts",
+    "npm-link": "cd npm && npm link",
+    "npm-pack": "cd npm && npm pack --dry-run",
     "minify": "esbuild npm/esm/mod.js --bundle --format=esm --minify"
   }
 }

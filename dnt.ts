@@ -1,6 +1,11 @@
-import { build, emptyDir } from "dnt";
+import { build, emptyDir } from "@deno/dnt";
 
 await emptyDir("./npm");
+await emptyDir("test/runtimes/browsers/node_modules");
+await emptyDir("test/runtimes/bun/node_modules");
+await emptyDir("test/runtimes/cloudflare/node_modules");
+
+const denoPkg = JSON.parse(await Deno.readTextFile("./deno.json"));
 
 await build({
   entryPoints: ["./mod.ts"],
@@ -18,7 +23,7 @@ await build({
   },
   package: {
     name: "crystals-kyber-js",
-    version: Deno.args[0],
+    version: denoPkg.version,
     description:
       "A CRYSTALS-KYBER implementation written in TypeScript for various JavaScript runtimes",
     repository: {
