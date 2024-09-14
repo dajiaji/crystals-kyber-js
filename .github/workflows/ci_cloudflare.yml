@@ -20,14 +20,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: v20.x
-      - run: |
-          npm install -g esbuild
-          deno task dnt
-          deno task minify > test/runtimes/crystals-kyber.js
+      - name: Prepare test
+        run: deno task npm
       - name: Run test
-        working-directory: ./test/runtimes/cloudflare
-        run: |
-          npm install
-          nohup npm start &
-          sleep 3
-          deno test crystals-kyber.spec.ts --allow-net
+        run: deno task test:cloudflare
