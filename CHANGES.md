@@ -1,5 +1,17 @@
 # Changes
 
+## Version 1.1.2
+
+Released 2024-09-14
+
+- [(#36) Fix lint error on playwright config.](https://github.com/dajiaji/crystals-kyber-js/pull/36)
+- [(#36) Fix dnt execution error caused by node_modules.](https://github.com/dajiaji/crystals-kyber-js/pull/36)
+- [(#36) Fix test for cloudflare workers.](https://github.com/dajiaji/crystals-kyber-js/pull/36)
+- [(#36) Add deno tasks: npm, npm-link, npm-pack and test:cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/36)
+- [(#35) Fix KyberSlash vulnerability.](https://github.com/dajiaji/crystals-kyber-js/pull/35)
+- Update devDependencies:
+  - [(#36) Bump dnt to 0.41.3.](https://github.com/dajiaji/crystals-kyber-js/pull/36)
+
 ## Version 1.1.1
 
 Released 2024-01-28

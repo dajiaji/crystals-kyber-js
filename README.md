@@ -35,6 +35,7 @@ but includes the following improvements:<br>
 - ✅ Better performance: 1.4 to 1.8 times faster than the original
   implementation.<br>
 - ✅ Tree-shaking friendly.<br>
+- ✅ Fix [KyberSlash](https://kyberslash.cr.yp.to/index.html) vulnerability.<br>
 
 For Node.js, you can install `crystals-kyber-js` via npm/yarn:
 
@@ -106,7 +107,7 @@ Using deno.land:
 
 ```js
 // use a specific version
-import { Kyber768 } from "https://deno.land/x/crystals_kyber@1.1.1/mod.ts";
+import { Kyber768 } from "https://deno.land/x/crystals_kyber@1.1.2/mod.ts";
 
 // use the latest stable version
 import { Kyber768 } from "https://deno.land/x/crystals_kyber/mod.ts";
@@ -122,7 +123,7 @@ Using esm.sh:
 ```html
 <!-- use a specific version -->
 <script type="module">
-  import { Kyber768 } from "https://esm.sh/crystals-kyber-js@1.1.1";
+  import { Kyber768 } from "https://esm.sh/crystals-kyber-js@1.1.2";
   // ...
 </script>
 
@@ -138,7 +139,7 @@ Using unpkg:
 ```html
 <!-- use a specific version -->
 <script type="module">
-  import { Kyber768 } from "https://unpkg.com/crystals-kyber-js@1.1.1";
+  import { Kyber768 } from "https://unpkg.com/crystals-kyber-js@1.1.2";
   // ...
 </script>
 ```
@@ -186,7 +187,7 @@ try {
 ### Deno
 
 ```js
-import { Kyber512 } from "https://deno.land/x/crystals_kyber@1.1.1/mod.ts";
+import { Kyber512 } from "https://deno.land/x/crystals_kyber@1.1.2/mod.ts";
 
 async function doKyber() {
 
@@ -216,7 +217,7 @@ try {
   <head></head>
   <body>
     <script type="module">
-      import { Kyber1024 } from "https://esm.sh/crystals-kyber@1.1.1";
+      import { Kyber1024 } from "https://esm.sh/crystals-kyber@1.1.2";
 
       globalThis.doKyber = async () => {
         try {
