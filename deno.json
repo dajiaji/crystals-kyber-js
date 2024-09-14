@@ -31,7 +31,7 @@
     "test:cloudflare": "cd test/runtimes/cloudflare && npm install && npm link crystals-kyber-js && npm run test",
     "cov": "deno coverage ./coverage --lcov --exclude='test'",
     "npm": "deno task dnt && deno task npm-link && deno task npm-pack",
-    "dnt": "deno run -A dnt.ts $(git describe --tags $(git rev-list --tags --max-count=1))",
+    "dnt": "deno run -A dnt.ts",
     "npm-link": "cd npm && npm link",
     "npm-pack": "cd npm && npm pack --dry-run",
     "minify": "esbuild npm/esm/mod.js --bundle --format=esm --minify"
