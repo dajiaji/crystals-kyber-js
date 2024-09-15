@@ -42,11 +42,11 @@ but includes the following improvements:
 
 This repository has the following packages:
 
-| package           | registry                                                                                                                  | description                                                                                                                                                                                                                       |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| crystals-kyber-js | [![npm](https://img.shields.io/npm/v/crystals-kyber-js?color=%234C48FF)](https://www.npmjs.com/package/crystals-kyber-js) | `v1.x` implements CRYSTALS-KYBER, and `v2.x-` implements ML-KYBER (FIPS 203). Crystals-kyber-js may become deprecated in the near future. Instead, we recommend switching to the following `mlkem` or `@dajiaji/mlkem`.           |
-| mlkem             | [![npm](https://img.shields.io/npm/v/mlkem?color=%234C48FF)](https://www.npmjs.com/package/mlkem)                         | Implements only ML-KYBER (FIPS 203). It is an alias for the above `crystals-kyber-js` starting from `v2` onwards. We recommend using this package going forward.                                                                  |
-| @dajiaji/mlkem    | [![JSR](https://jsr.io/badges/@dajiaji/mlkem)](https://jsr.io/@dajiaji/mlkem)                                             | Implements only ML-KYBER (FIPS 203). It is an ML-KEM package for [jsr.io](https://jsr.io/). The above `mlkem` is an npm package of `@dajiaji/mlkem`, which has been converted using [@deno/dnt](https://github.com/denoland/dnt). |
+| package           | registry                                                                                                                  | description                                                                                                                                                                                                                     |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| crystals-kyber-js | [![npm](https://img.shields.io/npm/v/crystals-kyber-js?color=%234C48FF)](https://www.npmjs.com/package/crystals-kyber-js) | `v1.x` implements CRYSTALS-KYBER, and `v2.x-` implements ML-KEM (FIPS 203). `crystals-kyber-js` may become deprecated in the near future. Instead, we recommend switching to the following `mlkem` or `@dajiaji/mlkem`.         |
+| mlkem             | [![npm](https://img.shields.io/npm/v/mlkem?color=%234C48FF)](https://www.npmjs.com/package/mlkem)                         | Implements only ML-KEM (FIPS 203). It is an alias for the above `crystals-kyber-js` starting from `v2` onwards. We recommend using this package going forward.                                                                  |
+| @dajiaji/mlkem    | [![JSR](https://jsr.io/badges/@dajiaji/mlkem)](https://jsr.io/@dajiaji/mlkem)                                             | Implements only ML-KEM (FIPS 203). It is an ML-KEM package for [jsr.io](https://jsr.io/). The above `mlkem` is an npm package of `@dajiaji/mlkem`, which has been converted using [@deno/dnt](https://github.com/denoland/dnt). |
 
 For Node.js, you can install `mlkem` or `crystals-kyber-js` via npm, yarn or
 pnpm:
@@ -95,9 +95,9 @@ try {
 - [Installation](#installation)
   - [Node.js](#nodejs)
   - [Deno](#deno)
-  - [Web Browsers](#web-browsers)
   - [Cloudflare Workers](#cloudflare-workers)
   - [Bun](#bun)
+  - [Web Browsers](#web-browsers)
 - [Usage](#usage)
 - [Contributing](#contributing)
 
@@ -146,6 +146,38 @@ import {
 } from "https://deno.land/x/crystals_kyber@<SEMVER>/mod.ts";
 ```
 
+### Cloudflare Workers
+
+```sh
+# Using npm:
+npm install mlkem  # or crystals-kyber-js
+yarn add mlkem  # or crystals-kyber-js
+pnpm install mlkem  # or crystals-kyber-js
+# Using jsr:
+npx jsr add @dajiaji/mlkem
+yarn dlx jsr add @dajiaji/mlkem
+pnpm dlx jsr add @dajiaji/mlkem
+```
+
+```ts
+import { MlKem1024, MlKem512, MlKem768 } from "@dajiaji/mlkem";
+```
+
+### Bun
+
+```sh
+# Using npm:
+npm install mlkem  # or crystals-kyber-js
+yarn add mlkem  # or crystals-kyber-js
+pnpm install mlkem  # or crystals-kyber-js
+# Using jsr:
+bunx jsr add @dajiaji/bhttp
+```
+
+```ts
+import { MlKem1024, MlKem512, MlKem768 } from "@dajiaji/mlkem";
+```
+
 ### Web Browsers
 
 Followings are how to use this module with typical CDNs. Other CDNs can be used
@@ -160,30 +192,6 @@ as well.
   // import { MlKem768 } from "https://unpkg.com/mlkem@SEMVER";
   // ...
 </script>
-```
-
-### Cloudflare Workers
-
-```sh
-# Using npm:
-npm install mlkem  # or crystals-kyber-js
-yarn add mlkem  # or crystals-kyber-js
-pnpm install mlkem  # or crystals-kyber-js
-# Using jsr:
-npx jsr add @dajiaji/mlkem
-yarn dlx jsr add @dajiaji/mlkem
-pnpm dlx jsr add @dajiaji/mlkem
-```
-
-### Bun
-
-```sh
-# Using npm:
-npm install mlkem  # or crystals-kyber-js
-yarn add mlkem  # or crystals-kyber-js
-pnpm install mlkem  # or crystals-kyber-js
-# Using jsr:
-bunx jsr add @dajiaji/bhttp
 ```
 
 ## Usage
@@ -216,7 +224,7 @@ try {
 }
 ```
 
-### Deno, Cloudflare Workers or Bun
+### Deno, Cloudflare Workers and Bun
 
 ```ts
 import { MlKem512 } from "@dajiaji/mlkem";
