@@ -95,9 +95,9 @@ try {
 - [Installation](#installation)
   - [Node.js](#nodejs)
   - [Deno](#deno)
-  - [Web Browsers](#web-browsers)
   - [Cloudflare Workers](#cloudflare-workers)
   - [Bun](#bun)
+  - [Web Browsers](#web-browsers)
 - [Usage](#usage)
 - [Contributing](#contributing)
 
@@ -146,6 +146,38 @@ import {
 } from "https://deno.land/x/crystals_kyber@<SEMVER>/mod.ts";
 ```
 
+### Cloudflare Workers
+
+```sh
+# Using npm:
+npm install mlkem  # or crystals-kyber-js
+yarn add mlkem  # or crystals-kyber-js
+pnpm install mlkem  # or crystals-kyber-js
+# Using jsr:
+npx jsr add @dajiaji/mlkem
+yarn dlx jsr add @dajiaji/mlkem
+pnpm dlx jsr add @dajiaji/mlkem
+```
+
+```ts
+import { MlKem1024, MlKem512, MlKem768 } from "@dajiaji/mlkem";
+```
+
+### Bun
+
+```sh
+# Using npm:
+npm install mlkem  # or crystals-kyber-js
+yarn add mlkem  # or crystals-kyber-js
+pnpm install mlkem  # or crystals-kyber-js
+# Using jsr:
+bunx jsr add @dajiaji/bhttp
+```
+
+```ts
+import { MlKem1024, MlKem512, MlKem768 } from "@dajiaji/mlkem";
+```
+
 ### Web Browsers
 
 Followings are how to use this module with typical CDNs. Other CDNs can be used
@@ -160,30 +192,6 @@ as well.
   // import { MlKem768 } from "https://unpkg.com/mlkem@SEMVER";
   // ...
 </script>
-```
-
-### Cloudflare Workers
-
-```sh
-# Using npm:
-npm install mlkem  # or crystals-kyber-js
-yarn add mlkem  # or crystals-kyber-js
-pnpm install mlkem  # or crystals-kyber-js
-# Using jsr:
-npx jsr add @dajiaji/mlkem
-yarn dlx jsr add @dajiaji/mlkem
-pnpm dlx jsr add @dajiaji/mlkem
-```
-
-### Bun
-
-```sh
-# Using npm:
-npm install mlkem  # or crystals-kyber-js
-yarn add mlkem  # or crystals-kyber-js
-pnpm install mlkem  # or crystals-kyber-js
-# Using jsr:
-bunx jsr add @dajiaji/bhttp
 ```
 
 ## Usage
@@ -216,7 +224,7 @@ try {
 }
 ```
 
-### Deno, Cloudflare Workers or Bun
+### Deno, Cloudflare Workers and Bun
 
 ```ts
 import { MlKem512 } from "@dajiaji/mlkem";
