@@ -1,5 +1,5 @@
 {
-  "name": "@dajiaji/crystals-kyber-js",
+  "name": "@dajiaji/mlkem",
   "version": "1.1.2",
   "exports": "./mod.ts",
   "imports": {
