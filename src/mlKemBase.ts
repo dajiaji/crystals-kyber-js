@@ -21,9 +21,9 @@ import {
 } from "./utils.ts";
 
 /**
- * Represents the base class for the Kyber key encapsulation mechanism.
+ * Represents the base class for the ML-KEM key encapsulation mechanism.
  *
- * This class provides the base implementation for the Kyber key encapsulation mechanism.
+ * This class provides the base implementation for the ML-KEM key encapsulation mechanism.
  *
  * @remarks
  *
@@ -32,10 +32,12 @@ import {
  * @example
  *
  * ```ts
- * // import { KyberBase } from "crystals-kyber-js"; // Node.js
- * import { KyberBase } from "http://deno.land/x/crystals_kyber/mod.ts"; // Deno
+ * // Using jsr:
+ * import { MlKemBase } from "@dajiaji/mlkem";
+ * // Using npm:
+ * // import { MlKemBase } from "mlkem"; // or "crystals-kyber-js"
  *
- * class MlKem768 extends KyberBase {
+ * class MlKem768 extends MlKemBase {
  *   protected _k = 3;
  *   protected _du = 10;
  *   protected _dv = 4;
@@ -54,7 +56,7 @@ import {
  * const kyber = new MlKem768();
  * ```
  */
-export class KyberBase {
+export class MlKemBase {
   private _api: Crypto | undefined = undefined;
   protected _k = 0;
   protected _du = 0;
@@ -67,7 +69,7 @@ export class KyberBase {
   protected _compressedVSize = 0;
 
   /**
-   * Creates a new instance of the KyberBase class.
+   * Creates a new instance of the MlKemBase class.
    */
   constructor() {}
 
@@ -235,7 +237,7 @@ export class KyberBase {
   }
 
   /**
-   * Sets up the KyberBase instance by loading the necessary crypto library.
+   * Sets up the MlKemBase instance by loading the necessary crypto library.
    * If the crypto library is already loaded, this method does nothing.
    * @returns {Promise<void>} A promise that resolves when the setup is complete.
    */
@@ -289,7 +291,7 @@ export class KyberBase {
   }
 
   // indcpaKeyGen generates public and private keys for the CPA-secure
-  // public-key encryption scheme underlying Kyber.
+  // public-key encryption scheme underlying ML-KEM.
 
   /**
    * Derives a CPA key pair using the provided CPA seed.
@@ -338,10 +340,10 @@ export class KyberBase {
   }
 
   // _encap is the encapsulation function of the CPA-secure
-  // public-key encryption scheme underlying Kyber.
+  // public-key encryption scheme underlying ML-KEM.
 
   /**
-   * Encapsulates a message using the Kyber encryption scheme.
+   * Encapsulates a message using the ML-KEM encryption scheme.
    *
    * @param pk - The public key.
    * @param msg - The message to be encapsulated.
@@ -399,7 +401,7 @@ export class KyberBase {
   }
 
   // indcpaDecrypt is the decryption function of the CPA-secure
-  // public-key encryption scheme underlying Kyber.
+  // public-key encryption scheme underlying ML-KEM.
 
   /**
    * Decapsulates the ciphertext using the provided secret key.

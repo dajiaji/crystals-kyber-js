@@ -4,23 +4,25 @@
  * https://github.com/antontutoveanu/crystals-kyber-javascript/blob/main/LICENSE
  */
 import { N } from "./consts.ts";
-import { KyberBase } from "./kyberBase.ts";
+import { MlKemBase } from "./mlKemBase.ts";
 import { byteopsLoad24, int16, prf } from "./utils.ts";
 
 /**
  * Represents the MlKem512 class.
  *
- * This class extends the KyberBase class and provides specific implementation for MlKem512.
+ * This class extends the MlKemBase class and provides specific implementation for MlKem512.
  *
  * @remarks
  *
- * MlKem512 is a specific implementation of the Kyber key encapsulation mechanism.
+ * MlKem512 is a specific implementation of the ML-KEM key encapsulation mechanism.
  *
  * @example
  *
  * ```ts
- * // import { MlKem512 } from "crystals-kyber-js"; // Node.js
- * import { MlKem512 } from "http://deno.land/x/crystals_kyber/mod.ts"; // Deno
+ * // Using jsr:
+ * import { MlKem512 } from "@dajiaji/mlkem";
+ * // Using npm:
+ * // import { MlKem512 } from "mlkem"; // or "crystals-kyber-js"
  *
  * const recipient = new MlKem512();
  * const [pkR, skR] = await recipient.generateKeyPair();
@@ -32,7 +34,7 @@ import { byteopsLoad24, int16, prf } from "./utils.ts";
  * // ssS === ssR
  * ```
  */
-export class MlKem512 extends KyberBase {
+export class MlKem512 extends MlKemBase {
   protected _k = 2;
   protected _du = 10;
   protected _dv = 4;

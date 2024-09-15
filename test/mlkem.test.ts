@@ -6,16 +6,16 @@ import { MlKem1024, MlKem512, MlKem768, MlKemError } from "../mod.ts";
 import { loadCrypto } from "../src/utils.ts";
 import { parseKAT, testVectorPath } from "./utils.ts";
 import { bytesToHex, hexToBytes } from "./utils.ts";
-import { getDeterministicKyberClass } from "./drng.ts";
+import { getDeterministicMlKemClass } from "./drng.ts";
 
-[MlKem512, MlKem768, MlKem1024].forEach((KyberClass) =>
-  describe(KyberClass.name, () => {
-    const size = KyberClass.name.substring(5);
-    const DeterministicKyberClass = getDeterministicKyberClass(KyberClass);
+[MlKem512, MlKem768, MlKem1024].forEach((MlKemClass) =>
+  describe(MlKemClass.name, () => {
+    const size = MlKemClass.name.substring(5);
+    const DeterministicMlKemClass = getDeterministicMlKemClass(MlKemClass);
 
     describe("KAT vectors", () => {
       it("should match expected values", async () => {
-        const kyber = new KyberClass();
+        const kyber = new MlKemClass();
         const katData = await Deno.readTextFile(
           `${testVectorPath()}/kat/kat_MLKEM_${size}.rsp`,
         );
@@ -35,10 +35,10 @@ import { getDeterministicKyberClass } from "./drng.ts";
 
     describe("A sample code in README.", () => {
       it("should work normally", async () => {
-        const recipient = new KyberClass();
+        const recipient = new MlKemClass();
         const [pkR, skR] = await recipient.generateKeyPair();
 
-        const sender = new KyberClass();
+        const sender = new MlKemClass();
         const [ct, ssS] = await sender.encap(pkR);
 
         const ssR = await recipient.decap(ct, skR);
@@ -47,7 +47,7 @@ import { getDeterministicKyberClass } from "./drng.ts";
       });
 
       it("should work normally with deriveKeyPair", async () => {
-        const recipient = new KyberClass();
+        const recipient = new MlKemClass();
         const api = await loadCrypto();
         const seed = new Uint8Array(64);
         api.getRandomValues(seed);
@@ -56,7 +56,7 @@ import { getDeterministicKyberClass } from "./drng.ts";
         assertEquals(pkR, pkR2);
         assertEquals(skR, skR2);
 
-        const sender = new KyberClass();
+        const sender = new MlKemClass();
         const [ct, ssS] = await sender.encap(pkR);
 
         const ssR = await recipient.decap(ct, skR);
@@ -67,7 +67,7 @@ import { getDeterministicKyberClass } from "./drng.ts";
 
     describe("Advanced testing", () => {
       it("Invalid encapsulation keys", async () => {
-        const sender = new KyberClass();
+        const sender = new MlKemClass();
         const testData = await Deno.readTextFile(
           `${testVectorPath()}/modulus/ML-KEM-${size}.txt`,
         );
@@ -80,7 +80,7 @@ import { getDeterministicKyberClass } from "./drng.ts";
       });
 
       it("'Unlucky' vectors that require an unusually large number of XOF reads", async () => {
-        const kyber = new KyberClass();
+        const kyber = new MlKemClass();
         const testData = await Deno.readTextFile(
           `${testVectorPath()}/unluckysample/ML-KEM-${size}.txt`,
         );
@@ -90,7 +90,7 @@ import { getDeterministicKyberClass } from "./drng.ts";
       });
 
       it("Accumulated vectors", async () => { // See https://github.com/C2SP/CCTV/blob/main/ML-KEM/README.md#accumulated-pq-crystals-vectors
-        const deterministicKyber = new DeterministicKyberClass();
+        const deterministicMlKem = new DeterministicMlKemClass();
         const shakeInstance = shake128.create({ dkLen: 32 });
         /**
          * For each test, the following values are drawn from the RNG in order:
@@ -118,16 +118,16 @@ import { getDeterministicKyberClass } from "./drng.ts";
         };
 
         for (let i = 0; i < 10000; i++) {
-          const [ek, dk] = await deterministicKyber.generateKeyPair();
-          const [ct, k] = await deterministicKyber.encap(ek);
-          const kActual = await deterministicKyber.decap(ct, dk);
+          const [ek, dk] = await deterministicMlKem.generateKeyPair();
+          const [ct, k] = await deterministicMlKem.encap(ek);
+          const kActual = await deterministicMlKem.decap(ct, dk);
           assertEquals(kActual, k);
           // sample random, invalid ct
           // @ts-ignore private accessor
-          const ctRandom = deterministicKyber._api!.getRandomValues(
+          const ctRandom = deterministicMlKem._api!.getRandomValues(
             new Uint8Array(ct.length),
           );
-          const kRandom = await deterministicKyber.decap(ctRandom, dk);
+          const kRandom = await deterministicMlKem.decap(ctRandom, dk);
           // hash results
           shakeInstance.update(ek)
             .update(dk)
@@ -137,7 +137,7 @@ import { getDeterministicKyberClass } from "./drng.ts";
         }
 
         const actualHash = shakeInstance.digest();
-        assertEquals(bytesToHex(actualHash), expectedHashes[KyberClass.name]);
+        assertEquals(bytesToHex(actualHash), expectedHashes[MlKemClass.name]);
       });
     });
   })

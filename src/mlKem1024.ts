@@ -4,31 +4,37 @@
  * https://github.com/antontutoveanu/crystals-kyber-javascript/blob/main/LICENSE
  */
 import { N, Q } from "./consts.ts";
-import { KyberBase } from "./kyberBase.ts";
+import { MlKemBase } from "./mlKemBase.ts";
 import { byte, int16, uint16, uint32 } from "./utils.ts";
 
 /**
- * Represents the MlKem1024 class.
+ * Represents the MlKem1024 class, which extends the MlKemBase class.
  *
- * MlKem1024 is a subclass of KyberBase and implements specific methods for the Kyber-1024 parameter set.
+ * This class extends the MlKemBase class and provides specific implementation for MlKem1024.
+ *
+ * @remarks
+ *
+ * MlKem1024 is a specific implementation of the ML-KEM key encapsulation mechanism.
  *
  * @example
  *
  * ```ts
- * // import { MlKem1024 } from "crystals-kyber-js"; // Node.js
- * import { MlKem1024 } from "http://deno.land/x/crystals_kyber/mod.ts"; // Deno
+ * // Using jsr:
+ * import { MlKem1024 } from "@dajiaji/mlkem";
+ * // Using npm:
+ * // import { MlKem1024 } from "mlkem"; // or "crystals-kyber-js"
  *
  * const recipient = new MlKem1024();
  * const [pkR, skR] = await recipient.generateKeyPair();
-
+ *
  * const sender = new MlKem1024();
  * const [ct, ssS] = await sender.encap(pkR);
-
+ *
  * const ssR = await recipient.decap(ct, skR);
  * // ssS === ssR
  * ```
  */
-export class MlKem1024 extends KyberBase {
+export class MlKem1024 extends MlKemBase {
   protected _k = 4;
   protected _du = 11;
   protected _dv = 5;

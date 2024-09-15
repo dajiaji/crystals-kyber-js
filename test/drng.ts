@@ -1,15 +1,15 @@
-import type { KyberBase } from "../src/kyberBase.ts";
+import type { MlKemBase } from "../src/mlKemBase.ts";
 import { shake128 } from "../src/deps.ts";
 
 type GetRandomValuesInputType = Parameters<
   typeof Crypto.prototype.getRandomValues
 >[0];
 
-export function getDeterministicKyberClass<T extends typeof KyberBase>(
-  KyberClass: T,
-): typeof KyberBase {
+export function getDeterministicMlKemClass<T extends typeof MlKemBase>(
+  MlKemClass: T,
+): typeof MlKemBase {
   // @ts-ignore mixing constructor error expecting any[] as argument
-  return class DeterministicKyber extends KyberClass {
+  return class DeterministicMlKem extends MlKemClass {
     // deno-lint-ignore require-await
     async _setup() {
       // @ts-ignore private accessor
