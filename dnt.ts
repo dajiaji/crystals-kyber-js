@@ -26,7 +26,7 @@ await build({
     name: Deno.args[0],
     version: denoPkg.version,
     description:
-      "A CRYSTALS-KYBER implementation written in TypeScript for various JavaScript runtimes",
+      "An ML-KEM/CRYSTALS-KYBER implementation written in TypeScript for various JavaScript runtimes",
     repository: {
       type: "git",
       url: "git+https://github.com/dajiaji/crystals-kyber-js.git",
@@ -46,6 +46,9 @@ await build({
     },
     keywords: [
       "crystals-kyber",
+      "ml-kem",
+      "mlkem",
+      "fips203",
       "kyber",
       "kem",
       "security",

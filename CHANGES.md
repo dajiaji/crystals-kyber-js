@@ -1,5 +1,17 @@
 # Changes
 
+## Version 2.0.0
+
+Released 2024-09-15
+
+- [(#41) Add support for jsr.io.](https://github.com/dajiaji/crystals-kyber-js/pull/41)
+- [(#40) Add mlkem package supporting only ML-KEM.](https://github.com/dajiaji/crystals-kyber-js/pull/40)
+- [(#39) Add import_map.json for @deno/dnt.](https://github.com/dajiaji/crystals-kyber-js/pull/39)
+- [(#38) Add support for ML-KEM (FIPS 203 ipd).](https://github.com/dajiaji/crystals-kyber-js/pull/38)
+- [(#38) Sync with the public archive version of @openpgpjs/crystals-kyber-js.](https://github.com/dajiaji/crystals-kyber-js/pull/38)
+- Update Dependencies:
+  - [(#38) Bump @noble/hashes to 1.5.0.](https://github.com/dajiaji/crystals-kyber-js/pull/38)
+
 ## Version 1.1.2
 
 Released 2024-09-14
