@@ -1,4 +1,4 @@
-<h1 align="center">crystals-kyber-js</h1>
+<h1 align="center">mlkem / crystals-kyber-js</h1>
 
 <div align="center">
 <a href="https://jsr.io/@dajiaji/mlkem"><img src="https://jsr.io/badges/@dajiaji/mlkem" alt="JSR"/></a>
@@ -13,7 +13,7 @@
 </div>
 
 <div align="center">
-A CRYSTALS-KYBER implementation written in TypeScript for various JavaScript runtimes.<br>
+An ML-KEM/CRYSTALS-KYBER implementation written in TypeScript for various JavaScript runtimes.<br>
 </div>
 <p></p>
 
@@ -36,21 +36,36 @@ but includes the following improvements:
   implementation.
 - ✅ Tree-shaking friendly.
 - ✅ Fix [KyberSlash](https://kyberslash.cr.yp.to/index.html) vulnerability.
+- ✅ ML-KEM
+  ([FIPS 203 initial public draft](https://csrc.nist.gov/pubs/fips/203/ipd))
+  support.
 
-For Node.js, you can install `crystals-kyber-js` via npm/yarn:
+This repository has the following packages:
+
+| package           | registry                                                                                                                  | description                                                                                                                                                                                                                       |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| crystals-kyber-js | [![npm](https://img.shields.io/npm/v/crystals-kyber-js?color=%234C48FF)](https://www.npmjs.com/package/crystals-kyber-js) | `v1.x` implements CRYSTALS-KYBER, and `v2.x-` implements ML-KYBER (FIPS 203). Crystals-kyber-js may become deprecated in the near future. Instead, we recommend switching to the following `mlkem` or `@dajiaji/mlkem`.           |
+| mlkem             | [![npm](https://img.shields.io/npm/v/mlkem?color=%234C48FF)](https://www.npmjs.com/package/mlkem)                         | Implements only ML-KYBER (FIPS 203). It is an alias for the above `crystals-kyber-js` starting from `v2` onwards. We recommend using this package going forward.                                                                  |
+| @dajiaji/mlkem    | [![JSR](https://jsr.io/badges/@dajiaji/mlkem)](https://jsr.io/@dajiaji/mlkem)                                             | Implements only ML-KYBER (FIPS 203). It is an ML-KEM package for [jsr.io](https://jsr.io/). The above `mlkem` is an npm package of `@dajiaji/mlkem`, which has been converted using [@deno/dnt](https://github.com/denoland/dnt). |
+
+For Node.js, you can install `mlkem` or `crystals-kyber-js` via npm, yarn or
+pnpm:
 
 ```sh
+# RECOMMENTED using `mlkem`
+npm install mlkem
+# `crystals-kyber-js` is still available for use, but it may become deprecated in the near future.
 npm install crystals-kyber-js
 ```
 
 Then, you can use it as follows:
 
-```js
-import { Kyber768 } from "crystals-kyber-js";
+```ts
+import { MlKem768 } from "mlkem"; // or from "crystals-kyber-js"
 
-async function doKyber() {
+async function doMlKem() {
   // A recipient generates a key pair.
-  const recipient = new Kyber768(); // Kyber512 and Kyber1024 are also available.
+  const recipient = new MlKem768(); // MlKem512 and MlKem1024 are also available.
   const [pkR, skR] = await recipient.generateKeyPair();
   //// Deterministic key generation is also supported
   // const seed = new Uint8Array(64);
@@ -58,7 +73,7 @@ async function doKyber() {
   // const [pkR, skR] = await recipient.deriveKeyPair(seed);
 
   // A sender generates a ciphertext and a shared secret with pkR.
-  const sender = new Kyber768();
+  const sender = new MlKem768();
   const [ct, ssS] = await sender.encap(pkR);
 
   // The recipient decapsulates the ciphertext and generates the same shared secret with skR.
@@ -69,9 +84,9 @@ async function doKyber() {
 }
 
 try {
-  doKyber();
-} catch (err) {
-  console.log("failed: ", err.message);
+  doMlKem();
+} catch (err: unknown) {
+  console.log("failed: ", (err as Error).message);
 }
 ```
 
@@ -82,6 +97,7 @@ try {
   - [Deno](#deno)
   - [Web Browsers](#web-browsers)
   - [Cloudflare Workers](#cloudflare-workers)
+  - [Bun](#bun)
 - [Usage](#usage)
 - [Contributing](#contributing)
 
@@ -89,28 +105,45 @@ try {
 
 ### Node.js
 
-Using npm:
-
 ```sh
-npm install crystals-kyber-js
-```
-
-Using yarn:
-
-```sh
-yarn add crystals-kyber-js
+# Using npm:
+npm install mlkem  # or crystals-kyber-js
+yarn add mlkem  # or crystals-kyber-js
+pnpm install mlkem  # or crystals-kyber-js
+# Using jsr:
+npx jsr add @dajiaji/mlkem
+yarn dlx jsr add @dajiaji/mlkem
+pnpm dlx jsr add @dajiaji/mlkem
 ```
 
 ### Deno
 
-Using deno.land:
+Starting from version 2.0.0, `@dajiaji/mlkem` is available from the
+[jsr.io](https://jsr.io). From this version onwards, please use JSR import
+instead of HTTPS import in Deno.
 
-```js
-// use a specific version
-import { Kyber768 } from "https://deno.land/x/crystals_kyber@1.1.2/mod.ts";
+**JSR import (`>=2.0.0`):**
 
-// use the latest stable version
-import { Kyber768 } from "https://deno.land/x/crystals_kyber/mod.ts";
+Add `@dajiaji/mlkem` package using the commands below:
+
+```sh
+deno add @dajiaji/mlkem
+```
+
+Then, you can use the module from code like this:
+
+```ts
+import { MlKem1024, MlKem512, MlKem768 } from "@dajiaji/mlkem";
+```
+
+**HTTPS import (deprecated):**
+
+```ts
+import {
+  Kyber1024,
+  Kyber512,
+  Kyber768,
+} from "https://deno.land/x/crystals_kyber@<SEMVER>/mod.ts";
 ```
 
 ### Web Browsers
@@ -118,28 +151,13 @@ import { Kyber768 } from "https://deno.land/x/crystals_kyber/mod.ts";
 Followings are how to use this module with typical CDNs. Other CDNs can be used
 as well.
 
-Using esm.sh:
-
 ```html
 <!-- use a specific version -->
 <script type="module">
-  import { Kyber768 } from "https://esm.sh/crystals-kyber-js@1.1.2";
-  // ...
-</script>
-
-<!-- use the latest stable version -->
-<script type="module">
-  import { Kyber768 } from "https://esm.sh/crystals-kyber-js";
-  // ...
-</script>
-```
-
-Using unpkg:
-
-```html
-<!-- use a specific version -->
-<script type="module">
-  import { Kyber768 } from "https://unpkg.com/crystals-kyber-js@1.1.2";
+  // Using esm.sh:
+  import { MlKem512, MlKem768, MlKem1024 } from "https://esm.sh/mlkem@<SEMVER>";
+  // Using unpkg.com:
+  // import { MlKem768 } from "https://unpkg.com/mlkem@SEMVER";
   // ...
 </script>
 ```
@@ -147,11 +165,25 @@ Using unpkg:
 ### Cloudflare Workers
 
 ```sh
-git clone git@github.com:dajiaji/crystals-kyber-js.git
-cd crystals-kyber-js
-npm install -g esbuild
-deno task dnt
-deno task minify > $YOUR_SRC_PATH/crystals-kyber.js
+# Using npm:
+npm install mlkem  # or crystals-kyber-js
+yarn add mlkem  # or crystals-kyber-js
+pnpm install mlkem  # or crystals-kyber-js
+# Using jsr:
+npx jsr add @dajiaji/mlkem
+yarn dlx jsr add @dajiaji/mlkem
+pnpm dlx jsr add @dajiaji/mlkem
+```
+
+### Bun
+
+```sh
+# Using npm:
+npm install mlkem  # or crystals-kyber-js
+yarn add mlkem  # or crystals-kyber-js
+pnpm install mlkem  # or crystals-kyber-js
+# Using jsr:
+bunx jsr add @dajiaji/bhttp
 ```
 
 ## Usage
@@ -161,14 +193,14 @@ This section shows some typical usage examples.
 ### Node.js
 
 ```js
-import { Kyber768 } from "crystals-kyber-js";
-// const { Kyber768 } = require("crystals-kyber-js");
+import { MlKem768 } from "mlkem";
+// const { MlKem768 } = require("mlkem");
 
-async function doKyber() {
-  const recipient = new Kyber768();
+async function doMlKem() {
+  const recipient = new MlKem768();
   const [pkR, skR] = await recipient.generateKeyPair();
 
-  const sender = new Kyber768();
+  const sender = new MlKem768();
   const [ct, ssS] = await sender.encap(pkR);
 
   const ssR = await recipient.decap(ct, skR);
@@ -178,23 +210,22 @@ async function doKyber() {
 }
 
 try {
-  doKyber();
+  doMlKem();
 } catch (err) {
   console.log("failed: ", err.message);
 }
 ```
 
-### Deno
+### Deno, Cloudflare Workers or Bun
 
-```js
-import { Kyber512 } from "https://deno.land/x/crystals_kyber@1.1.2/mod.ts";
+```ts
+import { MlKem512 } from "@dajiaji/mlkem";
 
-async function doKyber() {
-
-  const recipient = new Kyber512();
+async function doMlKem() {
+  const recipient = new MlKem512();
   const [pkR, skR] = await recipient.generateKeyPair();
 
-  const sender = new Kyber512();
+  const sender = new MlKem512();
   const [ct, ssS] = await sender.encap(pkR);
 
   const ssR = await recipient.decap(ct, skR);
@@ -204,9 +235,9 @@ async function doKyber() {
 }
 
 try {
-  doKyber();
-} catch (_err: unknown) {
-  console.log("failed.");
+  doMlKem();
+} catch (err: unknown) {
+  console.log("failed:", (err as Error).message);
 }
 ```
 
@@ -217,14 +248,14 @@ try {
   <head></head>
   <body>
     <script type="module">
-      import { Kyber1024 } from "https://esm.sh/crystals-kyber@1.1.2";
+      import { MlKem1024 } from "https://esm.sh/mlkem";
 
-      globalThis.doKyber = async () => {
+      globalThis.doMlKem = async () => {
         try {
-          const recipient = new Kyber1024();
+          const recipient = new MlKem1024();
           const [pkR, skR] = await recipient.generateKeyPair();
 
-          const sender = new Kyber1024();
+          const sender = new MlKem1024();
           const [ct, ssS] = await sender.encap(pkR);
 
           const ssR = await recipient.decap(ct, skR);
@@ -236,7 +267,7 @@ try {
         }
       }
     </script>
-    <button type="button" onclick="doKyber()">do CRYSTALS-KYBER</button>
+    <button type="button" onclick="doMlKem()">do CRYSTALS-KYBER</button>
   </body>
 </html>
 ```
