@@ -18,22 +18,35 @@
   },
   "fmt": {
     "include": [
-      "README.md",
-      "deno.json",
+      "**/*.md",
+      "**/*.json",
       "dnt.ts",
       "mod.ts",
+      "bench/",
       "src/",
-      "test/",
-      "bench/"
+      "test/"
     ],
     "exclude": [
-      "**/*/node_modules"
+      "**/*/*.js",
+      "npm/",
+      "**/*/coverage/",
+      "coverage/"
     ]
   },
   "lint": {
-    "include": ["mod.ts", "src/", "test/", "bench/"],
+    "include": [
+      "**/*.md",
+      "**/*.json",
+      "dnt.ts",
+      "mod.ts",
+      "bench/",
+      "src/",
+      "test/"
+    ],
     "exclude": [
-      "**/*/node_modules"
+      "**/*/*.js",
+      "npm/",
+      "coverage/"
     ]
   },
   "tasks": {
