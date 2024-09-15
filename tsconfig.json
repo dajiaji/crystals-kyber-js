@@ -2,6 +2,9 @@
   "compilerOptions": {
     "module": "es2022",
     "target": "es2022",
+    "paths": {
+      "@noble/*": ["./npm/node_modules/@noble/*"]
+    },
     "noEmit": true,
     "allowImportingTsExtensions": true
   }, 
