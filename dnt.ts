@@ -12,7 +12,7 @@ await build({
   outDir: "./npm/" + Deno.args[0],
   typeCheck: "both",
   test: true,
-  declaration: "inline",
+  declaration: true,
   scriptModule: "umd",
   importMap: "./import_map.json",
   compilerOptions: {
@@ -21,6 +21,7 @@ await build({
   shims: {
     deno: "dev",
   },
+  testPattern: "test/**/*.test.ts",
   package: {
     name: Deno.args[0],
     version: denoPkg.version,
@@ -65,3 +66,6 @@ await build({
 // post build steps
 Deno.copyFileSync("LICENSE", "npm/" + Deno.args[0] + "/LICENSE");
 Deno.copyFileSync("README.md", "npm/" + Deno.args[0] + "/README.md");
+await emptyDir("./npm/" + Deno.args[0] + "/src");
+await emptyDir("./npm/" + Deno.args[0] + "/esm/test");
+await emptyDir("./npm/" + Deno.args[0] + "/script/test");

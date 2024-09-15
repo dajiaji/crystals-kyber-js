@@ -28,7 +28,7 @@ jobs:
       - run: |
           npm install -g esbuild
           deno task dnt
-          deno task minify > test/runtimes/crystals-kyber.js
+          deno task minify:crystals-kyber-js > test/runtimes/crystals-kyber.js
       - uses: antongolub/action-setup-bun@v1
         with:
           bun-version: ${{ matrix.bun-version }}

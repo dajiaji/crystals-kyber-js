@@ -33,7 +33,7 @@ jobs:
       - name: Build docs for crystals-kyber-js
         run: |
           npx typedoc --name "API reference for crystals-kyber-js/main" --out pages/docs/main mod.ts
-          deno task minify > test/runtimes/browsers/pages/src/crystals-kyber.js
+          deno task minify:crystals-kyber-js > test/runtimes/browsers/pages/src/crystals-kyber.js
           mkdir pages/tests
           cp -rf test/runtimes/browsers/pages/* pages/tests
       - uses: peaceiris/actions-gh-pages@v3

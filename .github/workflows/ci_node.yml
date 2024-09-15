@@ -16,13 +16,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
       - uses: denoland/setup-deno@v1
         with:
           deno-version: v1.x
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
       - name: Install dependencies
         run: npm install -g esbuild
-      - name: Run dnt
-        run: deno task dnt
+      - name: Run dnt, npm link, npm pack and npm publish --dry-run
+        run: deno task npm
