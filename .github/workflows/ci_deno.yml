@@ -27,3 +27,5 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.lcov
           flags: unittests
+      - name: Run deno publish --dry-run
+        run: npx jsr publish --dry-run

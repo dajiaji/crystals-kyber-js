@@ -29,7 +29,6 @@
     "exclude": [
       "**/*/*.js",
       "npm/",
-      "**/*/coverage/",
       "coverage/"
     ]
   },

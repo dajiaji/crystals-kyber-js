@@ -7,6 +7,9 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v1
@@ -20,6 +23,8 @@ jobs:
         run: npm install -g esbuild
       - name: Run dnt
         run: deno task dnt
+      - name: Run deno publish
+        run: npx jsr publish
       - name: Run npm publish
         run: deno task npm-publish
         env:
