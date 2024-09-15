@@ -2,23 +2,23 @@ import { assertEquals } from "testing/asserts.ts";
 import { describe, it } from "testing/bdd.ts";
 
 describe("Bun", () => {
-  describe("GET /kyber512", () => {
+  describe("GET /mlkem512", () => {
     it("should return ok", async () => {
-      const res = await fetch("http://localhost:3000/kyber512");
+      const res = await fetch("http://localhost:3000/mlkem512");
       assertEquals("ok", await res.text());
     });
   });
 
-  describe("GET /kyber768", () => {
+  describe("GET /mlkem768", () => {
     it("should return ok", async () => {
-      const res = await fetch("http://localhost:3000/kyber768");
+      const res = await fetch("http://localhost:3000/mlkem768");
       assertEquals("ok", await res.text());
     });
   });
 
-  describe("GET /kyber1024", () => {
+  describe("GET /mlkem1024", () => {
     it("should return ok", async () => {
-      const res = await fetch("http://localhost:3000/kyber1024");
+      const res = await fetch("http://localhost:3000/mlkem1024");
       assertEquals("ok", await res.text());
     });
   });

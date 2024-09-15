@@ -14,19 +14,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 18.x
       - uses: denoland/setup-deno@v1
         with:
           deno-version: v1.x
-      - run: |
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+      - name: Install dependencies
+        run: |
           npm install -g typescript
           npm install -g typedoc
-          # npx typedoc --name "crystals-kyber-js $(git describe --tags --abbrev=0)" --out pages/docs/main mod.ts
-          npx typedoc --name "API reference for crystals-kyber-js/main" --out pages/docs/main mod.ts
           npm install -g esbuild
-          deno task dnt
+      - name: Run dnt
+        run: deno task dnt
+      - name: Run npm install
+        working-directory: ./npm
+        run: npm install
+      - name: Build docs for crystals-kyber-js
+        run: |
+          npx typedoc --name "API reference for crystals-kyber-js/main" --out pages/docs/main mod.ts
           deno task minify > test/runtimes/browsers/pages/src/crystals-kyber.js
           mkdir pages/tests
           cp -rf test/runtimes/browsers/pages/* pages/tests

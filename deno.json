@@ -4,6 +4,7 @@
   "exports": "./mod.ts",
   "imports": {
     "@deno/dnt": "jsr:@deno/dnt@^0.41.3",
+    "@noble/hashes": "npm:@noble/hashes@^1.5.0",
     "testing/": "https://deno.land/std@0.213.0/testing/"
   },
   "fmt": {

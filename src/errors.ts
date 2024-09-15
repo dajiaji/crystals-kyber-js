@@ -1,7 +1,7 @@
 /**
  * The base error class of kyber-ts.
  */
-export class KyberError extends Error {
+export class MlKemError extends Error {
   public constructor(e: unknown) {
     let message: string;
 

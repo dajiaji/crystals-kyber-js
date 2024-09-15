@@ -1,4 +1,4 @@
-import { Kyber1024, Kyber512, Kyber768 } from "crystals-kyber-js";
+import { MlKem1024, MlKem512, MlKem768 } from "crystals-kyber-js";
 
 function compare(x: Uint8Array, y: Uint8Array): boolean {
   if (x.length != y.length) {
@@ -19,12 +19,12 @@ function compare(x: Uint8Array, y: Uint8Array): boolean {
 export async function testServer(request: Request): Promise<Response> {
   const url = new URL(request.url);
 
-  if (url.pathname === "/kyber512") {
+  if (url.pathname === "/mlkem512") {
     try {
       // generateKeyPair/encap/decap
-      const recipient = new Kyber512();
+      const recipient = new MlKem512();
       const [pkR, skR] = await recipient.generateKeyPair();
-      const sender = new Kyber512();
+      const sender = new MlKem512();
       const [ct, ssS] = await sender.encap(pkR);
       const ssR = await recipient.decap(ct, skR);
       if (!compare(ssS, ssR)) {
@@ -44,12 +44,12 @@ export async function testServer(request: Request): Promise<Response> {
     }
     return new Response("ok");
   }
-  if (url.pathname === "/kyber768") {
+  if (url.pathname === "/mlkem768") {
     try {
       // generateKeyPair/encap/decap
-      const recipient = new Kyber768();
+      const recipient = new MlKem768();
       const [pkR, skR] = await recipient.generateKeyPair();
-      const sender = new Kyber768();
+      const sender = new MlKem768();
       const [ct, ssS] = await sender.encap(pkR);
       const ssR = await recipient.decap(ct, skR);
       if (!compare(ssS, ssR)) {
@@ -69,12 +69,12 @@ export async function testServer(request: Request): Promise<Response> {
     }
     return new Response("ok");
   }
-  if (url.pathname === "/kyber1024") {
+  if (url.pathname === "/mlkem1024") {
     try {
       // generateKeyPair/encap/decap
-      const recipient = new Kyber1024();
+      const recipient = new MlKem1024();
       const [pkR, skR] = await recipient.generateKeyPair();
-      const sender = new Kyber1024();
+      const sender = new MlKem1024();
       const [ct, ssS] = await sender.encap(pkR);
       const ssR = await recipient.decap(ct, skR);
       if (!compare(ssS, ssR)) {

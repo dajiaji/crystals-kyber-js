@@ -3,20 +3,15 @@
  * which was deveploped under the MIT licence below:
  * https://github.com/antontutoveanu/crystals-kyber-javascript/blob/main/LICENSE
  */
-import {
-  sha3_256,
-  sha3_512,
-  shake128,
-  shake256,
-  // @ts-ignore: for "npm:"
-} from "npm:@noble/hashes@1.3.3/sha3";
+import { sha3_256, sha3_512, shake128, shake256 } from "./deps.ts";
 
 import { N, NTT_ZETAS, NTT_ZETAS_INV, Q, Q_INV } from "./consts.ts";
-import { KyberError } from "./errors.ts";
+import { MlKemError } from "./errors.ts";
 import {
   byte,
   byteopsLoad32,
   constantTimeCompare,
+  equalUint8Array,
   int16,
   int32,
   loadCrypto,
@@ -40,7 +35,7 @@ import {
  * // import { KyberBase } from "crystals-kyber-js"; // Node.js
  * import { KyberBase } from "http://deno.land/x/crystals_kyber/mod.ts"; // Deno
  *
- * class Kyber768 extends KyberBase {
+ * class MlKem768 extends KyberBase {
  *   protected _k = 3;
  *   protected _du = 10;
  *   protected _dv = 4;
@@ -56,7 +51,7 @@ import {
  *   }
  * }
  *
- * const kyber = new Kyber768();
+ * const kyber = new MlKem768();
  * ```
  */
 export class KyberBase {
@@ -79,18 +74,18 @@ export class KyberBase {
   /**
    * Generates a keypair [publicKey, privateKey].
    *
-   * If an error occurred, throws {@link KyberError}.
+   * If an error occurred, throws {@link MlKemError}.
    *
    * @returns A kaypair [publicKey, privateKey].
-   * @throws {@link KyberError}
+   * @throws {@link MlKemError}
    *
-   * @example Generates a {@link Kyber768} keypair.
+   * @example Generates a {@link MlKem768} keypair.
    *
    * ```ts
-   * // import { Kyber768 } from "crystals-kyber-js"; // Node.js
-   * import { Kyber768 } from "http://deno.land/x/crystals_kyber/mod.ts"; // Deno
+   * // import { MlKem768 } from "crystals-kyber-js"; // Node.js
+   * import { MlKem768 } from "http://deno.land/x/crystals_kyber/mod.ts"; // Deno
    *
-   * const kyber = new Kyber768();
+   * const kyber = new MlKem768();
    * const [pk, sk] = await kyber.generateKeyPair();
    * ```
    */
@@ -102,26 +97,26 @@ export class KyberBase {
       (this._api as Crypto).getRandomValues(rnd);
       return this._deriveKeyPair(rnd);
     } catch (e: unknown) {
-      throw new KyberError(e);
+      throw new MlKemError(e);
     }
   }
 
   /**
    * Derives a keypair [publicKey, privateKey] deterministically from a 64-octet seed.
    *
-   * If an error occurred, throws {@link KyberError}.
+   * If an error occurred, throws {@link MlKemError}.
    *
    * @param seed A 64-octet seed for the deterministic key generation.
    * @returns A kaypair [publicKey, privateKey].
-   * @throws {@link KyberError}
+   * @throws {@link MlKemError}
    *
-   * @example Derives a {@link Kyber768} keypair deterministically.
+   * @example Derives a {@link MlKem768} keypair deterministically.
    *
    * ```ts
-   * // import { Kyber768 } from "crystals-kyber-js"; // Node.js
-   * import { Kyber768 } from "http://deno.land/x/crystals_kyber/mod.ts"; // Deno
+   * // import { MlKem768 } from "crystals-kyber-js"; // Node.js
+   * import { MlKem768 } from "http://deno.land/x/crystals_kyber/mod.ts"; // Deno
    *
-   * const kyber = new Kyber768();
+   * const kyber = new MlKem768();
    * const seed = new Uint8Array(64);
    * globalThis.crypto.getRandomValues(seed);
    * const [pk, sk] = await kyber.deriveKeyPair(seed);
@@ -138,27 +133,27 @@ export class KyberBase {
       }
       return this._deriveKeyPair(seed);
     } catch (e: unknown) {
-      throw new KyberError(e);
+      throw new MlKemError(e);
     }
   }
 
   /**
    * Generates a shared secret from the encapsulated ciphertext and the private key.
    *
-   * If an error occurred, throws {@link KyberError}.
+   * If an error occurred, throws {@link MlKemError}.
    *
    * @param pk A public key.
    * @param seed An optional 32-octet seed for the deterministic shared secret generation.
    * @returns A ciphertext (encapsulated public key) and a shared secret.
-   * @throws {@link KyberError}
+   * @throws {@link MlKemError}
    *
-   * @example The {@link Kyber768} encapsulation.
+   * @example The {@link MlKem768} encapsulation.
    *
    * ```ts
-   * // import { Kyber768 } from "crystals-kyber-js"; // Node.js
-   * import { Kyber768 } from "http://deno.land/x/crystals_kyber/mod.ts"; // Deno
+   * // import { MlKem768 } from "crystals-kyber-js"; // Node.js
+   * import { MlKem768 } from "http://deno.land/x/crystals_kyber/mod.ts"; // Deno
    *
-   * const kyber = new Kyber768();
+   * const kyber = new MlKem768();
    * const [pk, sk] = await kyber.generateKeyPair();
    * const [ct, ss] = await kyber.encap(pk);
    * ```
@@ -170,33 +165,36 @@ export class KyberBase {
     await this._setup();
 
     try {
-      const m = h(this._getSeed(seed));
-      const [kBar, r] = g(m, h(pk));
+      // validate key type; the modulo is checked in `_encap`.
+      if (pk.length !== 384 * this._k + 32) {
+        throw new Error("invalid encapsulation key");
+      }
+      const m = this._getSeed(seed);
+      const [k, r] = g(m, h(pk));
       const ct = this._encap(pk, m, r);
-      const k = kdf(kBar, h(ct));
       return [ct, k];
     } catch (e: unknown) {
-      throw new KyberError(e);
+      throw new MlKemError(e);
     }
   }
 
   /**
    * Generates a ciphertext for the public key and a shared secret.
    *
-   * If an error occurred, throws {@link KyberError}.
+   * If an error occurred, throws {@link MlKemError}.
    *
    * @param ct A ciphertext generated by {@link encap}.
    * @param sk A private key.
    * @returns A shared secret.
-   * @throws {@link KyberError}
+   * @throws {@link MlKemError}
    *
-   * @example The {@link Kyber768} decapsulation.
+   * @example The {@link MlKem768} decapsulation.
    *
    * ```ts
-   * // import { Kyber768 } from "crystals-kyber-js"; // Node.js
-   * import { Kyber768 } from "http://deno.land/x/crystals_kyber/mod.ts"; // Deno
+   * // import { MlKem768 } from "crystals-kyber-js"; // Node.js
+   * import { MlKem768 } from "http://deno.land/x/crystals_kyber/mod.ts"; // Deno
    *
-   * const kyber = new Kyber768();
+   * const kyber = new MlKem768();
    * const [pk, sk] = await kyber.generateKeyPair();
    * const [ct, ssS] = await kyber.encap(pk);
    * const ssR = await kyber.decap(ct, sk);
@@ -207,12 +205,17 @@ export class KyberBase {
     await this._setup();
 
     try {
+      // ciphertext type check
       if (ct.byteLength !== this._compressedUSize + this._compressedVSize) {
         throw new Error("Invalid ct size");
       }
+      // decapsulation key type check
+      if (sk.length !== 768 * this._k + 96) {
+        throw new Error("Invalid decapsulation key");
+      }
       const sk2 = sk.subarray(0, this._skSize);
       const pk = sk.subarray(this._skSize, this._skSize + this._pkSize);
-      const p = sk.subarray(
+      const hpk = sk.subarray(
         this._skSize + this._pkSize,
         this._skSize + this._pkSize + 32,
       );
@@ -222,14 +225,12 @@ export class KyberBase {
       );
 
       const m2 = this._decap(ct, sk2);
-      const [kBar2, r2] = g(m2, p);
+      const [k2, r2] = g(m2, hpk);
+      const kBar = kdf(z, ct);
       const ct2 = this._encap(pk, m2, r2);
-      if (constantTimeCompare(ct, ct2) == 1) {
-        return kdf(kBar2, h(ct));
-      }
-      return kdf(z, h(ct));
+      return constantTimeCompare(ct, ct2) === 1 ? k2 : kBar;
     } catch (e: unknown) {
-      throw new KyberError(e);
+      throw new MlKemError(e);
     }
   }
 
@@ -353,8 +354,13 @@ export class KyberBase {
     seed: Uint8Array,
   ): Uint8Array {
     const tHat = new Array<Array<number>>(this._k);
+    const pkCheck = new Uint8Array(384 * this._k); // to validate the pk modulo (see input validation at NIST draft 6.2)
     for (let i = 0; i < this._k; i++) {
       tHat[i] = polyFromBytes(pk.subarray(i * 384, (i + 1) * 384));
+      pkCheck.set(polyToBytes(tHat[i]), i * 384);
+    }
+    if (!equalUint8Array(pk.subarray(0, pkCheck.length), pkCheck)) {
+      throw new Error("invalid encapsulation key");
     }
     const rho = pk.subarray(this._skSize);
     const a = this._sampleMatrix(rho, true);
@@ -759,17 +765,12 @@ function polyFromBytes(a: Uint8Array): Array<number> {
 function polyToMsg(a: Array<number>): Uint8Array {
   const msg = new Uint8Array(32);
   let t;
-  // const a2 = subtractQ(a);
+  const a2 = subtractQ(a);
   for (let i = 0; i < N / 8; i++) {
     msg[i] = 0;
     for (let j = 0; j < 8; j++) {
-      // t = (((uint16(a2[8 * i + j]) << 1) + uint16(Q / 2)) / uint16(Q)) & 1;
-      t = a[8 * i + j];
-      t = t << 1;
-      t += 1665;
-      t = Math.imul(t, 80635);
-      t = t >>> 28;
-      t &= 1;
+      t = (((uint16(a2[8 * i + j]) << 1) + uint16(Q / 2)) /
+        uint16(Q)) & 1;
       msg[i] |= byte(t << j);
     }
   }
