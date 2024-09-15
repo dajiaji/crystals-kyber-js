@@ -3,9 +3,7 @@
   "version": "1.1.2",
   "exports": "./mod.ts",
   "imports": {
-    "@deno/dnt": "jsr:@deno/dnt@^0.41.3",
-    "@noble/hashes": "npm:@noble/hashes@^1.5.0",
-    "testing/": "https://deno.land/std@0.213.0/testing/"
+    "@noble/hashes": "npm:@noble/hashes@^1.5.0"
   },
   "fmt": {
     "include": [
@@ -28,11 +26,11 @@
     ]
   },
   "tasks": {
-    "test": "deno fmt && deno lint && deno test test -A --fail-fast --doc --coverage=coverage --parallel --allow-read",
+    "test": "deno fmt && deno lint && deno test --import-map=./import_map.json test -A --fail-fast --doc --coverage=coverage --parallel --allow-read",
     "test:cloudflare": "cd test/runtimes/cloudflare && npm install && npm link crystals-kyber-js && npm run test",
     "cov": "deno coverage ./coverage --lcov --exclude='test'",
     "npm": "deno task dnt && deno task npm-link && deno task npm-pack",
-    "dnt": "deno run -A dnt.ts",
+    "dnt": "deno run --import-map=./import_map.json -A dnt.ts",
     "npm-link": "cd npm && npm link",
     "npm-pack": "cd npm && npm pack --dry-run",
     "minify": "esbuild npm/esm/mod.js --bundle --format=esm --minify"

@@ -37,4 +37,4 @@ jobs:
         run: |
           nohup bun src/index.js &
           sleep 3
-          deno test crystals-kyber.spec.ts --allow-net
+          deno test --import-map=../../../import_map.json crystals-kyber.spec.ts --allow-net --config=../../../deno.json
