@@ -1,6 +1,6 @@
 import { build, emptyDir } from "@deno/dnt";
 
-await emptyDir("./npm");
+await emptyDir("./npm/" + Deno.args[0]);
 await emptyDir("test/runtimes/browsers/node_modules");
 await emptyDir("test/runtimes/bun/node_modules");
 await emptyDir("test/runtimes/cloudflare/node_modules");
@@ -9,7 +9,7 @@ const denoPkg = JSON.parse(await Deno.readTextFile("./deno.json"));
 
 await build({
   entryPoints: ["./mod.ts"],
-  outDir: "./npm",
+  outDir: "./npm/" + Deno.args[0],
   typeCheck: "both",
   test: true,
   declaration: "inline",
@@ -22,7 +22,7 @@ await build({
     deno: "dev",
   },
   package: {
-    name: "crystals-kyber-js",
+    name: Deno.args[0],
     version: denoPkg.version,
     description:
       "A CRYSTALS-KYBER implementation written in TypeScript for various JavaScript runtimes",
@@ -63,5 +63,5 @@ await build({
 });
 
 // post build steps
-Deno.copyFileSync("LICENSE", "npm/LICENSE");
-Deno.copyFileSync("README.md", "npm/README.md");
+Deno.copyFileSync("LICENSE", "npm/" + Deno.args[0] + "/LICENSE");
+Deno.copyFileSync("README.md", "npm/" + Deno.args[0] + "/README.md");

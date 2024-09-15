@@ -5,7 +5,7 @@ export function testVectorPath(): string {
   if (isDeno()) {
     return "./test/vectors";
   }
-  return "../../test/vectors";
+  return "../../../test/vectors";
 }
 
 export function hexToBytes(v: string): Uint8Array {

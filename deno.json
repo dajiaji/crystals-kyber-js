@@ -30,9 +30,9 @@
     "test:cloudflare": "cd test/runtimes/cloudflare && npm install && npm link crystals-kyber-js && npm run test",
     "cov": "deno coverage ./coverage --lcov --exclude='test'",
     "npm": "deno task dnt && deno task npm-link && deno task npm-pack",
-    "dnt": "deno run --import-map=./import_map.json -A dnt.ts",
-    "npm-link": "cd npm && npm link",
-    "npm-pack": "cd npm && npm pack --dry-run",
-    "minify": "esbuild npm/esm/mod.js --bundle --format=esm --minify"
+    "dnt": "deno run --import-map=./import_map.json -A dnt.ts crystals-kyber-js",
+    "npm-link": "cd npm/crystals-kyber-js && npm link",
+    "npm-pack": "cd npm/crystals-kyber-js && npm pack --dry-run",
+    "minify": "esbuild npm/crystals-kyber-js/esm/mod.js --bundle --format=esm --minify"
   }
 }

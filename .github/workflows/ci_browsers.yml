@@ -28,7 +28,7 @@ jobs:
       - name: Run dnt
         run: deno task dnt
       - name: Run npm install
-        working-directory: ./npm
+        working-directory: ./npm/crystals-kyber-js
         run: npm install
       - name: Build docs for crystals-kyber-js
         run: |
