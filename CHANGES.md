@@ -1,5 +1,16 @@
 # Changes
 
+## Version 2.0.1
+
+Released 2024-09-16
+
+- [(#47) Update bench from Kyber to MlKem.](https://github.com/dajiaji/crystals-kyber-js/pull/47)
+- [(#46) Rename source files from kyber to mlKem.](https://github.com/dajiaji/crystals-kyber-js/pull/46)
+- [(#46) Rename KyberBase to MlKemBase.](https://github.com/dajiaji/crystals-kyber-js/pull/46)
+- [(#45) Use oven-sh/setup-bun@v2 for bun CI.](https://github.com/dajiaji/crystals-kyber-js/pull/45)
+- [(#44) Add support for Node.js 22.](https://github.com/dajiaji/crystals-kyber-js/pull/38)
+- [(#43) Fix typo on README.](https://github.com/dajiaji/crystals-kyber-js/pull/43)
+
 ## Version 2.0.0
 
 Released 2024-09-15
