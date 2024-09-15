@@ -7,7 +7,7 @@
     },
     "noEmit": true,
     "allowImportingTsExtensions": true
-  }, 
+  },
   "include": [
     "mod.ts",
     "src/**/*"
