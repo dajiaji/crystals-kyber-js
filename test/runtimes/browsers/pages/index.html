@@ -2,7 +2,7 @@
   <head><title>crystals-kyber-js test</title></head>
   <body>
     <script type="module">
-      import { Kyber1024, Kyber512, Kyber768 } from './src/crystals-kyber.js';
+      import { MlKem1024, MlKem512, MlKem768 } from './src/crystals-kyber.js';
 
       function isEqual(x, y) {
         if (x.length !== y.length) {
@@ -16,7 +16,7 @@
         return true;
       }
 
-      async function doKyber(ctx) {
+      async function doMlKem(ctx) {
         // generateKeyPair/encap/decap
         const [pkR, skR] = await ctx.generateKeyPair();
         const [ct, ssS] = await ctx.encap(pkR);
@@ -40,20 +40,20 @@
         let pass = 0;
         let fail = 0;
 
-        // Kyber512
-        if (await doKyber(new Kyber512())) {
+        // MlKem512
+        if (await doMlKem(new MlKem512())) {
           pass++;
         } else {
           fail++;
         }
-        // Kyber768
-        if (await doKyber(new Kyber768())) {
+        // MlKem768
+        if (await doMlKem(new MlKem768())) {
           pass++;
         } else {
           fail++;
         }
-        // Kyber1024
-        if (await doKyber(new Kyber1024())) {
+        // MlKem1024
+        if (await doMlKem(new MlKem1024())) {
           pass++;
         } else {
           fail++;
