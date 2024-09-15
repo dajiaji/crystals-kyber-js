@@ -1,28 +1,51 @@
 {
-  "name": "@dajiaji/crystals-kyber-js",
+  "name": "@dajiaji/mlkem",
   "version": "1.1.2",
   "exports": "./mod.ts",
   "imports": {
     "@noble/hashes": "npm:@noble/hashes@^1.5.0"
   },
+  "publish": {
+    "exclude": [
+      "dnt.ts",
+      ".github/",
+      "bench/",
+      "npm/",
+      "test/",
+      "import_map.json",
+      "tsconfig.json"
+    ]
+  },
   "fmt": {
     "include": [
-      "README.md",
-      "deno.json",
+      "**/*.md",
+      "**/*.json",
       "dnt.ts",
       "mod.ts",
+      "bench/",
       "src/",
-      "test/",
-      "bench/"
+      "test/"
     ],
     "exclude": [
-      "**/*/node_modules"
+      "**/*/*.js",
+      "npm/",
+      "coverage/"
     ]
   },
   "lint": {
-    "include": ["mod.ts", "src/", "test/", "bench/"],
+    "include": [
+      "**/*.md",
+      "**/*.json",
+      "dnt.ts",
+      "mod.ts",
+      "bench/",
+      "src/",
+      "test/"
+    ],
     "exclude": [
-      "**/*/node_modules"
+      "**/*/*.js",
+      "npm/",
+      "coverage/"
     ]
   },
   "tasks": {
@@ -45,7 +68,6 @@
     "npm-publish": "deno task npm-publish:crystals-kyber-js && deno task npm-publish:mlkem",
     "npm-publish:crystals-kyber-js": "cd npm/crystals-kyber-js && npm publish",
     "npm-publish:mlkem": "cd npm/mlkem && npm publish",
-    "minify": "deno task minify:crystals-kyber-js && deno task minify:mlkem",
     "minify:crystals-kyber-js": "esbuild npm/crystals-kyber-js/esm/mod.js --bundle --format=esm --minify",
     "minify:mlkem": "esbuild npm/mlkem/esm/mod.js --bundle --format=esm --minify"
   }

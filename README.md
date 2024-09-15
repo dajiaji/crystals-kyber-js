@@ -1,15 +1,15 @@
 <h1 align="center">crystals-kyber-js</h1>
 
 <div align="center">
-
-[![deno doc](https://doc.deno.land/badge.svg)](https://doc.deno.land/https/deno.land/x/crystals_kyber/mod.ts)
-![Browser CI](https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_browsers.yml/badge.svg)
-![Node.js CI](https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_node.yml/badge.svg)
-![Deno CI](https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_deno.yml/badge.svg)
-![Cloudflare Workers CI](https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_cloudflare.yml/badge.svg)
-![Bun CI](https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_bun.yml/badge.svg)
-[![codecov](https://codecov.io/gh/dajiaji/crystals-kyber-js/branch/main/graph/badge.svg?token=7I7JGKDDJ2)](https://codecov.io/gh/dajiaji/crystals-kyber-js)
-
+<a href="https://jsr.io/@dajiaji/mlkem"><img src="https://jsr.io/badges/@dajiaji/mlkem" alt="JSR"/></a>
+<img src="https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_browsers.yml/badge.svg" alt="Browser CI" />
+<img src="https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_node.yml/badge.svg" alt="Node.js CI" />
+<img src="https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_deno.yml/badge.svg" alt="Deno CI" />
+<img src="https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_cloudflare.yml/badge.svg" alt="Cloudflare Workers CI" />
+<img src="https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_bun.yml/badge.svg" alt="bun CI" />
+<a href="https://codecov.io/gh/dajiaji/crystals-kyber-js">
+  <img src="https://codecov.io/gh/dajiaji/crystals-kyber-js/branch/main/graph/badge.svg?token=7I7JGKDDJ2" alt="codecov" />
+</a>
 </div>
 
 <div align="center">
