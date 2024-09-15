@@ -1,8 +1,5 @@
-import { describe, it } from "testing/bdd.ts";
-import {
-  assertEquals,
-  assertRejects,
-} from "https://deno.land/std@0.216.0/assert/mod.ts";
+import { assertEquals, assertRejects } from "@std/assert";
+import { describe, it } from "@std/testing/bdd";
 import { shake128 } from "../src/deps.ts";
 
 import { MlKem1024, MlKem512, MlKem768, MlKemError } from "../mod.ts";

@@ -3,7 +3,7 @@
     "module": "es2022",
     "target": "es2022",
     "paths": {
-      "@noble/*": ["./npm/node_modules/@noble/*"]
+      "@noble/*": ["./npm/crystals-kyber-js/node_modules/@noble/*"]
     },
     "noEmit": true,
     "allowImportingTsExtensions": true
