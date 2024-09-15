@@ -5,6 +5,17 @@
   "imports": {
     "@noble/hashes": "npm:@noble/hashes@^1.5.0"
   },
+  "publish": {
+    "exclude": [
+      "dnt.ts",
+      ".github/",
+      "bench/",
+      "npm/",
+      "test/",
+      "import_map.json",
+      "tsconfig.json"
+    ]
+  },
   "fmt": {
     "include": [
       "README.md",
