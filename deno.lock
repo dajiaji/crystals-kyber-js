@@ -24,7 +24,8 @@
       "jsr:@std/testing@^1.0.2": "jsr:@std/testing@1.0.2",
       "jsr:@ts-morph/bootstrap@^0.24.0": "jsr:@ts-morph/bootstrap@0.24.0",
       "jsr:@ts-morph/common@^0.24.0": "jsr:@ts-morph/common@0.24.0",
-      "npm:@noble/hashes@^1.5.0": "npm:@noble/hashes@1.5.0"
+      "npm:@noble/hashes@^1.5.0": "npm:@noble/hashes@1.5.0",
+      "npm:@types/node": "npm:@types/node@18.16.19"
     },
     "jsr": {
       "@david/code-block-writer@13.0.2": {
@@ -134,6 +135,10 @@
     "npm": {
       "@noble/hashes@1.5.0": {
         "integrity": "sha512-1j6kQFb7QRru7eKN3ZDvRcP13rugwdxZqCjbiAVZfIJwgj2A65UmT4TgARXGlXgnRkORLTDTrO19ZErt7+QXgA==",
+        "dependencies": {}
+      },
+      "@types/node@18.16.19": {
+        "integrity": "sha512-IXl7o+R9iti9eBW4Wg2hx1xQDig183jj7YLn8F7udNceyfkbn1ZxmzZXuak20gR40D7pIkIY1kYGx5VIGbaHKA==",
         "dependencies": {}
       }
     }

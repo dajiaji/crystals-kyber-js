@@ -37,9 +37,7 @@ but includes the following improvements:
   implementation.
 - ✅ Tree-shaking friendly.
 - ✅ Fix [KyberSlash](https://kyberslash.cr.yp.to/index.html) vulnerability.
-- ✅ ML-KEM
-  ([FIPS 203 initial public draft](https://csrc.nist.gov/pubs/fips/203/ipd))
-  support.
+- ✅ ML-KEM ([FIPS 203](https://csrc.nist.gov/pubs/fips/203/final)) support.
 
 This repository has the following packages:
 
