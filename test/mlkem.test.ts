@@ -1,6 +1,7 @@
 import { assertEquals, assertRejects } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
-import { TextLineStream } from "@std/streams/text-line-stream";
+import * as fs from "node:fs";
+import * as readline from "node:readline";
 import { shake128 } from "../src/deps.ts";
 
 import { MlKem1024, MlKem512, MlKem768, MlKemError } from "../mod.ts";
@@ -69,23 +70,29 @@ import { getDeterministicMlKemClass } from "./drng.ts";
     describe("CCTV/ML-KEM/modulus", () => {
       it("Invalid encapsulation keys", async () => {
         const sender = new MlKemClass();
-        using f = await Deno.open(
-          `${testVectorPath()}/modulus/ML-KEM-${size}.txt`,
-        );
-        const readable = f.readable
-          .pipeThrough(new TextDecoderStream())
-          .pipeThrough(new TextLineStream());
-        let count = 0;
-        for await (const line of readable) {
-          const invalidPk = hexToBytes(line);
-          await assertRejects(
-            () => sender.encap(invalidPk),
-            MlKemError,
-            "invalid encapsulation key",
-          );
-          count++;
+        const rl = readline.createInterface({
+          input: fs.createReadStream(
+            `${testVectorPath()}/modulus/ML-KEM-${size}.txt`,
+          ),
+          crlfDelay: Infinity,
+        });
+        try {
+          let count = 0;
+          for await (const line of rl) {
+            const invalidPk = hexToBytes(line);
+            await assertRejects(
+              () => sender.encap(invalidPk),
+              MlKemError,
+              "invalid encapsulation key",
+            );
+            count++;
+          }
+          console.log(`CCTV/ML-KEM/modulus test vector count: ${count}`);
+        } catch (e) {
+          console.error(e);
+        } finally {
+          rl.close();
         }
-        console.log(`CCTV/ML-KEM/modulus test vector count: ${count}`);
       });
     });
 
