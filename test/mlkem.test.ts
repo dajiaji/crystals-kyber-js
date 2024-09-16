@@ -1,5 +1,6 @@
 import { assertEquals, assertRejects } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
+import { TextLineStream } from "@std/streams/text-line-stream";
 import { shake128 } from "../src/deps.ts";
 
 import { MlKem1024, MlKem512, MlKem768, MlKemError } from "../mod.ts";
@@ -12,26 +13,6 @@ import { getDeterministicMlKemClass } from "./drng.ts";
   describe(MlKemClass.name, () => {
     const size = MlKemClass.name.substring(5);
     const DeterministicMlKemClass = getDeterministicMlKemClass(MlKemClass);
-
-    describe("KAT vectors", () => {
-      it("should match expected values", async () => {
-        const kyber = new MlKemClass();
-        const katData = await Deno.readTextFile(
-          `${testVectorPath()}/kat/kat_MLKEM_${size}.rsp`,
-        );
-        const { ct, sk, ss, msg, pk } = parseKAT(katData);
-        console.log(`test vector count: ${sk.length}`);
-
-        for (let i = 0; i < sk.length; i++) {
-          const ssDecapActual = await kyber.decap(ct[i], sk[i]);
-          assertEquals(ssDecapActual, ss[i]);
-
-          const [ctActual, ssEncapActual] = await kyber.encap(pk[i], msg[i]);
-          assertEquals(ctActual, ct[i]);
-          assertEquals(ssEncapActual, ss[i]);
-        }
-      });
-    });
 
     describe("A sample code in README.", () => {
       it("should work normally", async () => {
@@ -65,21 +46,64 @@ import { getDeterministicMlKemClass } from "./drng.ts";
       });
     });
 
-    describe("Advanced testing", () => {
+    describe("KAT vectors", () => {
+      it("should match expected values", async () => {
+        const kyber = new MlKemClass();
+        const katData = await Deno.readTextFile(
+          `${testVectorPath()}/kat/kat_MLKEM_${size}.rsp`,
+        );
+        const { ct, sk, ss, msg, pk } = parseKAT(katData);
+        console.log(`KAT test vector count: ${sk.length}`);
+
+        for (let i = 0; i < sk.length; i++) {
+          const ssDecapActual = await kyber.decap(ct[i], sk[i]);
+          assertEquals(ssDecapActual, ss[i]);
+
+          const [ctActual, ssEncapActual] = await kyber.encap(pk[i], msg[i]);
+          assertEquals(ctActual, ct[i]);
+          assertEquals(ssEncapActual, ss[i]);
+        }
+      });
+    });
+
+    describe("CCTV/ML-KEM/modulus", () => {
       it("Invalid encapsulation keys", async () => {
         const sender = new MlKemClass();
-        const testData = await Deno.readTextFile(
+        using f = await Deno.open(
           `${testVectorPath()}/modulus/ML-KEM-${size}.txt`,
         );
-        const invalidPk = hexToBytes(testData);
-        await assertRejects(
-          () => sender.encap(invalidPk),
-          MlKemError,
-          "invalid encapsulation key",
-        );
+        const readable = f.readable
+          .pipeThrough(new TextDecoderStream())
+          .pipeThrough(new TextLineStream());
+        let count = 0;
+        for await (const line of readable) {
+          const invalidPk = hexToBytes(line);
+          await assertRejects(
+            () => sender.encap(invalidPk),
+            MlKemError,
+            "invalid encapsulation key",
+          );
+          count++;
+        }
+        console.log(`CCTV/ML-KEM/modulus test vector count: ${count}`);
       });
+    });
 
-      it("'Unlucky' vectors that require an unusually large number of XOF reads", async () => {
+    describe("CCTV/ML-KEM/strcmp", () => {
+      it("strcmp vectors that fail strcmp() is used in decap.", async () => {
+        const kyber = new MlKemClass();
+        const testData = await Deno.readTextFile(
+          `${testVectorPath()}/strcmp/ML-KEM-${size}.txt`,
+        );
+        const { c: [ct], dk: [sk], K: [ss] } = parseKAT(testData);
+        const res = await kyber.decap(ct, sk);
+        assertEquals(res, ss);
+        console.log("CCTV/ML-KEM/strcmp test vector count: 1");
+      });
+    });
+
+    describe("CCTV/ML-KEM/unluckysample", () => {
+      it("Unlucky NTT sampling vectors that require an unusually large number of XOF reads", async () => {
         const kyber = new MlKemClass();
         const testData = await Deno.readTextFile(
           `${testVectorPath()}/unluckysample/ML-KEM-${size}.txt`,
@@ -87,8 +111,11 @@ import { getDeterministicMlKemClass } from "./drng.ts";
         const { c: [ct], dk: [sk], K: [ss] } = parseKAT(testData);
         const res = await kyber.decap(ct, sk);
         assertEquals(res, ss);
+        console.log("CCTV/ML-KEM/unluckysample test vector count: 1");
       });
+    });
 
+    describe("pq-crystals/kyber", () => {
       it("Accumulated vectors", async () => { // See https://github.com/C2SP/CCTV/blob/main/ML-KEM/README.md#accumulated-pq-crystals-vectors
         const deterministicMlKem = new DeterministicMlKemClass();
         const shakeInstance = shake128.create({ dkLen: 32 });
@@ -116,6 +143,7 @@ import { getDeterministicMlKemClass } from "./drng.ts";
           "MlKem1024":
             "47ac888fe61544efc0518f46094b4f8a600965fc89822acb06dc7169d24f3543",
         };
+        console.log("pq-crystals/kyber test vector count: 10000");
 
         for (let i = 0; i < 10000; i++) {
           const [ek, dk] = await deterministicMlKem.generateKeyPair();
