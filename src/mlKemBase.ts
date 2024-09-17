@@ -84,8 +84,10 @@ export class MlKemBase {
    * @example Generates a {@link MlKem768} keypair.
    *
    * ```ts
-   * // import { MlKem768 } from "crystals-kyber-js"; // Node.js
-   * import { MlKem768 } from "http://deno.land/x/crystals_kyber/mod.ts"; // Deno
+   * // Using jsr:
+   * import { MlKem768 } from "@dajiaji/mlkem";
+   * // Using npm:
+   * // import { MlKem768 } from "mlkem"; // or "crystals-kyber-js"
    *
    * const kyber = new MlKem768();
    * const [pk, sk] = await kyber.generateKeyPair();
@@ -115,8 +117,10 @@ export class MlKemBase {
    * @example Derives a {@link MlKem768} keypair deterministically.
    *
    * ```ts
-   * // import { MlKem768 } from "crystals-kyber-js"; // Node.js
-   * import { MlKem768 } from "http://deno.land/x/crystals_kyber/mod.ts"; // Deno
+   * // Using jsr:
+   * import { MlKem768 } from "@dajiaji/mlkem";
+   * // Using npm:
+   * // import { MlKem768 } from "mlkem"; // or "crystals-kyber-js"
    *
    * const kyber = new MlKem768();
    * const seed = new Uint8Array(64);
@@ -152,8 +156,10 @@ export class MlKemBase {
    * @example The {@link MlKem768} encapsulation.
    *
    * ```ts
-   * // import { MlKem768 } from "crystals-kyber-js"; // Node.js
-   * import { MlKem768 } from "http://deno.land/x/crystals_kyber/mod.ts"; // Deno
+   * // Using jsr:
+   * import { MlKem768 } from "@dajiaji/mlkem";
+   * // Using npm:
+   * // import { MlKem768 } from "mlkem"; // or "crystals-kyber-js"
    *
    * const kyber = new MlKem768();
    * const [pk, sk] = await kyber.generateKeyPair();
@@ -193,8 +199,10 @@ export class MlKemBase {
    * @example The {@link MlKem768} decapsulation.
    *
    * ```ts
-   * // import { MlKem768 } from "crystals-kyber-js"; // Node.js
-   * import { MlKem768 } from "http://deno.land/x/crystals_kyber/mod.ts"; // Deno
+   * // Using jsr:
+   * import { MlKem768 } from "@dajiaji/mlkem";
+   * // Using npm:
+   * // import { MlKem768 } from "mlkem"; // or "crystals-kyber-js"
    *
    * const kyber = new MlKem768();
    * const [pk, sk] = await kyber.generateKeyPair();
