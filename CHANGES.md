@@ -1,5 +1,16 @@
 # Changes
 
+## Version 2.1.0
+
+Released 2024-09-17
+
+- [(#56) Sync with the latest KAT test vectors.](https://github.com/dajiaji/crystals-kyber-js/pull/56)
+- [(#50) Sync with the latest CCTV test vectors.](https://github.com/dajiaji/crystals-kyber-js/pull/50)
+- Update devDependencies:
+  - [(#55) Bump typescript to 5.6.2 in test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/55)
+  - [(#52) Bump wrangler to 3.78.2 in test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/51)
+  - [(#51) Bump cloudflare/workers-types to 4.20240909.0 in test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/51)
+
 ## Version 2.0.1
 
 Released 2024-09-16
