@@ -14,7 +14,7 @@
 </div>
 
 <div align="center">
-An ML-KEM/CRYSTALS-KYBER implementation written in TypeScript for various JavaScript runtimes.<br>
+An ML-KEM (NIST FIPS 203) and CRYSTALS-KYBER implementation written in TypeScript.<br>
 </div>
 <p></p>
 
@@ -28,24 +28,30 @@ This module is based on
 [ntontutoveanu/crystals-kyber-javascript](https://github.com/antontutoveanu/crystals-kyber-javascript),
 but includes the following improvements:
 
+- ✅ Written in TypeScript.
 - ✅ Available on various JavaScript runtimes: Browsers, Node.js, Deno,
   Cloudflare Workers, etc.
-- ✅ Written in TypeScript.
 - ✅ Deterministic key generation support.
 - ✅ Constant-time validation for ciphertext.
 - ✅ Better performance: 1.4 to 1.8 times faster than the original
   implementation.
 - ✅ Tree-shaking friendly.
 - ✅ Fix [KyberSlash](https://kyberslash.cr.yp.to/index.html) vulnerability.
-- ✅ ML-KEM ([FIPS 203](https://csrc.nist.gov/pubs/fips/203/final)) support.
+- ✅ ML-KEM ([NIST FIPS 203](https://csrc.nist.gov/pubs/fips/203/final))
+  support.
+- ✅ Passed all the tests published by:
+  - [post-quantum-cryptography/KAT/MLKEM](https://github.com/post-quantum-cryptography/KAT/tree/main/MLKEM)
+  - [C2SP/CCTV/ML-KEM](https://github.com/C2SP/CCTV/tree/main/ML-KEM)
+  - [pq-crystals/kyber](https://github.com/C2SP/CCTV/tree/main/ML-KEM) (10000
+    consecutive tests)
 
 This repository has the following packages:
 
-| package           | registry                                                                                                                  | description                                                                                                                                                                                                                     |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| crystals-kyber-js | [![npm](https://img.shields.io/npm/v/crystals-kyber-js?color=%23EE3214)](https://www.npmjs.com/package/crystals-kyber-js) | `v1.x` implements CRYSTALS-KYBER, and `v2.x-` implements ML-KEM (FIPS 203). `crystals-kyber-js` may become deprecated in the near future. Instead, we recommend switching to the following `mlkem` or `@dajiaji/mlkem`.         |
-| mlkem             | [![npm](https://img.shields.io/npm/v/mlkem?color=%23EE3214)](https://www.npmjs.com/package/mlkem)                         | Implements only ML-KEM (FIPS 203). It is an alias for the above `crystals-kyber-js` starting from `v2` onwards. We recommend using this package going forward.                                                                  |
-| @dajiaji/mlkem    | [![JSR](https://jsr.io/badges/@dajiaji/mlkem)](https://jsr.io/@dajiaji/mlkem)                                             | Implements only ML-KEM (FIPS 203). It is an ML-KEM package for [jsr.io](https://jsr.io/). The above `mlkem` is an npm package of `@dajiaji/mlkem`, which has been converted using [@deno/dnt](https://github.com/denoland/dnt). |
+| package           | registry                                                                                                                  | description                                                                                                                                                                                                                          |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| crystals-kyber-js | [![npm](https://img.shields.io/npm/v/crystals-kyber-js?color=%23EE3214)](https://www.npmjs.com/package/crystals-kyber-js) | `v1.x` implements CRYSTALS-KYBER, and `v2.x-` implements ML-KEM (NIST FIPS 203). `crystals-kyber-js` may become deprecated in the near future. Instead, we recommend switching to the following `mlkem` or `@dajiaji/mlkem`.         |
+| mlkem             | [![npm](https://img.shields.io/npm/v/mlkem?color=%23EE3214)](https://www.npmjs.com/package/mlkem)                         | Implements only ML-KEM (NIST FIPS 203). It is an alias for the above `crystals-kyber-js` starting from `v2` onwards. We recommend using this package going forward.                                                                  |
+| @dajiaji/mlkem    | [![JSR](https://jsr.io/badges/@dajiaji/mlkem)](https://jsr.io/@dajiaji/mlkem)                                             | Implements only ML-KEM (NIST FIPS 203). It is an ML-KEM package for [jsr.io](https://jsr.io/). The above `mlkem` is an npm package of `@dajiaji/mlkem`, which has been converted using [@deno/dnt](https://github.com/denoland/dnt). |
 
 For Node.js, you can install `mlkem` or `crystals-kyber-js` via npm, yarn or
 pnpm:
@@ -85,7 +91,7 @@ async function doMlKem() {
 try {
   doMlKem();
 } catch (err: unknown) {
-  console.log("failed: ", (err as Error).message);
+  console.log("failed:", (err as Error).message);
 }
 ```
 
