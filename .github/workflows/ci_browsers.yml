@@ -36,7 +36,7 @@ jobs:
           deno task minify:crystals-kyber-js > test/runtimes/browsers/pages/src/crystals-kyber.js
           mkdir pages/tests
           cp -rf test/runtimes/browsers/pages/* pages/tests
-      - uses: peaceiris/actions-gh-pages@v3
+      - uses: peaceiris/actions-gh-pages@v4
         with:
           deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
           publish_dir: ./pages
