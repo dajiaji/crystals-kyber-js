@@ -35,11 +35,11 @@ import { byteopsLoad24, int16, prf } from "./utils.ts";
  * ```
  */
 export class MlKem512 extends MlKemBase {
-  protected _k = 2;
-  protected _du = 10;
-  protected _dv = 4;
-  protected _eta1 = 3;
-  protected _eta2 = 2;
+  override _k = 2;
+  override _du = 10;
+  override _dv = 4;
+  override _eta1 = 3;
+  override _eta2 = 2;
 
   /**
    * Constructs a new instance of the MlKem512 class.

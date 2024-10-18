@@ -12,20 +12,27 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        deno-version: [1.x, 2.x]
     steps:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v1
         with:
-          deno-version: v1.x
+          deno-version: ${{ matrix.deno-version }}
+      - name: Remove lock file
+        if: matrix.deno-version == '1.x'
+        run: rm deno.lock
       - name: Run deno test
         run: |
           deno fmt --check
           deno task test
           deno task cov > coverage.lcov
       - uses: codecov/codecov-action@v2
+        if: matrix.deno-version == '2.x'
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.lcov
           flags: unittests
-      - name: Run deno publish --dry-run
-        run: npx jsr publish --dry-run
+      - name: Run deno publish (dry)
+        run: npx jsr publish --dry-run --allow-dirty
