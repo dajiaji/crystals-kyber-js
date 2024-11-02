@@ -1,5 +1,19 @@
 # Changes
 
+## Version 2.2.0
+
+Released 2024-11-02
+
+- [(#102) Add support for Deno v2.](https://github.com/dajiaji/crystals-kyber-js/pull/102)
+- Update Dev Dependencies:
+  - [(#112) Bump wrangler to 3.84.1.](https://github.com/dajiaji/crystals-kyber-js/pull/112)
+  - [(#105) Bump @cloudflare/workers-types to 4.20241022.0.](https://github.com/dajiaji/crystals-kyber-js/pull/105)
+  - [(#88) Bump cookie to 0.7.2.](https://github.com/dajiaji/crystals-kyber-js/pull/88)
+  - [(#88) Bump youch to 3.3.4.](https://github.com/dajiaji/crystals-kyber-js/pull/88)
+  - [(#84) Bump actions/gh-pages to v4.](https://github.com/dajiaji/crystals-kyber-js/pull/84)
+  - [(#71) Bump rollup to 4.22.4.](https://github.com/dajiaji/crystals-kyber-js/pull/71)
+  - [(#61) Bump vite to 5.4.6.](https://github.com/dajiaji/crystals-kyber-js/pull/61)
+
 ## Version 2.1.0
 
 Released 2024-09-17
