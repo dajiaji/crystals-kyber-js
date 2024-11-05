@@ -1,5 +1,11 @@
 # Changes
 
+## Version 2.3.0
+
+Released 2024-11-05
+
+- [(#116) Fix omission in compliance with the final version of FIPS 203.](https://github.com/dajiaji/crystals-kyber-js/pull/116)
+
 ## Version 2.2.0
 
 Released 2024-11-02
