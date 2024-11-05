@@ -308,7 +308,7 @@ export class MlKemBase {
    * @returns An array containing the public key and private key.
    */
   private _deriveCpaKeyPair(cpaSeed: Uint8Array): [Uint8Array, Uint8Array] {
-    const [publicSeed, noiseSeed] = g(cpaSeed);
+    const [publicSeed, noiseSeed] = g(cpaSeed, new Uint8Array([this._k]));
     const a = this._sampleMatrix(publicSeed, false);
     const s = this._sampleNoise1(noiseSeed, 0, this._k);
     const e = this._sampleNoise1(noiseSeed, this._k, this._k);
