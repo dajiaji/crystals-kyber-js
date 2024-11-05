@@ -6,9 +6,15 @@ import { shake128 } from "../src/deps.ts";
 
 import { MlKem1024, MlKem512, MlKem768, MlKemError } from "../mod.ts";
 import { loadCrypto } from "../src/utils.ts";
-import { parseKAT, testVectorPath } from "./utils.ts";
-import { bytesToHex, hexToBytes } from "./utils.ts";
+import { bytesToHex, hexToBytes, parseKAT, testVectorPath } from "./utils.ts";
 import { getDeterministicMlKemClass } from "./drng.ts";
+
+function concat(a: Uint8Array, b: Uint8Array): Uint8Array {
+  const ret = new Uint8Array(a.length + b.length);
+  ret.set(a, 0);
+  ret.set(b, a.length);
+  return ret;
+}
 
 [MlKem512, MlKem768, MlKem1024].forEach((MlKemClass) =>
   describe(MlKemClass.name, () => {
@@ -53,10 +59,16 @@ import { getDeterministicMlKemClass } from "./drng.ts";
         const katData = await Deno.readTextFile(
           `${testVectorPath()}/kat/kat_MLKEM_${size}.rsp`,
         );
-        const { ct, sk, ss, msg, pk } = parseKAT(katData);
+        const { z, d, ct, sk, ss, msg, pk } = parseKAT(katData);
         console.log(`KAT test vector count: ${sk.length}`);
 
         for (let i = 0; i < sk.length; i++) {
+          const [pkActual, skActual] = await kyber.deriveKeyPair(
+            concat(d[i], z[i]),
+          );
+          assertEquals(pkActual, pk[i]);
+          assertEquals(skActual, sk[i]);
+
           const ssDecapActual = await kyber.decap(ct[i], sk[i]);
           assertEquals(ssDecapActual, ss[i]);
 
@@ -144,11 +156,11 @@ import { getDeterministicMlKemClass } from "./drng.ts";
          */
         const expectedHashes: { [key: string]: string } = {
           "MlKem512":
-            "845913ea5a308b803c764a9ed8e9d814ca1fd9c82ba43c7b1e64b79c7a6ec8e4",
+            "705dcffc87f4e67e35a09dcaa31772e86f3341bd3ccf1e78a5fef99ae6a35a13",
           "MlKem768":
-            "f7db260e1137a742e05fe0db9525012812b004d29040a5b606aad3d134b548d3",
+            "f959d18d3d1180121433bf0e05f11e7908cf9d03edc150b2b07cb90bef5bc1c1",
           "MlKem1024":
-            "47ac888fe61544efc0518f46094b4f8a600965fc89822acb06dc7169d24f3543",
+            "e3bf82b013307b2e9d47dde791ff6dfc82e694e6382404abdb948b908b75bad5",
         };
         console.log("pq-crystals/kyber test vector count: 10000");
 
