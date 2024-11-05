@@ -156,11 +156,11 @@ function concat(a: Uint8Array, b: Uint8Array): Uint8Array {
          */
         const expectedHashes: { [key: string]: string } = {
           "MlKem512":
-            "845913ea5a308b803c764a9ed8e9d814ca1fd9c82ba43c7b1e64b79c7a6ec8e4",
+            "705dcffc87f4e67e35a09dcaa31772e86f3341bd3ccf1e78a5fef99ae6a35a13",
           "MlKem768":
-            "f7db260e1137a742e05fe0db9525012812b004d29040a5b606aad3d134b548d3",
+            "f959d18d3d1180121433bf0e05f11e7908cf9d03edc150b2b07cb90bef5bc1c1",
           "MlKem1024":
-            "47ac888fe61544efc0518f46094b4f8a600965fc89822acb06dc7169d24f3543",
+            "e3bf82b013307b2e9d47dde791ff6dfc82e694e6382404abdb948b908b75bad5",
         };
         console.log("pq-crystals/kyber test vector count: 10000");
 
