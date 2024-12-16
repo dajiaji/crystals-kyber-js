@@ -16,10 +16,10 @@ An ML-KEM (NIST FIPS 203) and CRYSTALS-KYBER implementation written in TypeScrip
 </div>
 <p></p>
 <div align="center">
-<p><a href="https://dajiaji.github.io/crystals-kyber-js/docs/main/" target="_blank" class="external">Documentation for main</a></p>
+<p><a href="https://dajiaji.github.io/crystals-kyber-js/docs/main/">Documentation for main</a></p>
 </div>
 <p>This module is based on
-<a href="https://github.com/antontutoveanu/crystals-kyber-javascript" target="_blank" class="external">ntontutoveanu/crystals-kyber-javascript</a>,
+<a href="https://github.com/antontutoveanu/crystals-kyber-javascript">ntontutoveanu/crystals-kyber-javascript</a>,
 but includes the following improvements:</p>
 <ul>
 <li>✅ Written in TypeScript.</li>
@@ -30,14 +30,14 @@ Cloudflare Workers, etc.</li>
 <li>✅ Better performance: 1.4 to 1.8 times faster than the original
 implementation.</li>
 <li>✅ Tree-shaking friendly.</li>
-<li>✅ Fix <a href="https://kyberslash.cr.yp.to/index.html" target="_blank" class="external">KyberSlash</a> vulnerability.</li>
-<li>✅ ML-KEM (<a href="https://csrc.nist.gov/pubs/fips/203/final" target="_blank" class="external">NIST FIPS 203</a>)
+<li>✅ Fix <a href="https://kyberslash.cr.yp.to/index.html">KyberSlash</a> vulnerability.</li>
+<li>✅ ML-KEM (<a href="https://csrc.nist.gov/pubs/fips/203/final">NIST FIPS 203</a>)
 support.</li>
 <li>✅ Passed all the tests published by:
 <ul>
-<li><a href="https://github.com/post-quantum-cryptography/KAT/tree/main/MLKEM" target="_blank" class="external">post-quantum-cryptography/KAT/MLKEM</a></li>
-<li><a href="https://github.com/C2SP/CCTV/tree/main/ML-KEM" target="_blank" class="external">C2SP/CCTV/ML-KEM</a></li>
-<li><a href="https://github.com/C2SP/CCTV/tree/main/ML-KEM" target="_blank" class="external">pq-crystals/kyber</a> (10000
+<li><a href="https://github.com/post-quantum-cryptography/KAT/tree/main/MLKEM">post-quantum-cryptography/KAT/MLKEM</a></li>
+<li><a href="https://github.com/C2SP/CCTV/tree/main/ML-KEM">C2SP/CCTV/ML-KEM</a></li>
+<li><a href="https://github.com/C2SP/CCTV/tree/main/ML-KEM">pq-crystals/kyber</a> (10000
 consecutive tests)</li>
 </ul>
 </li>
@@ -54,18 +54,18 @@ consecutive tests)</li>
 <tbody>
 <tr>
 <td>crystals-kyber-js</td>
-<td><a href="https://www.npmjs.com/package/crystals-kyber-js" target="_blank" class="external"><img src="https://img.shields.io/npm/v/crystals-kyber-js?color=%23EE3214" alt="npm"></a></td>
+<td><a href="https://www.npmjs.com/package/crystals-kyber-js"><img src="https://img.shields.io/npm/v/crystals-kyber-js?color=%23EE3214" alt="npm"></a></td>
 <td><code>v1.x</code> implements CRYSTALS-KYBER, and <code>v2.x-</code> implements ML-KEM (NIST FIPS 203). <code>crystals-kyber-js</code> may become deprecated in the near future. Instead, we recommend switching to the following <code>mlkem</code> or <code>@dajiaji/mlkem</code>.</td>
 </tr>
 <tr>
 <td>mlkem</td>
-<td><a href="https://www.npmjs.com/package/mlkem" target="_blank" class="external"><img src="https://img.shields.io/npm/v/mlkem?color=%23EE3214" alt="npm"></a></td>
+<td><a href="https://www.npmjs.com/package/mlkem"><img src="https://img.shields.io/npm/v/mlkem?color=%23EE3214" alt="npm"></a></td>
 <td>Implements only ML-KEM (NIST FIPS 203). It is an alias for the above <code>crystals-kyber-js</code> starting from <code>v2</code> onwards. We recommend using this package going forward.</td>
 </tr>
 <tr>
 <td>@dajiaji/mlkem</td>
-<td><a href="https://jsr.io/@dajiaji/mlkem" target="_blank" class="external"><img src="https://jsr.io/badges/@dajiaji/mlkem" alt="JSR"></a></td>
-<td>Implements only ML-KEM (NIST FIPS 203). It is an ML-KEM package for <a href="https://jsr.io/" target="_blank" class="external">jsr.io</a>. The above <code>mlkem</code> is an npm package of <code>@dajiaji/mlkem</code>, which has been converted using <a href="https://github.com/denoland/dnt" target="_blank" class="external">@deno/dnt</a>.</td>
+<td><a href="https://jsr.io/@dajiaji/mlkem"><img src="https://jsr.io/badges/@dajiaji/mlkem" alt="JSR"></a></td>
+<td>Implements only ML-KEM (NIST FIPS 203). It is an ML-KEM package for <a href="https://jsr.io/">jsr.io</a>. The above <code>mlkem</code> is an npm package of <code>@dajiaji/mlkem</code>, which has been converted using <a href="https://github.com/denoland/dnt">@deno/dnt</a>.</td>
 </tr>
 </tbody>
 </table>
@@ -95,7 +95,7 @@ pnpm:</p>
 </code><button type="button">Copy</button></pre>
 
 <a id="deno" class="tsd-anchor"></a><h3 class="tsd-anchor-link">Deno<a href="#deno" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><p>Starting from version 2.0.0, <code>@dajiaji/mlkem</code> is available from the
-<a href="https://jsr.io" target="_blank" class="external">jsr.io</a>. From this version onwards, please use JSR import
+<a href="https://jsr.io">jsr.io</a>. From this version onwards, please use JSR import
 instead of HTTPS import in Deno.</p>
 <p><strong>JSR import (<code>&gt;=2.0.0</code>):</strong></p>
 <p>Add <code>@dajiaji/mlkem</code> package using the commands below:</p>
