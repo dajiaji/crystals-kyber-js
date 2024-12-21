@@ -163,7 +163,7 @@ function concat(a: Uint8Array, b: Uint8Array): Uint8Array {
           "MlKem1024":
             "c3ffe9ebecfa479c142656cbfbc6417efa05b77e994fe538eef4daed166363df",
         };
-        // count == 10000
+        // const count = 10000;
         // const expectedHashes: { [key: string]: string } = {
         //   "MlKem512":
         //     "705dcffc87f4e67e35a09dcaa31772e86f3341bd3ccf1e78a5fef99ae6a35a13",
@@ -171,6 +171,15 @@ function concat(a: Uint8Array, b: Uint8Array): Uint8Array {
         //     "f959d18d3d1180121433bf0e05f11e7908cf9d03edc150b2b07cb90bef5bc1c1",
         //   "MlKem1024":
         //     "e3bf82b013307b2e9d47dde791ff6dfc82e694e6382404abdb948b908b75bad5",
+        // };
+        // const count = 1000000;
+        // const expectedHashes: { [key: string]: string } = {
+        //   "MlKem512":
+        //     "21dd330d4355f2ae2876b9fa2b9de62ecaf76aca1d598de8db2b467d36e36a6a",
+        //   "MlKem768":
+        //     "3b108396a277f2952ff3243a985c9709bcb95788c39b7b36a2c4e19d1a41e51e",
+        //   "MlKem1024":
+        //     "6377c4f0ecfdb32e63f7b58227960828784fe0b3e0e5e5e9f77be300f003512a",
         // };
         console.log("pq-crystals/kyber test vector count:", count);
 
