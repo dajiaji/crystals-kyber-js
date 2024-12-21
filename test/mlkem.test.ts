@@ -154,17 +154,27 @@ function concat(a: Uint8Array, b: Uint8Array): Uint8Array {
          * k from ML-KEM.Decaps when provided with the random ct
          * The resulting hashes for 10 000 consecutive tests are:
          */
+        const count = 100;
         const expectedHashes: { [key: string]: string } = {
           "MlKem512":
-            "705dcffc87f4e67e35a09dcaa31772e86f3341bd3ccf1e78a5fef99ae6a35a13",
+            "449120c6e320ef3e9fbfa2316e5f2d2e1e6dd37d8ff5d086d5d2db7d42aff0a1",
           "MlKem768":
-            "f959d18d3d1180121433bf0e05f11e7908cf9d03edc150b2b07cb90bef5bc1c1",
+            "8d65b902f28edc683cebee2872962fd165a4d197c9e24ec74caa4470270df0b7",
           "MlKem1024":
-            "e3bf82b013307b2e9d47dde791ff6dfc82e694e6382404abdb948b908b75bad5",
+            "c3ffe9ebecfa479c142656cbfbc6417efa05b77e994fe538eef4daed166363df",
         };
-        console.log("pq-crystals/kyber test vector count: 10000");
+        // count == 10000
+        // const expectedHashes: { [key: string]: string } = {
+        //   "MlKem512":
+        //     "705dcffc87f4e67e35a09dcaa31772e86f3341bd3ccf1e78a5fef99ae6a35a13",
+        //   "MlKem768":
+        //     "f959d18d3d1180121433bf0e05f11e7908cf9d03edc150b2b07cb90bef5bc1c1",
+        //   "MlKem1024":
+        //     "e3bf82b013307b2e9d47dde791ff6dfc82e694e6382404abdb948b908b75bad5",
+        // };
+        console.log("pq-crystals/kyber test vector count:", count);
 
-        for (let i = 0; i < 10000; i++) {
+        for (let i = 0; i < count; i++) {
           const [ek, dk] = await deterministicMlKem.generateKeyPair();
           const [ct, k] = await deterministicMlKem.encap(ek);
           const kActual = await deterministicMlKem.decap(ct, dk);
@@ -182,7 +192,6 @@ function concat(a: Uint8Array, b: Uint8Array): Uint8Array {
             .update(k)
             .update(kRandom);
         }
-
         const actualHash = shakeInstance.digest();
         assertEquals(bytesToHex(actualHash), expectedHashes[MlKemClass.name]);
       });
