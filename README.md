@@ -192,7 +192,11 @@ as well.
 <!-- use a specific version -->
 <script type="module">
   // Using esm.sh:
-  import { MlKem1024, MlKem512, MlKem768 } from "https://esm.sh/mlkem@<SEMVER>";
+  import {
+    MlKem1024,
+    MlKem512,
+    MlKem768,
+  } from "https://esm.sh/mlkem@<SEMVER>";
   // Using unpkg.com:
   // import { MlKem768 } from "https://unpkg.com/mlkem@SEMVER";
   // ...
