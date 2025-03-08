@@ -49,7 +49,7 @@ jobs:
       - uses: actions/setup-node@v4
       - working-directory: ./test/runtimes/browsers
         run: |
-          npm install
+          npm ci
           npx playwright install-deps
           npx playwright install
           npx playwright test
