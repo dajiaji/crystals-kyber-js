@@ -3,7 +3,11 @@
   "version": "2.3.0",
   "exports": "./mod.ts",
   "imports": {
-    "@noble/hashes": "npm:@noble/hashes@^1.7.1"
+    "@deno/dnt": "jsr:@deno/dnt@^0.41.3",
+    "@noble/hashes": "npm:@noble/hashes@^1.7.1",
+    "@std/assert": "jsr:@std/assert@^1.0.11",
+    "@std/fs": "jsr:@std/fs@^1.0.14",
+    "@std/testing": "jsr:@std/testing@^1.0.9"
   },
   "publish": {
     "exclude": [
@@ -12,7 +16,6 @@
       "bench/",
       "npm/",
       "test/",
-      "import_map.json",
       "tsconfig.json"
     ]
   },
@@ -49,13 +52,13 @@
     ]
   },
   "tasks": {
-    "test": "deno fmt && deno lint && deno test --import-map=./import_map.json test --fail-fast --doc --coverage=coverage --parallel --allow-read",
-    "test:cloudflare": "cd test/runtimes/cloudflare && npm install && npm link crystals-kyber-js && npm run test",
+    "test": "deno fmt && deno lint && deno test ./test --fail-fast --doc --coverage=coverage --parallel --allow-read",
+    "test:cloudflare": "./scripts/test_cloudflare.sh",
     "cov": "deno coverage ./coverage --lcov --exclude='test'",
     "npm": "deno task dnt && deno task npm-link && deno task npm-pack && deno task npm-publish:dry",
     "dnt": "deno task dnt:crystals-kyber-js && deno task dnt:mlkem",
-    "dnt:crystals-kyber-js": "deno run --import-map=./import_map.json -A dnt.ts crystals-kyber-js",
-    "dnt:mlkem": "deno run --import-map=./import_map.json -A dnt.ts mlkem",
+    "dnt:crystals-kyber-js": "deno run -A dnt.ts crystals-kyber-js",
+    "dnt:mlkem": "deno run -A dnt.ts mlkem",
     "npm-link": "deno task npm-link:crystals-kyber-js && deno task npm-link:mlkem",
     "npm-link:crystals-kyber-js": "cd npm/crystals-kyber-js && npm link",
     "npm-link:mlkem": "cd npm/mlkem && npm link",

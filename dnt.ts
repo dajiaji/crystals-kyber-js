@@ -1,11 +1,32 @@
 import { build, emptyDir } from "@deno/dnt";
-
-await emptyDir("./npm/" + Deno.args[0]);
-await emptyDir("test/runtimes/browsers/node_modules");
-await emptyDir("test/runtimes/bun/node_modules");
-await emptyDir("test/runtimes/cloudflare/node_modules");
+import { copySync } from "@std/fs";
 
 const denoPkg = JSON.parse(await Deno.readTextFile("./deno.json"));
+
+// pre build steps
+await emptyDir(`./npm/${Deno.args[0]}`);
+await emptyDir(`./npm/test/${Deno.args[0]}/runtimes/cloudflare`);
+try {
+  await Deno.remove("test/runtimes/browsers/node_modules", {
+    recursive: true,
+  });
+} catch {
+  // ignore
+}
+try {
+  await Deno.remove("test/runtimes/bun/node_modules", {
+    recursive: true,
+  });
+} catch {
+  // ignore
+}
+try {
+  await Deno.remove("test/runtimes/cloudflare/node_modules", {
+    recursive: true,
+  });
+} catch {
+  // ignore
+}
 
 await build({
   entryPoints: ["./mod.ts"],
@@ -14,7 +35,7 @@ await build({
   test: true,
   declaration: true,
   scriptModule: "umd",
-  importMap: "./import_map.json",
+  importMap: "./npm/import_map.json",
   compilerOptions: {
     lib: ["ES2022", "DOM"],
   },
@@ -67,8 +88,13 @@ await build({
 });
 
 // post build steps
-Deno.copyFileSync("LICENSE", "npm/" + Deno.args[0] + "/LICENSE");
-Deno.copyFileSync("README.md", "npm/" + Deno.args[0] + "/README.md");
-await emptyDir("./npm/" + Deno.args[0] + "/src");
-await emptyDir("./npm/" + Deno.args[0] + "/esm/test");
-await emptyDir("./npm/" + Deno.args[0] + "/script/test");
+copySync(
+  "test/runtimes/cloudflare",
+  `npm/test/${Deno.args[0]}/runtimes/cloudflare`,
+  { overwrite: true },
+);
+Deno.copyFileSync("LICENSE", `./npm/${Deno.args[0]}/LICENSE`);
+Deno.copyFileSync("README.md", `./npm/${Deno.args[0]}/README.md`);
+// await emptyDir("./npm/" + Deno.args[0] + "/src");
+// await emptyDir("./npm/" + Deno.args[0] + "/esm/test");
+// await emptyDir("./npm/" + Deno.args[0] + "/script/test");

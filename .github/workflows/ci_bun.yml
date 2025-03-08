@@ -37,4 +37,4 @@ jobs:
         run: |
           nohup bun src/index.js &
           sleep 3
-          deno test --import-map=../../../import_map.json mlkem.spec.ts --allow-net --config=../../../deno.json
+          deno test --import-map=../../../npm/import_map.json mlkem.spec.ts --allow-net --config=../../../deno.json
