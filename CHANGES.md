@@ -1,5 +1,23 @@
 # Changes
 
+## Version 2.3.1
+
+Released 2025-03-09
+
+- [(#225) Fix the lack of type declaration on test server.](https://github.com/dajiaji/crystals-kyber-js/pull/225)
+- [(#224) Fix declaration to be inline.](https://github.com/dajiaji/crystals-kyber-js/pull/224)
+- [(#223) Refine deno task for cloudflare test.](https://github.com/dajiaji/crystals-kyber-js/pull/223)
+- [(#223) Update deno version to 2.x on CIs.](https://github.com/dajiaji/crystals-kyber-js/pull/223)
+- Update Dependencies:
+  - [(#223) Bump @noble/hashes to 1.7.1.](https://github.com/dajiaji/crystals-kyber-js/pull/223)
+- Update Dev Dependencies:
+  - [(#223) Quit to use playwright-github-action.](https://github.com/dajiaji/crystals-kyber-js/pull/223)
+  - [(#223) Bump wrangler to 3.114.0 on test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/223)
+  - [(#223) Bump typescript to 5.8.2 on test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/223)
+  - [(#223) Bump vitest to 3.0.8 on test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/223)
+  - [(#223) Bump @cloudflare/workers-types to 4.20250303.0.](https://github.com/dajiaji/crystals-kyber-js/pull/223)
+  - [(#223) Bump @cloudflare/vitest-pool-workers to 0.7.7.](https://github.com/dajiaji/crystals-kyber-js/pull/223)
+
 ## Version 2.3.0
 
 Released 2024-11-05
