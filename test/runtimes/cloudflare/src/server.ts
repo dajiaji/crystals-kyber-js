@@ -39,8 +39,8 @@ export async function testServer(request: Request): Promise<Response> {
       if (!compare(dPkR, dPkR2) || !compare(dSkR, dSkR2)) {
         throw new Error("The two derived keypairs mismatch.");
       }
-    } catch (e) {
-      return new Response("ng: " + e.message);
+    } catch (e: unknown) {
+      return new Response("ng: " + (e as Error).message);
     }
     return new Response("ok");
   }
@@ -64,8 +64,8 @@ export async function testServer(request: Request): Promise<Response> {
       if (!compare(dPkR, dPkR2) || !compare(dSkR, dSkR2)) {
         throw new Error("The two derived keypairs mismatch.");
       }
-    } catch (e) {
-      return new Response("ng: " + e.message);
+    } catch (e: unknown) {
+      return new Response("ng: " + (e as Error).message);
     }
     return new Response("ok");
   }
@@ -89,8 +89,8 @@ export async function testServer(request: Request): Promise<Response> {
       if (!compare(dPkR, dPkR2) || !compare(dSkR, dSkR2)) {
         throw new Error("The two derived keypairs mismatch.");
       }
-    } catch (e) {
-      return new Response("ng: " + e.message);
+    } catch (e: unknown) {
+      return new Response("ng: " + (e as Error).message);
     }
     return new Response("ok");
   }
