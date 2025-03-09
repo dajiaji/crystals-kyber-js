@@ -33,7 +33,7 @@ await build({
   outDir: "./npm/" + Deno.args[0],
   typeCheck: "both",
   test: true,
-  declaration: true,
+  declaration: "inline",
   scriptModule: "umd",
   importMap: "./npm/import_map.json",
   compilerOptions: {
