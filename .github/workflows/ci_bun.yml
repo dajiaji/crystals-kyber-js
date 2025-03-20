@@ -24,7 +24,7 @@ jobs:
           deno-version: v2.x
       - uses: actions/setup-node@v4
         with:
-          node-version: v20.x
+          node-version: v22.x
       - run: |
           npm install -g esbuild
           deno task dnt
