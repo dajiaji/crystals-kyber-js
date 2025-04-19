@@ -13,7 +13,7 @@
     "@cloudflare/vitest-pool-workers": "^0.8.18",
     "@cloudflare/workers-types": "^4.20250414.0",
     "typescript": "^5.8.3",
-    "vitest": "^3.0.9",
+    "vitest": "^3.1.1",
     "wrangler": "^4.11.1"
   },
   "dependencies": {
