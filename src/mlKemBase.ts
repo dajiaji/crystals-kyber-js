@@ -447,7 +447,7 @@ export class MlKemBase {
    * @param transposed - A flag indicating whether the matrix should be transposed or not.
    * @returns The generated sample matrix.
    */
-  private _sampleMatrix(
+  public _sampleMatrix(
     seed: Uint8Array,
     transposed: boolean,
   ): Array<Array<Array<number>>> {
@@ -751,7 +751,7 @@ function polyToBytes(a: Array<number>): Uint8Array {
  * @param a The Uint8Array to convert to a polynomial.
  * @returns An array of numbers representing the polynomial.
  */
-function polyFromBytes(a: Uint8Array): Array<number> {
+export function polyFromBytes(a: Uint8Array): Array<number> {
   const r = new Array<number>(384).fill(0);
   for (let i = 0; i < N / 2; i++) {
     r[2 * i] = int16(

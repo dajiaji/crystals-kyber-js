@@ -72,6 +72,7 @@
     "npm-publish:crystals-kyber-js": "cd npm/crystals-kyber-js && npm publish",
     "npm-publish:mlkem": "cd npm/mlkem && npm publish",
     "minify:crystals-kyber-js": "esbuild npm/crystals-kyber-js/esm/mod.js --bundle --format=esm --minify",
-    "minify:mlkem": "esbuild npm/mlkem/esm/mod.js --bundle --format=esm --minify"
+    "minify:mlkem": "esbuild npm/mlkem/esm/mod.js --bundle --format=esm --minify",
+    "gen-q": "deno run generateQurrencyKey.ts"
   }
 }
