@@ -14,7 +14,7 @@
     "@cloudflare/workers-types": "^4.20250726.0",
     "typescript": "^5.8.3",
     "vitest": "^3.2.4",
-    "wrangler": "^4.26.0"
+    "wrangler": "^4.26.1"
   },
   "dependencies": {
     "crystals-kyber-js": "^2.3.1"
