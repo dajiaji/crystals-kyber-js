@@ -1,5 +1,5 @@
 {
-  "version": "4",
+  "version": "5",
   "specifiers": {
     "jsr:@david/code-block-writer@^13.0.2": "13.0.3",
     "jsr:@deno/cache-dir@~0.10.3": "0.10.3",
@@ -31,7 +31,6 @@
     "jsr:@std/testing@^1.0.9": "1.0.9",
     "jsr:@ts-morph/bootstrap@0.24": "0.24.0",
     "jsr:@ts-morph/common@0.24": "0.24.0",
-    "npm:@noble/hashes@^1.7.1": "1.7.1",
     "npm:@types/node@*": "18.16.19"
   },
   "jsr": {
@@ -177,9 +176,6 @@
     }
   },
   "npm": {
-    "@noble/hashes@1.7.1": {
-      "integrity": "sha512-B8XBPsn4vT/KJAGqDzbwztd+6Yte3P4V7iafm24bxgDe/mlRuK6xmWPuCNrKt2vDafZ8MfJLlchDG/vYafQEjQ=="
-    },
     "@types/node@18.16.19": {
       "integrity": "sha512-IXl7o+R9iti9eBW4Wg2hx1xQDig183jj7YLn8F7udNceyfkbn1ZxmzZXuak20gR40D7pIkIY1kYGx5VIGbaHKA=="
     }
@@ -189,8 +185,7 @@
       "jsr:@deno/dnt@~0.41.3",
       "jsr:@std/assert@^1.0.11",
       "jsr:@std/fs@^1.0.14",
-      "jsr:@std/testing@^1.0.9",
-      "npm:@noble/hashes@^1.7.1"
+      "jsr:@std/testing@^1.0.9"
     ]
   }
 }
