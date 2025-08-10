@@ -1,6 +1,6 @@
 {
   "name": "@dajiaji/mlkem",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "exports": "./mod.ts",
   "imports": {
     "@deno/dnt": "jsr:@deno/dnt@^0.41.3",
