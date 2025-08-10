@@ -18,19 +18,24 @@
  * Check out `sha3-addons` module for cSHAKE, k12, and others.
  * @module
  */
-import { rotlBH, rotlBL, rotlSH, rotlSL, split } from './_u64.ts';
+import { rotlBH, rotlBL, rotlSH, rotlSL, split } from "./_u64.ts";
 // prettier-ignore
 import {
-  abytes, aexists, anumber, aoutput,
-  clean, createHasher,
+  abytes,
+  aexists,
+  anumber,
+  aoutput,
+  type CHash,
+  type CHashXOF,
+  clean,
+  createHasher,
+  type Hash,
+  type HashInfo,
+  type HashXOF,
   oidNist,
   swap32IfBE,
   u32,
-  type CHash, type CHashXOF,
-  type Hash,
-  type HashInfo,
-  type HashXOF
-} from './utils.ts';
+} from "./utils.ts";
 
 // No __PURE__ annotations in sha3 header:
 // EVERYTHING is in fact used on every export.
@@ -63,8 +68,16 @@ const SHA3_IOTA_H = IOTAS[0];
 const SHA3_IOTA_L = IOTAS[1];
 
 // Left rotation (without 0, 32, 64)
-const rotlH = (h: number, l: number, s: number) => (s > 32 ? rotlBH(h, l, s) : rotlSH(h, l, s));
-const rotlL = (h: number, l: number, s: number) => (s > 32 ? rotlBL(h, l, s) : rotlSL(h, l, s));
+const rotlH = (
+  h: number,
+  l: number,
+  s: number,
+) => (s > 32 ? rotlBH(h, l, s) : rotlSH(h, l, s));
+const rotlL = (
+  h: number,
+  l: number,
+  s: number,
+) => (s > 32 ? rotlBL(h, l, s) : rotlSL(h, l, s));
 
 /** `keccakf1600` internal function, additionally allows to adjust round count. */
 export function keccakP(s: Uint32Array, rounds: number = 24): void {
@@ -72,7 +85,9 @@ export function keccakP(s: Uint32Array, rounds: number = 24): void {
   // NOTE: all indices are x2 since we store state as u32 instead of u64 (bigints to slow in js)
   for (let round = 24 - rounds; round < 24; round++) {
     // Theta θ
-    for (let x = 0; x < 10; x++) B[x] = s[x] ^ s[x + 10] ^ s[x + 20] ^ s[x + 30] ^ s[x + 40];
+    for (let x = 0; x < 10; x++) {
+      B[x] = s[x] ^ s[x + 10] ^ s[x + 20] ^ s[x + 30] ^ s[x + 40];
+    }
     for (let x = 0; x < 10; x += 2) {
       const idx1 = (x + 8) % 10;
       const idx0 = (x + 2) % 10;
@@ -101,7 +116,9 @@ export function keccakP(s: Uint32Array, rounds: number = 24): void {
     // Chi (χ)
     for (let y = 0; y < 50; y += 10) {
       for (let x = 0; x < 10; x++) B[x] = s[y + x];
-      for (let x = 0; x < 10; x++) s[y + x] ^= ~B[(x + 2) % 10] & B[(x + 4) % 10];
+      for (let x = 0; x < 10; x++) {
+        s[y + x] ^= ~B[(x + 2) % 10] & B[(x + 4) % 10];
+      }
     }
     // Iota (ι)
     s[0] ^= SHA3_IOTA_H[round];
@@ -131,7 +148,7 @@ export class Keccak implements Hash<Keccak>, HashXOF<Keccak> {
     suffix: number,
     outputLen: number,
     enableXOF = false,
-    rounds: number = 24
+    rounds: number = 24,
   ) {
     this.blockLen = blockLen;
     this.suffix = suffix;
@@ -139,11 +156,12 @@ export class Keccak implements Hash<Keccak>, HashXOF<Keccak> {
     this.enableXOF = enableXOF;
     this.rounds = rounds;
     // Can be passed from user as dkLen
-    anumber(outputLen, 'outputLen');
+    anumber(outputLen, "outputLen");
     // 1600 = 5x5 matrix of 64bit.  1600 bits === 200 bytes
     // 0 < blockLen < 200
-    if (!(0 < blockLen && blockLen < 200))
-      throw new Error('only keccak-f1600 function is supported');
+    if (!(0 < blockLen && blockLen < 200)) {
+      throw new Error("only keccak-f1600 function is supported");
+    }
     this.state = new Uint8Array(200);
     this.state32 = u32(this.state);
   }
@@ -162,7 +180,7 @@ export class Keccak implements Hash<Keccak>, HashXOF<Keccak> {
     abytes(data);
     const { blockLen, state } = this;
     const len = data.length;
-    for (let pos = 0; pos < len; ) {
+    for (let pos = 0; pos < len;) {
       const take = Math.min(blockLen - this.pos, len - pos);
       for (let i = 0; i < take; i++) state[this.pos++] ^= data[pos++];
       if (this.pos === blockLen) this.keccak();
@@ -185,7 +203,7 @@ export class Keccak implements Hash<Keccak>, HashXOF<Keccak> {
     this.finish();
     const bufferOut = this.state;
     const { blockLen } = this;
-    for (let pos = 0, len = out.length; pos < len; ) {
+    for (let pos = 0, len = out.length; pos < len;) {
       if (this.posOut >= blockLen) this.keccak();
       const take = Math.min(blockLen - this.posOut, len - pos);
       out.set(bufferOut.subarray(this.posOut, this.posOut + take), pos);
@@ -196,7 +214,9 @@ export class Keccak implements Hash<Keccak>, HashXOF<Keccak> {
   }
   xofInto(out: Uint8Array): Uint8Array {
     // Sha3/Keccak usage with XOF is probably mistake, only SHAKE instances can do XOF
-    if (!this.enableXOF) throw new Error('XOF is not possible for this instance');
+    if (!this.enableXOF) {
+      throw new Error("XOF is not possible for this instance");
+    }
     return this.writeInto(out);
   }
   xof(bytes: number): Uint8Array {
@@ -205,7 +225,7 @@ export class Keccak implements Hash<Keccak>, HashXOF<Keccak> {
   }
   digestInto(out: Uint8Array): Uint8Array {
     aoutput(out, this);
-    if (this.finished) throw new Error('digest() was already called');
+    if (this.finished) throw new Error("digest() was already called");
     this.writeInto(out);
     this.destroy();
     return out;
@@ -234,36 +254,43 @@ export class Keccak implements Hash<Keccak>, HashXOF<Keccak> {
   }
 }
 
-const genKeccak = (suffix: number, blockLen: number, outputLen: number, info: HashInfo = {}) =>
-  createHasher(() => new Keccak(blockLen, suffix, outputLen), info);
+const genKeccak = (
+  suffix: number,
+  blockLen: number,
+  outputLen: number,
+  info: HashInfo = {},
+) => createHasher(() => new Keccak(blockLen, suffix, outputLen), info);
 
-/** SHA3-224 hash function. */
-export const sha3_224: CHash = /* @__PURE__ */ genKeccak(
-  0x06,
-  144,
-  28,
-  /* @__PURE__ */ oidNist(0x07)
-);
+// /** SHA3-224 hash function. */
+// export const sha3_224: CHash = /* @__PURE__ */ genKeccak(
+//   0x06,
+//   144,
+//   28,
+//   /* @__PURE__ */ oidNist(0x07),
+// );
+
 /** SHA3-256 hash function. Different from keccak-256. */
 export const sha3_256: CHash = /* @__PURE__ */ genKeccak(
   0x06,
   136,
   32,
-  /* @__PURE__ */ oidNist(0x08)
+  /* @__PURE__ */ oidNist(0x08),
 );
-/** SHA3-384 hash function. */
-export const sha3_384: CHash = /* @__PURE__ */ genKeccak(
-  0x06,
-  104,
-  48,
-  /* @__PURE__ */ oidNist(0x09)
-);
+
+// /** SHA3-384 hash function. */
+// export const sha3_384: CHash = /* @__PURE__ */ genKeccak(
+//   0x06,
+//   104,
+//   48,
+//   /* @__PURE__ */ oidNist(0x09),
+// );
+
 /** SHA3-512 hash function. */
 export const sha3_512: CHash = /* @__PURE__ */ genKeccak(
   0x06,
   72,
   64,
-  /* @__PURE__ */ oidNist(0x0a)
+  /* @__PURE__ */ oidNist(0x0a),
 );
 
 /** keccak-224 hash function. */
@@ -277,11 +304,21 @@ export const keccak_512: CHash = /* @__PURE__ */ genKeccak(0x01, 72, 64);
 
 export type ShakeOpts = { dkLen?: number };
 
-const genShake = (suffix: number, blockLen: number, outputLen: number, info: HashInfo = {}) =>
+const genShake = (
+  suffix: number,
+  blockLen: number,
+  outputLen: number,
+  info: HashInfo = {},
+) =>
   createHasher<Keccak, ShakeOpts>(
     (opts: ShakeOpts = {}) =>
-      new Keccak(blockLen, suffix, opts.dkLen === undefined ? outputLen : opts.dkLen, true),
-    info
+      new Keccak(
+        blockLen,
+        suffix,
+        opts.dkLen === undefined ? outputLen : opts.dkLen,
+        true,
+      ),
+    info,
   );
 
 /** SHAKE128 XOF with 128-bit security. */
@@ -293,11 +330,11 @@ export const shake256: CHashXOF<Keccak, ShakeOpts> =
   /* @__PURE__ */
   genShake(0x1f, 136, 32, /* @__PURE__ */ oidNist(0x0c));
 
-/** SHAKE128 XOF with 256-bit output (NIST version). */
-export const shake128_32: CHashXOF<Keccak, ShakeOpts> =
-  /* @__PURE__ */
-  genShake(0x1f, 168, 32, /* @__PURE__ */ oidNist(0x0b));
-/** SHAKE256 XOF with 512-bit output (NIST version). */
-export const shake256_64: CHashXOF<Keccak, ShakeOpts> =
-  /* @__PURE__ */
-  genShake(0x1f, 136, 64, /* @__PURE__ */ oidNist(0x0c));
+// /** SHAKE128 XOF with 256-bit output (NIST version). */
+// export const shake128_32: CHashXOF<Keccak, ShakeOpts> =
+//   /* @__PURE__ */
+//   genShake(0x1f, 168, 32, /* @__PURE__ */ oidNist(0x0b));
+// /** SHAKE256 XOF with 512-bit output (NIST version). */
+// export const shake256_64: CHashXOF<Keccak, ShakeOpts> =
+//   /* @__PURE__ */
+//   genShake(0x1f, 136, 64, /* @__PURE__ */ oidNist(0x0c));
