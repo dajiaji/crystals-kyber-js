@@ -1,5 +1,23 @@
 # Changes
 
+## Version 2.4.0
+
+Released 2025-08-10
+
+- [(#445) Add support for Node.js 24.](https://github.com/dajiaji/crystals-kyber-js/pull/445)
+- [(#444) Import sha3 from noble/hashes.](https://github.com/dajiaji/crystals-kyber-js/pull/444)
+- [(#247) Fix version expression inconsistency.](https://github.com/dajiaji/crystals-kyber-js/pull/247)
+- [(#246) Bump Node version on CI to 22.x.](https://github.com/dajiaji/crystals-kyber-js/pull/246)
+- [(#245) Add support for Node.js 24.](https://github.com/dajiaji/crystals-kyber-js/pull/245)
+- Update Dev Dependencies:
+  - [(#442) Bump cloudflare/workers-types to 4.20250807.0 in test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/442)
+  - [(#441) Bump @cloudflare/vitest-pool-workers to 0.8.61.](https://github.com/dajiaji/crystals-kyber-js/pull/441)
+  - [(#437) Bump wrangler to 4.28.0 on test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/437)
+  - [(#435) Bump @playwright/test to 1.54.2 on test/runtimes/browsers.](https://github.com/dajiaji/crystals-kyber-js/pull/435)
+  - [(#433) Bump typescript to 5.9.2 on test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/433)
+  - [(#293) Bump vitest to 3.1.2 on test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/293)
+  - [(#281) Bump vite to 6.2.6 on test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/281)
+
 ## Version 2.3.1
 
 Released 2025-03-09
