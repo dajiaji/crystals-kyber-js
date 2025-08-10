@@ -1,5 +1,12 @@
 # Changes
 
+## Version 2.5.0
+
+Released 2025-08-11
+
+- [(#448) Disclose sha3 functions as utilities.](https://github.com/dajiaji/crystals-kyber-js/pull/448)
+- [(#447) Remove unused utils.](https://github.com/dajiaji/crystals-kyber-js/pull/447)
+
 ## Version 2.4.0
 
 Released 2025-08-10
