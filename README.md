@@ -35,6 +35,7 @@ but includes the following improvements:
 - ✅ Constant-time validation for ciphertext.
 - ✅ Better performance: 1.4 to 1.8 times faster than the original
   implementation.
+- ✅ No dependencies on other libraries.
 - ✅ Tree-shaking friendly.
 - ✅ Fix [KyberSlash](https://kyberslash.cr.yp.to/index.html) vulnerability.
 - ✅ ML-KEM ([NIST FIPS 203](https://csrc.nist.gov/pubs/fips/203/final))
