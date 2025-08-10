@@ -45,15 +45,6 @@ export function abytes(
   return value;
 }
 
-/** Asserts something is hash */
-export function ahash(h: CHash): void {
-  if (typeof h !== "function" || typeof h.create !== "function") {
-    throw new Error("Hash must wrapped by utils.createHasher");
-  }
-  anumber(h.outputLen);
-  anumber(h.blockLen);
-}
-
 /** Asserts a hash instance has not been destroyed / finished */
 export function aexists(instance: any, checkFinished = true): void {
   if (instance.destroyed) throw new Error("Hash instance has been destroyed");
@@ -82,11 +73,6 @@ export type TypedArray =
   | Uint32Array
   | Int32Array;
 
-/** Cast u8 / u16 / u32 to u8. */
-export function u8(arr: TypedArray): Uint8Array {
-  return new Uint8Array(arr.buffer, arr.byteOffset, arr.byteLength);
-}
-
 /** Cast u8 / u16 / u32 to u32. */
 export function u32(arr: TypedArray): Uint32Array {
   return new Uint32Array(
@@ -101,21 +87,6 @@ export function clean(...arrays: TypedArray[]): void {
   for (let i = 0; i < arrays.length; i++) {
     arrays[i].fill(0);
   }
-}
-
-/** Create DataView of an array for easy byte-level manipulation. */
-export function createView(arr: TypedArray): DataView {
-  return new DataView(arr.buffer, arr.byteOffset, arr.byteLength);
-}
-
-/** The rotate right (circular right shift) operation for uint32 */
-export function rotr(word: number, shift: number): number {
-  return (word << (32 - shift)) | (word >>> shift);
-}
-
-/** The rotate left (circular left shift) operation for uint32 */
-export function rotl(word: number, shift: number): number {
-  return (word << shift) | ((word >>> (32 - shift)) >>> 0);
 }
 
 /** Is current platform little-endian? Most are. Big-Endian platform: IBM */
@@ -158,28 +129,6 @@ const hasHexBuiltin: boolean = /* @__PURE__ */ (() =>
   // @ts-ignore: to check the existence of the method
   typeof Uint8Array.fromHex === "function")();
 
-// Array where index 0xf0 (240) is mapped to string 'f0'
-const hexes = /* @__PURE__ */ Array.from(
-  { length: 256 },
-  (_, i) => i.toString(16).padStart(2, "0"),
-);
-
-/**
- * Convert byte array to hex string. Uses built-in function, when available.
- * @example bytesToHex(Uint8Array.from([0xca, 0xfe, 0x01, 0x23])) // 'cafe0123'
- */
-export function bytesToHex(bytes: Uint8Array): string {
-  abytes(bytes);
-  // @ts-ignore: to check the existence of the method
-  if (hasHexBuiltin) return bytes.toHex();
-  // pre-caching improves the speed 6x
-  let hex = "";
-  for (let i = 0; i < bytes.length; i++) {
-    hex += hexes[bytes[i]];
-  }
-  return hex;
-}
-
 // We use optimized technique to convert hex string to byte array
 const asciis = { _0: 48, _9: 57, A: 65, F: 70, a: 97, f: 102 } as const;
 function asciiToBase16(ch: number): number | undefined {
@@ -220,30 +169,6 @@ export function hexToBytes(hex: string): Uint8Array {
   return array;
 }
 
-/**
- * There is no setImmediate in browser and setTimeout is slow.
- * Call of async fn will return Promise, which will be fullfiled only on
- * next scheduler queue processing step and this is exactly what we need.
- */
-export const nextTick = async (): Promise<void> => {};
-
-/** Returns control to thread each 'tick' ms to avoid blocking. */
-export async function asyncLoop(
-  iters: number,
-  tick: number,
-  cb: (i: number) => void,
-): Promise<void> {
-  let ts = Date.now();
-  for (let i = 0; i < iters; i++) {
-    cb(i);
-    // Date.now() is not monotonic, so in case if clock goes backwards we return return control too
-    const diff = Date.now() - ts;
-    if (diff >= 0 && diff < tick) continue;
-    await nextTick();
-    ts += diff;
-  }
-}
-
 // Global symbols, but ts doesn't see them: https://github.com/microsoft/TypeScript/issues/31535
 declare const TextEncoder: any;
 declare const TextDecoder: any;
@@ -265,18 +190,6 @@ export function bytesToUtf8(bytes: Uint8Array): string {
   return new TextDecoder().decode(bytes);
 }
 
-/** KDFs can accept string or Uint8Array for user convenience. */
-export type KDFInput = string | Uint8Array;
-/**
- * Helper for KDFs: consumes uint8array or string.
- * When string is passed, does utf8 decoding, using TextDecoder.
- */
-export function kdfInputToBytes(data: KDFInput, errorTitle = ""): Uint8Array {
-  if (typeof data === "string") data = utf8ToBytes(data);
-  abytes(data, undefined, errorTitle);
-  return data;
-}
-
 /** Copies several Uint8Arrays into one. */
 export function concatBytes(...arrays: Uint8Array[]): Uint8Array {
   let sum = 0;
@@ -292,18 +205,6 @@ export function concatBytes(...arrays: Uint8Array[]): Uint8Array {
     pad += a.length;
   }
   return res;
-}
-
-type EmptyObj = Record<string, never>;
-export function checkOpts<T1 extends EmptyObj, T2 extends EmptyObj>(
-  defaults: T1,
-  opts?: T2,
-): T1 & T2 {
-  if (opts !== undefined && {}.toString.call(opts) !== "[object Object]") {
-    throw new Error("options must be object or undefined");
-  }
-  const merged = Object.assign(defaults, opts);
-  return merged as T1 & T2;
 }
 
 export interface Hash<T> {
@@ -370,15 +271,6 @@ export function createHasher<T extends Hash<T>, Opts = undefined>(
   hashC.create = (opts?: Opts) => hashCons(opts);
   Object.assign(hashC, info);
   return Object.freeze(hashC);
-}
-
-/** Cryptographically secure PRNG. Uses internal OS-level `crypto.getRandomValues`. */
-export function randomBytes(bytesLength = 32): Uint8Array {
-  const cr = typeof globalThis != null && (globalThis as any).crypto;
-  if (!cr || typeof cr.getRandomValues !== "function") {
-    throw new Error("crypto.getRandomValues must be defined");
-  }
-  return cr.getRandomValues(new Uint8Array(bytesLength));
 }
 
 // 06 09 60 86 48 01 65 03 04 02
