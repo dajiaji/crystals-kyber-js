@@ -17,6 +17,6 @@
     "wrangler": "^4.28.0"
   },
   "dependencies": {
-    "crystals-kyber-js": "^2.3.1"
+    "crystals-kyber-js": "^2.5.0"
   }
 }
