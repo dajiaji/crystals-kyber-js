@@ -16,8 +16,8 @@ jobs:
       matrix:
         deno-version: [1.x, 2.x]
     steps:
-      - uses: actions/checkout@v4
-      - uses: denoland/setup-deno@v1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: denoland/setup-deno@e95548e56dfa95d4e1a28d6f422fafe75c4c26fb # v2.0.3
         with:
           deno-version: ${{ matrix.deno-version }}
       - name: Remove lock file
@@ -28,7 +28,7 @@ jobs:
           deno fmt --check
           deno task test
           deno task cov > coverage.lcov
-      - uses: codecov/codecov-action@v2
+      - uses: codecov/codecov-action@f32b3a3741e1053eb607407145bc9619351dc93b # v2.1.0
         if: matrix.deno-version == '2.x'
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
