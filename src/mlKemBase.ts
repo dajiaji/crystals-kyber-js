@@ -451,7 +451,8 @@ export class MlKemBase {
     transposed: boolean,
   ): Array<Array<Int16Array>> {
     const a = new Array<Array<Int16Array>>(this._k);
-    const transpose = new Uint8Array(2);
+    const xofSeed = new Uint8Array(seed.length + 2);
+    xofSeed.set(seed);
 
     for (let ctr = 0, i = 0; i < this._k; i++) {
       a[i] = new Array<Int16Array>(this._k);
@@ -459,13 +460,13 @@ export class MlKemBase {
       for (let j = 0; j < this._k; j++) {
         // set if transposed matrix or not
         if (transposed) {
-          transpose[0] = i;
-          transpose[1] = j;
+          xofSeed[seed.length] = i;
+          xofSeed[seed.length + 1] = j;
         } else {
-          transpose[0] = j;
-          transpose[1] = i;
+          xofSeed[seed.length] = j;
+          xofSeed[seed.length + 1] = i;
         }
-        const output = xof(seed, transpose);
+        const output = xof(xofSeed);
 
         // run rejection sampling on the output from above
         const result = indcpaRejUniform(output.subarray(0, 504), 504, N);
@@ -702,13 +703,11 @@ function kdf(a: Uint8Array, b?: Uint8Array): Uint8Array {
 /**
  * Computes the extendable-output function (XOF) using the SHAKE128 algorithm.
  *
- * @param seed - The seed value for the XOF.
- * @param transpose - The transpose value for the XOF.
+ * @param seed - The seed value for the XOF (including transpose bytes).
  * @returns The computed XOF value as a Uint8Array.
  */
-function xof(seed: Uint8Array, transpose: Uint8Array): Uint8Array {
-  return shake128.create({ dkLen: 672 }).update(seed).update(transpose)
-    .digest();
+function xof(seed: Uint8Array): Uint8Array {
+  return shake128.create({ dkLen: 672 }).update(seed).digest();
 }
 
 // polyToBytes serializes a polynomial into an array of bytes.
@@ -865,7 +864,7 @@ function byteopsCbd(buf: Uint8Array, eta: number): Int16Array {
   let a, b;
   const r = new Int16Array(N);
   for (let i = 0; i < N / 8; i++) {
-    t = byteopsLoad32(buf.subarray(4 * i, buf.length));
+    t = byteopsLoad32(buf, 4 * i);
     d = t & 0x55555555;
     d = d + ((t >> 1) & 0x55555555);
     for (let j = 0; j < 8; j++) {
@@ -947,9 +946,9 @@ function reduce(r: Int16Array): Int16Array {
  * @param a - The number to be reduced.
  * @returns The result of the reduction.
  */
+const BARRETT_V = ((1 << 24) + Q / 2) / Q;
 function barrett(a: number): number {
-  const v = ((1 << 24) + Q / 2) / Q;
-  let t = v * a >> 24;
+  let t = BARRETT_V * a >> 24;
   t = t * Q;
   return a - t;
 }

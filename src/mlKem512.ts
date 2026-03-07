@@ -86,7 +86,7 @@ function byteopsCbd(buf: Uint8Array, eta: number): Int16Array {
   let a, b;
   const r = new Int16Array(N);
   for (let i = 0; i < N / 4; i++) {
-    t = byteopsLoad24(buf.subarray(3 * i, buf.length));
+    t = byteopsLoad24(buf, 3 * i);
     d = t & 0x00249249;
     d = d + ((t >> 1) & 0x00249249);
     d = d + ((t >> 2) & 0x00249249);
