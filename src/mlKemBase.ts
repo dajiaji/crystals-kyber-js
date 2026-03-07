@@ -13,7 +13,6 @@ import {
   constantTimeCompare,
   equalUint8Array,
   int16,
-  int32,
   loadCrypto,
   prf,
   uint16,
@@ -322,7 +321,7 @@ export class MlKemBase {
 
     // KEY COMPUTATION
     // pk = A*s + e
-    const pk = new Array<Array<number>>(this._k);
+    const pk = new Array<Int16Array>(this._k);
     for (let i = 0; i < this._k; i++) {
       pk[i] = polyToMont(multiply(a[i], s));
       pk[i] = add(pk[i], e[i]);
@@ -363,7 +362,7 @@ export class MlKemBase {
     msg: Uint8Array,
     seed: Uint8Array,
   ): Uint8Array {
-    const tHat = new Array<Array<number>>(this._k);
+    const tHat = new Array<Int16Array>(this._k);
     const pkCheck = new Uint8Array(384 * this._k); // to validate the pk modulo (see input validation at NIST draft 6.2)
     for (let i = 0; i < this._k; i++) {
       tHat[i] = polyFromBytes(pk.subarray(i * 384, (i + 1) * 384));
@@ -385,7 +384,7 @@ export class MlKemBase {
     }
 
     // u = A*r + e1
-    const u = new Array<Array<number>>(this._k);
+    const u = new Array<Int16Array>(this._k);
     for (let i = 0; i < this._k; i++) {
       u[i] = multiply(a[i], r);
       u[i] = nttInverse(u[i]);
@@ -450,12 +449,12 @@ export class MlKemBase {
   private _sampleMatrix(
     seed: Uint8Array,
     transposed: boolean,
-  ): Array<Array<Array<number>>> {
-    const a = new Array<Array<Array<number>>>(this._k);
+  ): Array<Array<Int16Array>> {
+    const a = new Array<Array<Int16Array>>(this._k);
     const transpose = new Uint8Array(2);
 
     for (let ctr = 0, i = 0; i < this._k; i++) {
-      a[i] = new Array<Array<number>>(this._k);
+      a[i] = new Array<Int16Array>(this._k);
 
       for (let j = 0; j < this._k; j++) {
         // set if transposed matrix or not
@@ -501,8 +500,8 @@ export class MlKemBase {
     sigma: Uint8Array,
     offset: number,
     size: number,
-  ): Array<Array<number>> {
-    const r = new Array<Array<number>>(size);
+  ): Array<Int16Array> {
+    const r = new Array<Int16Array>(size);
     for (let i = 0; i < size; i++) {
       r[i] = byteopsCbd(prf(this._eta1 * N / 4, sigma, offset), this._eta1);
       offset++;
@@ -522,8 +521,8 @@ export class MlKemBase {
     sigma: Uint8Array,
     offset: number,
     size: number,
-  ): Array<Array<number>> {
-    const r = new Array<Array<number>>(size);
+  ): Array<Int16Array> {
+    const r = new Array<Int16Array>(size);
     for (let i = 0; i < size; i++) {
       r[i] = byteopsCbd(prf(this._eta2 * N / 4, sigma, offset), this._eta2);
       offset++;
@@ -539,8 +538,8 @@ export class MlKemBase {
    * @param a The Uint8Array to convert.
    * @returns The 2D array of numbers representing the polynomial vector.
    */
-  private _polyvecFromBytes(a: Uint8Array): Array<Array<number>> {
-    const r = new Array<Array<number>>(this._k);
+  private _polyvecFromBytes(a: Uint8Array): Array<Int16Array> {
+    const r = new Array<Int16Array>(this._k);
     for (let i = 0; i < this._k; i++) {
       r[i] = polyFromBytes(a.subarray(i * 384, (i + 1) * 384));
     }
@@ -558,7 +557,7 @@ export class MlKemBase {
    */
   protected _compressU(
     r: Uint8Array,
-    u: Array<Array<number>>,
+    u: Array<Int16Array>,
   ): Uint8Array {
     const t = new Array<number>(4);
     for (let rr = 0, i = 0; i < this._k; i++) {
@@ -589,7 +588,7 @@ export class MlKemBase {
    * @param v - The array of numbers to compress.
    * @returns The compressed Uint8Array.
    */
-  protected _compressV(r: Uint8Array, v: Array<number>): Uint8Array {
+  protected _compressV(r: Uint8Array, v: Int16Array): Uint8Array {
     // const r = new Uint8Array(128);
     const t = new Uint8Array(8);
     for (let rr = 0, i = 0; i < N / 8; i++) {
@@ -614,10 +613,10 @@ export class MlKemBase {
    * @param a The Uint8Array to decompress.
    * @returns The decompressed two-dimensional array.
    */
-  protected _decompressU(a: Uint8Array): Array<Array<number>> {
-    const r = new Array<Array<number>>(this._k);
+  protected _decompressU(a: Uint8Array): Array<Int16Array> {
+    const r = new Array<Int16Array>(this._k);
     for (let i = 0; i < this._k; i++) {
-      r[i] = new Array<number>(384);
+      r[i] = new Int16Array(N);
     }
     const t = new Array<number>(4);
     for (let aa = 0, i = 0; i < this._k; i++) {
@@ -648,8 +647,8 @@ export class MlKemBase {
    * @param a - The Uint8Array to decompress.
    * @returns An array of numbers.
    */
-  protected _decompressV(a: Uint8Array): Array<number> {
-    const r = new Array<number>(384);
+  protected _decompressV(a: Uint8Array): Int16Array {
+    const r = new Int16Array(N);
     for (let aa = 0, i = 0; i < N / 2; i++, aa++) {
       r[2 * i + 0] = int16(((uint16(a[aa] & 15) * uint16(Q)) + 8) >> 4);
       r[2 * i + 1] = int16(((uint16(a[aa] >> 4) * uint16(Q)) + 8) >> 4);
@@ -721,7 +720,7 @@ function xof(seed: Uint8Array, transpose: Uint8Array): Uint8Array {
  * @param a - The array representing the polynomial.
  * @returns The Uint8Array representation of the polynomial.
  */
-function polyToBytes(a: Array<number>): Uint8Array {
+function polyToBytes(a: Int16Array): Uint8Array {
   let t0 = 0;
   let t1 = 0;
   const r = new Uint8Array(384);
@@ -751,8 +750,8 @@ function polyToBytes(a: Array<number>): Uint8Array {
  * @param a The Uint8Array to convert to a polynomial.
  * @returns An array of numbers representing the polynomial.
  */
-function polyFromBytes(a: Uint8Array): Array<number> {
-  const r = new Array<number>(384).fill(0);
+function polyFromBytes(a: Uint8Array): Int16Array {
+  const r = new Int16Array(N);
   for (let i = 0; i < N / 2; i++) {
     r[2 * i] = int16(
       ((uint16(a[3 * i + 0]) >> 0) | (uint16(a[3 * i + 1]) << 8)) & 0xFFF,
@@ -772,7 +771,7 @@ function polyFromBytes(a: Uint8Array): Array<number> {
  * @param a - The polynomial to convert.
  * @returns The message as a Uint8Array.
  */
-function polyToMsg(a: Array<number>): Uint8Array {
+function polyToMsg(a: Int16Array): Uint8Array {
   const msg = new Uint8Array(32);
   let t;
   const a2 = subtractQ(a);
@@ -796,8 +795,8 @@ function polyToMsg(a: Array<number>): Uint8Array {
  * @param msg - The Uint8Array message to convert.
  * @returns An array of numbers representing the polynomial.
  */
-function polyFromMsg(msg: Uint8Array): Array<number> {
-  const r = new Array<number>(384).fill(0); // each element is int16 (0-65535)
+function polyFromMsg(msg: Uint8Array): Int16Array {
+  const r = new Int16Array(N); // each element is int16 (0-65535)
   let mask; // int16
   for (let i = 0; i < N / 8; i++) {
     for (let j = 0; j < 8; j++) {
@@ -823,8 +822,8 @@ function indcpaRejUniform(
   buf: Uint8Array,
   bufl: number,
   len: number,
-): [Array<number>, number] {
-  const r = new Array<number>(384).fill(0);
+): [Int16Array, number] {
+  const r = new Int16Array(N);
   let ctr = 0;
   let val0, val1; // d1, d2 in kyber documentation
 
@@ -861,10 +860,10 @@ function indcpaRejUniform(
  * @param eta - The value used in the CBD operation.
  * @returns An array of numbers obtained from the CBD operation.
  */
-function byteopsCbd(buf: Uint8Array, eta: number): Array<number> {
+function byteopsCbd(buf: Uint8Array, eta: number): Int16Array {
   let t, d;
   let a, b;
-  const r = new Array<number>(384).fill(0);
+  const r = new Int16Array(N);
   for (let i = 0; i < N / 8; i++) {
     t = byteopsLoad32(buf.subarray(4 * i, buf.length));
     d = t & 0x55555555;
@@ -887,7 +886,7 @@ function byteopsCbd(buf: Uint8Array, eta: number): Array<number> {
  * @param r - The input array of numbers.
  * @returns The transformed array of numbers.
  */
-function ntt(r: Array<number>): Array<number> {
+function ntt(r: Int16Array): Int16Array {
   // 128, 64, 32, 16, 8, 4, 2
   for (let j = 0, k = 1, l = 128; l >= 2; l >>= 1) {
     // 0,
@@ -929,7 +928,7 @@ function nttFqMul(a: number, b: number): number {
  * @param r - The array to be reduced.
  * @returns The reduced array.
  */
-function reduce(r: Array<number>): Array<number> {
+function reduce(r: Int16Array): Int16Array {
   for (let i = 0; i < N; i++) {
     r[i] = barrett(r[i]);
   }
@@ -962,11 +961,11 @@ function barrett(a: number): number {
  * @returns The reduced number.
  */
 function byteopsMontgomeryReduce(a: number): number {
-  const u = int16(int32(a) * Q_INV);
+  const u = (Math.imul(a, Q_INV) << 16) >> 16;
   let t = u * Q;
   t = a - t;
   t >>= 16;
-  return int16(t);
+  return (t << 16) >> 16;
 }
 
 // polyToMont performs the in-place conversion of all coefficients
@@ -978,11 +977,11 @@ function byteopsMontgomeryReduce(a: number): number {
  * @param r - The polynomial to be converted.
  * @returns The polynomial in the Montgomery domain.
  */
-function polyToMont(r: Array<number>): Array<number> {
+function polyToMont(r: Int16Array): Int16Array {
   // let f = int16(((uint64(1) << 32)) % uint64(Q));
   const f = 1353; // if Q changes then this needs to be updated
   for (let i = 0; i < N; i++) {
-    r[i] = byteopsMontgomeryReduce(int32(r[i]) * int32(f));
+    r[i] = byteopsMontgomeryReduce(r[i] * f);
   }
   return r;
 }
@@ -997,9 +996,9 @@ function polyToMont(r: Array<number>): Array<number> {
  * @returns The resulting matrix after element-wise multiplication.
  */
 function multiply(
-  a: Array<Array<number>>,
-  b: Array<Array<number>>,
-): Array<number> {
+  a: Array<Int16Array>,
+  b: Array<Int16Array>,
+): Int16Array {
   let r = polyBaseMulMontgomery(a[0], b[0]);
   let t;
   for (let i = 1; i < a.length; i++) {
@@ -1019,61 +1018,20 @@ function multiply(
  * @returns The result of the polynomial base multiplication.
  */
 function polyBaseMulMontgomery(
-  a: Array<number>,
-  b: Array<number>,
-): Array<number> {
-  let rx, ry;
+  a: Int16Array,
+  b: Int16Array,
+): Int16Array {
   for (let i = 0; i < N / 4; i++) {
-    rx = nttBaseMul(
-      a[4 * i + 0],
-      a[4 * i + 1],
-      b[4 * i + 0],
-      b[4 * i + 1],
-      NTT_ZETAS[64 + i],
-    );
-    ry = nttBaseMul(
-      a[4 * i + 2],
-      a[4 * i + 3],
-      b[4 * i + 2],
-      b[4 * i + 3],
-      -NTT_ZETAS[64 + i],
-    );
-    a[4 * i + 0] = rx[0];
-    a[4 * i + 1] = rx[1];
-    a[4 * i + 2] = ry[0];
-    a[4 * i + 3] = ry[1];
+    const idx = 4 * i;
+    const a0 = a[idx], a1 = a[idx + 1], a2 = a[idx + 2], a3 = a[idx + 3];
+    const b0 = b[idx], b1 = b[idx + 1], b2 = b[idx + 2], b3 = b[idx + 3];
+    const zeta = NTT_ZETAS[64 + i];
+    a[idx] = nttFqMul(nttFqMul(a1, b1), zeta) + nttFqMul(a0, b0);
+    a[idx + 1] = nttFqMul(a0, b1) + nttFqMul(a1, b0);
+    a[idx + 2] = nttFqMul(nttFqMul(a3, b3), -zeta) + nttFqMul(a2, b2);
+    a[idx + 3] = nttFqMul(a2, b3) + nttFqMul(a3, b2);
   }
   return a;
-}
-
-// nttBaseMul performs the multiplication of polynomials
-// in `Zq[X]/(X^2-zeta)`. Used for multiplication of elements
-// in `Rq` in the number-theoretic transformation domain.
-
-/**
- * Performs NTT base multiplication.
- *
- * @param a0 - The first coefficient of the first polynomial.
- * @param a1 - The second coefficient of the first polynomial.
- * @param b0 - The first coefficient of the second polynomial.
- * @param b1 - The second coefficient of the second polynomial.
- * @param zeta - The zeta value used in the multiplication.
- * @returns An array containing the result of the multiplication.
- */
-function nttBaseMul(
-  a0: number,
-  a1: number,
-  b0: number,
-  b1: number,
-  zeta: number,
-): Array<number> {
-  const r = new Array<number>(2);
-  r[0] = nttFqMul(a1, b1);
-  r[0] = nttFqMul(r[0], zeta);
-  r[0] += nttFqMul(a0, b0);
-  r[1] = nttFqMul(a0, b1);
-  r[1] += nttFqMul(a1, b0);
-  return r;
 }
 
 // adds two polynomials.
@@ -1084,8 +1042,8 @@ function nttBaseMul(
  * @param b - The second array.
  * @returns The resulting array after element-wise addition.
  */
-function add(a: Array<number>, b: Array<number>): Array<number> {
-  const c = new Array<number>(384);
+function add(a: Int16Array, b: Int16Array): Int16Array {
+  const c = new Int16Array(N);
   for (let i = 0; i < N; i++) {
     c[i] = a[i] + b[i];
   }
@@ -1101,7 +1059,7 @@ function add(a: Array<number>, b: Array<number>): Array<number> {
  * @param b - The array to subtract.
  * @returns The resulting array after subtraction.
  */
-function subtract(a: Array<number>, b: Array<number>): Array<number> {
+function subtract(a: Int16Array, b: Int16Array): Int16Array {
   for (let i = 0; i < N; i++) {
     a[i] -= b[i];
   }
@@ -1118,7 +1076,7 @@ function subtract(a: Array<number>, b: Array<number>): Array<number> {
  * @param r - The input array to perform the inverse NTT on.
  * @returns The array after performing the inverse NTT.
  */
-function nttInverse(r: Array<number>): Array<number> {
+function nttInverse(r: Int16Array): Int16Array {
   let j = 0;
   for (let k = 0, l = 2; l <= 128; l <<= 1) {
     for (let start = 0; start < 256; start = j + l) {
@@ -1150,11 +1108,11 @@ function nttInverse(r: Array<number>): Array<number> {
  * @param r - The array to subtract Q from.
  * @returns The resulting array after the subtraction.
  */
-function subtractQ(r: Array<number>): Array<number> {
+function subtractQ(r: Int16Array): Int16Array {
   for (let i = 0; i < N; i++) {
     r[i] -= Q; // should result in a negative integer
     // push left most signed bit to right most position
-    // javascript does bitwise operations in signed 32 bit
+    // javascript does bitwise in signed 32 bit so you need to convert
     // add q back again if left most bit was 0 (positive number)
     r[i] += (r[i] >> 31) & Q;
   }

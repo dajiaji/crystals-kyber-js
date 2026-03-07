@@ -62,7 +62,7 @@ export class MlKem1024 extends MlKemBase {
    */
   protected override _compressU(
     r: Uint8Array,
-    u: Array<Array<number>>,
+    u: Array<Int16Array>,
   ): Uint8Array {
     const t = new Array<number>(8);
     for (let rr = 0, i = 0; i < this._k; i++) {
@@ -98,7 +98,7 @@ export class MlKem1024 extends MlKemBase {
    * @param v - The polynomial to compress.
    * @returns The compressed and serialized data as a Uint8Array.
    */
-  protected override _compressV(r: Uint8Array, v: Array<number>): Uint8Array {
+  protected override _compressV(r: Uint8Array, v: Int16Array): Uint8Array {
     const t = new Uint8Array(8);
     for (let rr = 0, i = 0; i < N / 8; i++) {
       for (let j = 0; j < 8; j++) {
@@ -127,10 +127,10 @@ export class MlKem1024 extends MlKemBase {
    * @param a - The compressed and serialized data as a Uint8Array.
    * @returns The decompressed vector of polynomials.
    */
-  protected override _decompressU(a: Uint8Array): Array<Array<number>> {
-    const r = new Array<Array<number>>(this._k);
+  protected override _decompressU(a: Uint8Array): Array<Int16Array> {
+    const r = new Array<Int16Array>(this._k);
     for (let i = 0; i < this._k; i++) {
-      r[i] = new Array<number>(384);
+      r[i] = new Int16Array(N);
     }
     const t = new Array<number>(8);
     for (let aa = 0, i = 0; i < this._k; i++) {
@@ -169,8 +169,8 @@ export class MlKem1024 extends MlKemBase {
    * @param a - The Uint8Array to decompress.
    * @returns An array of numbers obtained from the decompression process.
    */
-  protected override _decompressV(a: Uint8Array): Array<number> {
-    const r = new Array<number>(384);
+  protected override _decompressV(a: Uint8Array): Int16Array {
+    const r = new Int16Array(N);
     const t = new Array<number>(8);
     for (let aa = 0, i = 0; i < N / 8; i++) {
       t[0] = a[aa + 0] >> 0;
