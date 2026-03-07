@@ -79,12 +79,13 @@ export function prf(len: number, seed: Uint8Array, nonce: number): Uint8Array {
   ).digest();
 }
 
-// byteopsLoad24 returns a 32-bit unsigned integer loaded from byte x.
-export function byteopsLoad24(x: Uint8Array): number {
-  return x[0] | (x[1] << 8) | (x[2] << 16);
+// byteopsLoad24 returns a 32-bit unsigned integer loaded from byte x at offset o.
+export function byteopsLoad24(x: Uint8Array, o: number = 0): number {
+  return x[o] | (x[o + 1] << 8) | (x[o + 2] << 16);
 }
 
-// byteopsLoad32 returns a 32-bit unsigned integer loaded from byte x.
-export function byteopsLoad32(x: Uint8Array): number {
-  return (x[0] | (x[1] << 8) | (x[2] << 16) | (x[3] << 24)) >>> 0;
+// byteopsLoad32 returns a 32-bit unsigned integer loaded from byte x at offset o.
+export function byteopsLoad32(x: Uint8Array, o: number = 0): number {
+  return (x[o] | (x[o + 1] << 8) | (x[o + 2] << 16) | (x[o + 3] << 24)) >>>
+    0;
 }
