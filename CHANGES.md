@@ -1,5 +1,44 @@
 # Changes
 
+## Version 2.6.0
+
+Released 2026-03-07
+
+- [(#560) Remove NODE_AUTH_TOKEN env from npm publish step.](https://github.com/dajiaji/crystals-kyber-js/pull/560)
+- [(#559) Refactor mlkem to avoid subarray in byteops load, single xof seed, and hoist barrett constant.](https://github.com/dajiaji/crystals-kyber-js/pull/559)
+- [(#558) Improve mlkem and sha3 performance by inlining Montgomery reduce, in-place add, and reusing keccak buffer.](https://github.com/dajiaji/crystals-kyber-js/pull/558)
+- [(#557) Refactor mlkem to use Int16Array for polynomials and simplify utils.](https://github.com/dajiaji/crystals-kyber-js/pull/557)
+- [(#556) Add @noble/post-quantum ML-KEM benchmarks for comparison.](https://github.com/dajiaji/crystals-kyber-js/pull/556)
+- [(#555) Harden workflows with persist-credentials false and minimal permissions.](https://github.com/dajiaji/crystals-kyber-js/pull/555)
+- [(#554) Pin workflow actions to commit SHAs and upgrade versions.](https://github.com/dajiaji/crystals-kyber-js/pull/554)
+- [(#553) Speed up hash partial tests by stepping loop by 4.](https://github.com/dajiaji/crystals-kyber-js/pull/553)
+- [(#552) Update CodeQL workflow and add workflow security check.](https://github.com/dajiaji/crystals-kyber-js/pull/552)
+- [(#461) Create FUNDING.yml.](https://github.com/dajiaji/crystals-kyber-js/pull/461)
+- Update Dependencies:
+  - [(#452) Bump crystals-kyber-js from 2.3.1 to 2.5.0 in /test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/452)
+- Update Dev Dependencies:
+  - [(#490) Bump vite from 7.0.4 to 7.1.5 in /test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/490)
+  - [(#488) Bump @cloudflare/vitest-pool-workers in /test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/488)
+  - [(#478) Bump @cloudflare/vitest-pool-workers in /test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/478)
+  - [(#476) Bump @cloudflare/vitest-pool-workers in /test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/476)
+  - [(#475) Bump wrangler from 4.32.0 to 4.33.1 in /test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/475)
+  - [(#474) Bump @cloudflare/workers-types in /test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/474)
+  - [(#470) Bump @cloudflare/workers-types in /test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/470)
+  - [(#469) Bump @cloudflare/vitest-pool-workers in /test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/469)
+  - [(#468) Bump wrangler from 4.31.0 to 4.32.0 in /test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/468)
+  - [(#467) Bump @playwright/test from 1.54.2 to 1.55.0 in /test/runtimes/browsers.](https://github.com/dajiaji/crystals-kyber-js/pull/467)
+  - [(#464) Bump @cloudflare/vitest-pool-workers in /test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/464)
+  - [(#463) Bump wrangler from 4.30.0 to 4.31.0 in /test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/463)
+  - [(#462) Bump @cloudflare/workers-types in /test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/462)
+  - [(#460) Bump @cloudflare/vitest-pool-workers in /test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/460)
+  - [(#459) Bump wrangler from 4.29.1 to 4.30.0 in /test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/459)
+  - [(#456) Bump @cloudflare/vitest-pool-workers in /test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/456)
+  - [(#455) Bump @cloudflare/vitest-pool-workers in /test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/455)
+  - [(#454) Bump wrangler from 4.28.1 to 4.29.0 in /test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/454)
+  - [(#453) Bump @cloudflare/workers-types in /test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/453)
+  - [(#451) Bump @cloudflare/workers-types in /test/runtimes/cloudflare.](https://github.com/dajiaji/crystals-kyber-js/pull/451)
+  - [(#450) Bump dnt to 0.42.3.](https://github.com/dajiaji/crystals-kyber-js/pull/450)
+
 ## Version 2.5.0
 
 Released 2025-08-11
