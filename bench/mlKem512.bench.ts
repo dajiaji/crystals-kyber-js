@@ -1,4 +1,5 @@
 import * as kyber from "crystals-kyber";
+import { ml_kem512 } from "@noble/post-quantum/ml-kem.js";
 import { MlKem512 } from "../mod.ts";
 
 Deno.bench("deriveKeyPair", async (b) => {
@@ -66,4 +67,29 @@ Deno.bench("crystals-kyber:all", () => {
   const [pk, sk] = kyber.KeyGen512();
   const [ct, _ss1] = kyber.Encrypt512(pk);
   const _ss2 = kyber.Decrypt512(ct, sk);
+});
+
+Deno.bench("noble:keygen", () => {
+  const _keys = ml_kem512.keygen();
+});
+
+Deno.bench("noble:encapsulate", (b) => {
+  const keys = ml_kem512.keygen();
+  b.start();
+  const _enc = ml_kem512.encapsulate(keys.publicKey);
+  b.end();
+});
+
+Deno.bench("noble:decapsulate", (b) => {
+  const keys = ml_kem512.keygen();
+  const enc = ml_kem512.encapsulate(keys.publicKey);
+  b.start();
+  const _ss = ml_kem512.decapsulate(enc.cipherText, keys.secretKey);
+  b.end();
+});
+
+Deno.bench("noble:all", () => {
+  const keys = ml_kem512.keygen();
+  const enc = ml_kem512.encapsulate(keys.publicKey);
+  const _ss = ml_kem512.decapsulate(enc.cipherText, keys.secretKey);
 });
