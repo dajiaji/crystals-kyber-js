@@ -40,12 +40,12 @@ import {
 // No __PURE__ annotations in sha3 header:
 // EVERYTHING is in fact used on every export.
 // Various per round constants calculations
-const _0n = BigInt(0);
-const _1n = BigInt(1);
-const _2n = BigInt(2);
-const _7n = BigInt(7);
-const _256n = BigInt(256);
-const _0x71n = BigInt(0x71);
+const _0n = 0n;
+const _1n = 1n;
+const _2n = 2n;
+const _7n = 7n;
+const _256n = 256n;
+const _0x71n = 0x71n;
 const SHA3_PI: number[] = [];
 const SHA3_ROTL: number[] = [];
 const _SHA3_IOTA: bigint[] = []; // no pure annotation: var is always used
@@ -80,8 +80,12 @@ const rotlL = (
 ) => (s > 32 ? rotlBL(h, l, s) : rotlSL(h, l, s));
 
 /** `keccakf1600` internal function, additionally allows to adjust round count. */
-export function keccakP(s: Uint32Array, rounds: number = 24): void {
-  const B = new Uint32Array(5 * 2);
+export function keccakP(
+  s: Uint32Array,
+  rounds: number = 24,
+  B?: Uint32Array,
+): void {
+  if (!B) B = new Uint32Array(10);
   // NOTE: all indices are x2 since we store state as u32 instead of u64 (bigints to slow in js)
   for (let round = 24 - rounds; round < 24; round++) {
     // Theta θ
@@ -135,6 +139,7 @@ export class Keccak implements Hash<Keccak>, HashXOF<Keccak> {
   protected finished = false;
   protected state32: Uint32Array;
   protected destroyed = false;
+  private _B = new Uint32Array(10);
 
   public blockLen: number;
   public suffix: number;
@@ -170,7 +175,7 @@ export class Keccak implements Hash<Keccak>, HashXOF<Keccak> {
   }
   protected keccak(): void {
     swap32IfBE(this.state32);
-    keccakP(this.state32, this.rounds);
+    keccakP(this.state32, this.rounds, this._B);
     swap32IfBE(this.state32);
     this.posOut = 0;
     this.pos = 0;

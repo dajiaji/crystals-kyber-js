@@ -917,7 +917,9 @@ function ntt(r: Int16Array): Int16Array {
  * @returns The result of the NTT multiplication.
  */
 function nttFqMul(a: number, b: number): number {
-  return byteopsMontgomeryReduce(a * b);
+  const ab = a * b;
+  const u = (Math.imul(ab, Q_INV) << 16) >> 16;
+  return (ab - u * Q) >> 16;
 }
 
 // reduce applies Barrett reduction to all coefficients of a polynomial.
@@ -952,22 +954,6 @@ function barrett(a: number): number {
   return a - t;
 }
 
-// byteopsMontgomeryReduce computes a Montgomery reduction; given
-// a 32-bit integer `a`, returns `a * R^-1 mod Q` where `R=2^16`.
-
-/**
- * Performs Montgomery reduction on a given number.
- * @param a - The number to be reduced.
- * @returns The reduced number.
- */
-function byteopsMontgomeryReduce(a: number): number {
-  const u = (Math.imul(a, Q_INV) << 16) >> 16;
-  let t = u * Q;
-  t = a - t;
-  t >>= 16;
-  return (t << 16) >> 16;
-}
-
 // polyToMont performs the in-place conversion of all coefficients
 // of a polynomial from the normal domain to the Montgomery domain.
 
@@ -981,7 +967,9 @@ function polyToMont(r: Int16Array): Int16Array {
   // let f = int16(((uint64(1) << 32)) % uint64(Q));
   const f = 1353; // if Q changes then this needs to be updated
   for (let i = 0; i < N; i++) {
-    r[i] = byteopsMontgomeryReduce(r[i] * f);
+    const a = r[i] * f;
+    const u = (Math.imul(a, Q_INV) << 16) >> 16;
+    r[i] = (a - u * Q) >> 16;
   }
   return r;
 }
@@ -1043,11 +1031,10 @@ function polyBaseMulMontgomery(
  * @returns The resulting array after element-wise addition.
  */
 function add(a: Int16Array, b: Int16Array): Int16Array {
-  const c = new Int16Array(N);
   for (let i = 0; i < N; i++) {
-    c[i] = a[i] + b[i];
+    a[i] += b[i];
   }
-  return c;
+  return a;
 }
 
 // subtracts two polynomials.
