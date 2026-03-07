@@ -1,4 +1,4 @@
-import * as kyber from "npm:crystals-kyber";
+import * as kyber from "crystals-kyber";
 import { MlKem768 } from "../mod.ts";
 
 Deno.bench("deriveKeyPair", async (b) => {
