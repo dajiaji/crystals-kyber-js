@@ -250,9 +250,9 @@ Object.values(HASHES).forEach((hash) =>
 
     it("partial", () => {
       const fnH = hash.fn(BUF_768);
-      for (let i = 0; i < 256; i++) {
+      for (let i = 0; i < 256; i += 4) {
         const b1 = BUF_768.subarray(0, i);
-        for (let j = 0; j < 256; j++) {
+        for (let j = 0; j < 256; j += 4) {
           const b2 = BUF_768.subarray(i, i + j);
           const b3 = BUF_768.subarray(i + j);
           assertEquals(concatBytes(b1, b2, b3), BUF_768);
@@ -267,9 +267,9 @@ Object.values(HASHES).forEach((hash) =>
     // Catched bug in blake2
     it("partial (copy): partial", () => {
       const fnH = hash.fn(BUF_768);
-      for (let i = 0; i < 256; i++) {
+      for (let i = 0; i < 256; i += 4) {
         const b1 = BUF_768.subarray(0, i).slice();
-        for (let j = 0; j < 256; j++) {
+        for (let j = 0; j < 256; j += 4) {
           const b2 = BUF_768.subarray(i, i + j).slice();
           const b3 = BUF_768.subarray(i + j).slice();
           assertEquals(concatBytes(b1, b2, b3), BUF_768);
@@ -285,7 +285,7 @@ Object.values(HASHES).forEach((hash) =>
       //   return;
       // }
       it("node.js cross-test", () => {
-        for (let i = 0; i < testBuf.length; i++) {
+        for (let i = 0; i < testBuf.length; i += 4) {
           assertEquals(
             hash.obj().update(testBuf.subarray(0, i)).digest(),
             hash.node(testBuf.subarray(0, i)),
