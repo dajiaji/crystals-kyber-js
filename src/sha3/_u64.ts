@@ -12,8 +12,8 @@
  * @todo re-check https://issues.chromium.org/issues/42212588
  * @module
  */
-const U32_MASK64 = /* @__PURE__ */ BigInt(2 ** 32 - 1);
-const _32n = /* @__PURE__ */ BigInt(32);
+const U32_MASK64 = 0xFFFFFFFFn;
+const _32n = 32n;
 
 function fromBig(
   n: bigint,
