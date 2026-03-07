@@ -64,8 +64,8 @@ export class MlKem512 extends MlKemBase {
     sigma: Uint8Array,
     offset: number,
     size: number,
-  ): Array<Array<number>> {
-    const r = new Array<Array<number>>(size);
+  ): Array<Int16Array> {
+    const r = new Array<Int16Array>(size);
     for (let i = 0; i < size; i++) {
       r[i] = byteopsCbd(prf(this._eta1 * N / 4, sigma, offset), this._eta1);
       offset++;
@@ -81,10 +81,10 @@ export class MlKem512 extends MlKemBase {
  * @param eta - The value of eta.
  * @returns An array of numbers representing the result of the byte operations.
  */
-function byteopsCbd(buf: Uint8Array, eta: number): Array<number> {
+function byteopsCbd(buf: Uint8Array, eta: number): Int16Array {
   let t, d;
   let a, b;
-  const r = new Array<number>(384).fill(0);
+  const r = new Int16Array(N);
   for (let i = 0; i < N / 4; i++) {
     t = byteopsLoad24(buf.subarray(3 * i, buf.length));
     d = t & 0x00249249;
