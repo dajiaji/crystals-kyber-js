@@ -95,6 +95,21 @@ copySync(
 );
 Deno.copyFileSync("LICENSE", `./npm/${Deno.args[0]}/LICENSE`);
 Deno.copyFileSync("README.md", `./npm/${Deno.args[0]}/README.md`);
-// await emptyDir("./npm/" + Deno.args[0] + "/src");
-// await emptyDir("./npm/" + Deno.args[0] + "/esm/test");
-// await emptyDir("./npm/" + Deno.args[0] + "/script/test");
+
+// Remove test-only files from the npm package
+const outDir = `./npm/${Deno.args[0]}`;
+for (const dir of ["esm", "script"]) {
+  await emptyDir(`${outDir}/${dir}/deps`);
+  await Deno.remove(`${outDir}/${dir}/deps`, { recursive: true });
+  await emptyDir(`${outDir}/${dir}/test`);
+  await Deno.remove(`${outDir}/${dir}/test`, { recursive: true });
+  try {
+    await Deno.remove(`${outDir}/${dir}/_dnt.test_shims.d.ts`);
+  } catch { /* ignore */ }
+  try {
+    await Deno.remove(`${outDir}/${dir}/_dnt.test_shims.d.ts.map`);
+  } catch { /* ignore */ }
+  try {
+    await Deno.remove(`${outDir}/${dir}/_dnt.test_shims.js`);
+  } catch { /* ignore */ }
+}
