@@ -33,8 +33,9 @@ but includes the following improvements:
   Cloudflare Workers, etc.
 - ✅ Deterministic key generation support.
 - ✅ Constant-time validation for ciphertext.
-- ✅ Better performance: 1.4 to 1.8 times faster than the original
-  implementation.
+- ✅ Better performance: The fastest pure TypeScript/JavaScript ML-KEM
+  implementation available — approximately 3.5x faster than the original
+  implementation. Run `deno bench` to see the benchmark results.
 - ✅ No dependencies on other libraries.
 - ✅ Tree-shaking friendly.
 - ✅ Fix [KyberSlash](https://kyberslash.cr.yp.to/index.html) vulnerability.

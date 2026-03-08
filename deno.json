@@ -14,11 +14,18 @@
   "publish": {
     "exclude": [
       "dnt.ts",
+      ".claude/",
+      ".cursor/",
       ".github/",
       "bench/",
+      "coverage/",
       "npm/",
+      "scripts/",
       "test/",
-      "tsconfig.json"
+      "tsconfig.json",
+      "deno.lock",
+      "CHANGES.md",
+      "SECURITY.md"
     ]
   },
   "fmt": {
