@@ -443,10 +443,10 @@ export class Keccak implements Hash<Keccak>, HashXOF<Keccak> {
   update(data: Uint8Array): this {
     aexists(this);
     abytes(data);
-    return this._updateUnsafe(data);
+    return this.updateUnsafe(data);
   }
   /** Like update(), but skips validation. Caller must ensure valid state and input. */
-  _updateUnsafe(data: Uint8Array): this {
+  updateUnsafe(data: Uint8Array): this {
     const { blockLen, state } = this;
     const len = data.length;
     for (let pos = 0; pos < len;) {
@@ -469,10 +469,10 @@ export class Keccak implements Hash<Keccak>, HashXOF<Keccak> {
   protected writeInto(out: Uint8Array): Uint8Array {
     aexists(this, false);
     abytes(out);
-    return this._writeIntoUnsafe(out);
+    return this.writeIntoUnsafe(out);
   }
   /** Like writeInto(), but skips validation. Caller must ensure valid state and output. */
-  _writeIntoUnsafe(out: Uint8Array): Uint8Array {
+  writeIntoUnsafe(out: Uint8Array): Uint8Array {
     this.finish();
     const bufferOut = this.state;
     const { blockLen } = this;
