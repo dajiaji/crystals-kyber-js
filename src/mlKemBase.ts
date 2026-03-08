@@ -209,32 +209,32 @@ export class MlKemBase {
   // Hash G: SHA3-512
   private _g(a: Uint8Array, b?: Uint8Array): [Uint8Array, Uint8Array] {
     this._poolG.reset();
-    this._poolG._updateUnsafe(a);
-    if (b !== undefined) this._poolG._updateUnsafe(b);
-    this._poolG._writeIntoUnsafe(this._bufG);
+    this._poolG.updateUnsafe(a);
+    if (b !== undefined) this._poolG.updateUnsafe(b);
+    this._poolG.writeIntoUnsafe(this._bufG);
     return [this._bufG.subarray(0, 32), this._bufG.subarray(32, 64)];
   }
 
   // Hash H: SHA3-256
   private _h(msg: Uint8Array): Uint8Array {
     this._poolH.reset();
-    this._poolH._updateUnsafe(msg)._writeIntoUnsafe(this._bufH);
+    this._poolH.updateUnsafe(msg).writeIntoUnsafe(this._bufH);
     return this._bufH;
   }
 
   // KDF: SHAKE256(dkLen=32)
   private _kdf(a: Uint8Array, b?: Uint8Array): Uint8Array {
     this._poolKdf.reset();
-    this._poolKdf._updateUnsafe(a);
-    if (b !== undefined) this._poolKdf._updateUnsafe(b);
-    this._poolKdf._writeIntoUnsafe(this._bufKdf);
+    this._poolKdf.updateUnsafe(a);
+    if (b !== undefined) this._poolKdf.updateUnsafe(b);
+    this._poolKdf.writeIntoUnsafe(this._bufKdf);
     return this._bufKdf;
   }
 
   // XOF: SHAKE128(dkLen=672)
   private _xof(seed: Uint8Array): Uint8Array {
     this._poolXof.reset();
-    this._poolXof._updateUnsafe(seed)._writeIntoUnsafe(this._bufXof);
+    this._poolXof.updateUnsafe(seed).writeIntoUnsafe(this._bufXof);
     return this._bufXof;
   }
 
@@ -242,8 +242,8 @@ export class MlKemBase {
   protected _prf1(sigma: Uint8Array, nonce: number): Uint8Array {
     this._nonceBuf[0] = nonce;
     this._poolPrf1.reset();
-    this._poolPrf1._updateUnsafe(sigma)._updateUnsafe(this._nonceBuf)
-      ._writeIntoUnsafe(this._bufPrf1);
+    this._poolPrf1.updateUnsafe(sigma).updateUnsafe(this._nonceBuf)
+      .writeIntoUnsafe(this._bufPrf1);
     return this._bufPrf1;
   }
 
@@ -251,8 +251,8 @@ export class MlKemBase {
   private _prf2(sigma: Uint8Array, nonce: number): Uint8Array {
     this._nonceBuf[0] = nonce;
     this._poolPrf2.reset();
-    this._poolPrf2._updateUnsafe(sigma)._updateUnsafe(this._nonceBuf)
-      ._writeIntoUnsafe(this._bufPrf2);
+    this._poolPrf2.updateUnsafe(sigma).updateUnsafe(this._nonceBuf)
+      .writeIntoUnsafe(this._bufPrf2);
     return this._bufPrf2;
   }
 
