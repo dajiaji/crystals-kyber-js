@@ -42,8 +42,8 @@ export class MlKem512Base extends MlKemBase {
   ): Array<Int16Array> {
     const r = new Array<Int16Array>(size);
     for (let i = 0; i < size; i++) {
-      r[i] = byteopsCbd(this._prf1(sigma, offset), this._eta1);
-      offset++;
+      r[i] = this._noiseVecs[offset + i];
+      byteopsCbd(r[i], this._prf1(sigma, offset + i), this._eta1);
     }
     return r;
   }
@@ -52,14 +52,13 @@ export class MlKem512Base extends MlKemBase {
 /**
  * Performs the byte operations for the Cbd function.
  *
+ * @param out - The output array to write into.
  * @param buf - The input buffer.
  * @param eta - The value of eta.
- * @returns An array of numbers representing the result of the byte operations.
  */
-function byteopsCbd(buf: Uint8Array, eta: number): Int16Array {
+function byteopsCbd(out: Int16Array, buf: Uint8Array, eta: number): void {
   let t, d;
   let a, b;
-  const r = new Int16Array(N);
   for (let i = 0; i < N / 4; i++) {
     t = byteopsLoad24(buf, 3 * i);
     d = t & 0x00249249;
@@ -68,8 +67,7 @@ function byteopsCbd(buf: Uint8Array, eta: number): Int16Array {
     for (let j = 0; j < 4; j++) {
       a = int16((d >> (6 * j + 0)) & 0x7);
       b = int16((d >> (6 * j + eta)) & 0x7);
-      r[4 * i + j] = a - b;
+      out[4 * i + j] = a - b;
     }
   }
-  return r;
 }

@@ -381,7 +381,6 @@ export function keccakP(
     s[0] ^= SHA3_IOTA_H[round];
     s[1] ^= SHA3_IOTA_L[round];
   }
-  clean(B);
 }
 
 /** Keccak sponge function. */
@@ -426,6 +425,14 @@ export class Keccak implements Hash<Keccak>, HashXOF<Keccak> {
   clone(): Keccak {
     return this._cloneInto();
   }
+  /** Resets instance to initial (empty) state for reuse. */
+  reset(): void {
+    this.state.fill(0);
+    this.pos = 0;
+    this.posOut = 0;
+    this.finished = false;
+    this.destroyed = false;
+  }
   protected keccak(): void {
     swap32IfBE(this.state32);
     keccakP(this.state32, this.rounds, this._B);
@@ -436,6 +443,10 @@ export class Keccak implements Hash<Keccak>, HashXOF<Keccak> {
   update(data: Uint8Array): this {
     aexists(this);
     abytes(data);
+    return this._updateUnsafe(data);
+  }
+  /** Like update(), but skips validation. Caller must ensure valid state and input. */
+  _updateUnsafe(data: Uint8Array): this {
     const { blockLen, state } = this;
     const len = data.length;
     for (let pos = 0; pos < len;) {
@@ -458,6 +469,10 @@ export class Keccak implements Hash<Keccak>, HashXOF<Keccak> {
   protected writeInto(out: Uint8Array): Uint8Array {
     aexists(this, false);
     abytes(out);
+    return this._writeIntoUnsafe(out);
+  }
+  /** Like writeInto(), but skips validation. Caller must ensure valid state and output. */
+  _writeIntoUnsafe(out: Uint8Array): Uint8Array {
     this.finish();
     const bufferOut = this.state;
     const { blockLen } = this;
