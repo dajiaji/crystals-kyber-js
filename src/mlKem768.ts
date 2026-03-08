@@ -12,6 +12,8 @@ import { MlKemBase } from "./mlKemBase.ts";
  *
  * This class extends the MlKemBase class and provides specific implementation for MlKem768.
  *
+ * @deprecated Use {@link createMlKem768} instead. This async class-based API will be removed in a future release.
+ *
  * @remarks
  *
  * MlKem768 is a specific implementation of the ML-KEM key encapsulation mechanism.
@@ -20,17 +22,17 @@ import { MlKemBase } from "./mlKemBase.ts";
  *
  * ```ts
  * // Using jsr:
- * import { MlKem768 } from "@dajiaji/mlkem";
+ * import { createMlKem768 } from "@dajiaji/mlkem";
  * // Using npm:
- * // import { MlKem768 } from "mlkem"; // or "crystals-kyber-js"
+ * // import { createMlKem768 } from "mlkem"; // or "crystals-kyber-js"
  *
- * const recipient = new MlKem768();
- * const [pkR, skR] = await recipient.generateKeyPair();
+ * const recipient = await createMlKem768();
+ * const [pkR, skR] = recipient.generateKeyPair();
  *
- * const sender = new MlKem768();
- * const [ct, ssS] = await sender.encap(pkR);
+ * const sender = await createMlKem768();
+ * const [ct, ssS] = sender.encap(pkR);
  *
- * const ssR = await recipient.decap(ct, skR);
+ * const ssR = recipient.decap(ct, skR);
  * // ssS === ssR
  * ```
  */

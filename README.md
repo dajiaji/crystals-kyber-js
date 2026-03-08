@@ -68,23 +68,26 @@ npm install crystals-kyber-js
 Then, you can use it as follows:
 
 ```ts
-import { MlKem768 } from "mlkem"; // or from "crystals-kyber-js"
+import { createMlKem768 } from "mlkem"; // or from "crystals-kyber-js"
 
 async function doMlKem() {
+  // Create a pre-initialized instance (async, only needed once).
+  // createMlKem512 and createMlKem1024 are also available.
+  const recipient = await createMlKem768();
+
   // A recipient generates a key pair.
-  const recipient = new MlKem768(); // MlKem512 and MlKem1024 are also available.
-  const [pkR, skR] = await recipient.generateKeyPair();
+  const [pkR, skR] = recipient.generateKeyPair();
   //// Deterministic key generation is also supported
   // const seed = new Uint8Array(64);
   // globalThis.crypto.getRandomValues(seed); // node >= 19
-  // const [pkR, skR] = await recipient.deriveKeyPair(seed);
+  // const [pkR, skR] = recipient.deriveKeyPair(seed);
 
   // A sender generates a ciphertext and a shared secret with pkR.
-  const sender = new MlKem768();
-  const [ct, ssS] = await sender.encap(pkR);
+  const sender = await createMlKem768();
+  const [ct, ssS] = sender.encap(pkR);
 
   // The recipient decapsulates the ciphertext and generates the same shared secret with skR.
-  const ssR = await recipient.decap(ct, skR);
+  const ssR = recipient.decap(ct, skR);
 
   // ssS === ssR
   return;
@@ -140,7 +143,11 @@ deno add @dajiaji/mlkem
 Then, you can use the module from code like this:
 
 ```ts
-import { MlKem1024, MlKem512, MlKem768 } from "@dajiaji/mlkem";
+import {
+  createMlKem512,
+  createMlKem768,
+  createMlKem1024,
+} from "@dajiaji/mlkem";
 ```
 
 **HTTPS import (deprecated):**
@@ -167,7 +174,7 @@ pnpm dlx jsr add @dajiaji/mlkem
 ```
 
 ```ts
-import { MlKem1024, MlKem512, MlKem768 } from "@dajiaji/mlkem";
+import { createMlKem512, createMlKem768, createMlKem1024 } from "@dajiaji/mlkem";
 ```
 
 ### Bun
@@ -182,7 +189,7 @@ bunx jsr add @dajiaji/bhttp
 ```
 
 ```ts
-import { MlKem1024, MlKem512, MlKem768 } from "@dajiaji/mlkem";
+import { createMlKem512, createMlKem768, createMlKem1024 } from "@dajiaji/mlkem";
 ```
 
 ### Web Browsers
@@ -195,12 +202,12 @@ as well.
 <script type="module">
   // Using esm.sh:
   import {
-    MlKem1024,
-    MlKem512,
-    MlKem768,
+    createMlKem512,
+    createMlKem768,
+    createMlKem1024,
   } from "https://esm.sh/mlkem@<SEMVER>";
   // Using unpkg.com:
-  // import { MlKem768 } from "https://unpkg.com/mlkem@SEMVER";
+  // import { createMlKem768 } from "https://unpkg.com/mlkem@SEMVER";
   // ...
 </script>
 ```
@@ -212,17 +219,17 @@ This section shows some typical usage examples.
 ### Node.js
 
 ```js
-import { MlKem768 } from "mlkem";
-// const { MlKem768 } = require("mlkem");
+import { createMlKem768 } from "mlkem";
+// const { createMlKem768 } = require("mlkem");
 
 async function doMlKem() {
-  const recipient = new MlKem768();
-  const [pkR, skR] = await recipient.generateKeyPair();
+  const recipient = await createMlKem768();
+  const [pkR, skR] = recipient.generateKeyPair();
 
-  const sender = new MlKem768();
-  const [ct, ssS] = await sender.encap(pkR);
+  const sender = await createMlKem768();
+  const [ct, ssS] = sender.encap(pkR);
 
-  const ssR = await recipient.decap(ct, skR);
+  const ssR = recipient.decap(ct, skR);
 
   // ssS === ssR
   return;
@@ -238,16 +245,16 @@ try {
 ### Deno, Cloudflare Workers and Bun
 
 ```ts
-import { MlKem512 } from "@dajiaji/mlkem";
+import { createMlKem512 } from "@dajiaji/mlkem";
 
 async function doMlKem() {
-  const recipient = new MlKem512();
-  const [pkR, skR] = await recipient.generateKeyPair();
+  const recipient = await createMlKem512();
+  const [pkR, skR] = recipient.generateKeyPair();
 
-  const sender = new MlKem512();
-  const [ct, ssS] = await sender.encap(pkR);
+  const sender = await createMlKem512();
+  const [ct, ssS] = sender.encap(pkR);
 
-  const ssR = await recipient.decap(ct, skR);
+  const ssR = recipient.decap(ct, skR);
 
   // ssS === ssR
   return;
@@ -267,17 +274,17 @@ try {
   <head></head>
   <body>
     <script type="module">
-      import { MlKem1024 } from "https://esm.sh/mlkem";
+      import { createMlKem1024 } from "https://esm.sh/mlkem";
 
       globalThis.doMlKem = async () => {
         try {
-          const recipient = new MlKem1024();
-          const [pkR, skR] = await recipient.generateKeyPair();
+          const recipient = await createMlKem1024();
+          const [pkR, skR] = recipient.generateKeyPair();
 
-          const sender = new MlKem1024();
-          const [ct, ssS] = await sender.encap(pkR);
+          const sender = await createMlKem1024();
+          const [ct, ssS] = sender.encap(pkR);
 
-          const ssR = await recipient.decap(ct, skR);
+          const ssR = recipient.decap(ct, skR);
 
           // ssS === ssR
           return;
@@ -286,9 +293,30 @@ try {
         }
       };
     </script>
-    <button type="button" onclick="doMlKem()">do CRYSTALS-KYBER</button>
+    <button type="button" onclick="doMlKem()">do ML-KEM</button>
   </body>
 </html>
+```
+
+### Deprecated: Async API (`MlKem512`, `MlKem768`, `MlKem1024`)
+
+The class-based async API (`new MlKem768()`) is deprecated and will be removed
+in a future release. Please migrate to the `createMlKem*` functions shown above.
+
+```ts
+// DEPRECATED - avoid using this pattern
+import { MlKem768 } from "mlkem";
+const recipient = new MlKem768();
+const [pkR, skR] = await recipient.generateKeyPair();
+const [ct, ssS] = await recipient.encap(pkR);
+const ssR = await recipient.decap(ct, skR);
+
+// RECOMMENDED - use createMlKem* instead
+import { createMlKem768 } from "mlkem";
+const recipient = await createMlKem768();
+const [pkR, skR] = recipient.generateKeyPair();  // sync
+const [ct, ssS] = recipient.encap(pkR);          // sync
+const ssR = recipient.decap(ct, skR);            // sync
 ```
 
 ## Contributing
