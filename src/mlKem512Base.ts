@@ -5,7 +5,7 @@
  */
 import { N } from "./consts.ts";
 import { MlKemBase } from "./mlKemBase.ts";
-import { byteopsLoad24, int16, prf } from "./utils.ts";
+import { byteopsLoad24, int16 } from "./utils.ts";
 
 /**
  * Shared base for MlKem512 and MlKem512Impl.
@@ -24,6 +24,7 @@ export class MlKem512Base extends MlKemBase {
     this._pkSize = this._skSize + 32;
     this._compressedUSize = this._k * this._du * N / 8;
     this._compressedVSize = this._dv * N / 8;
+    this._initPool();
   }
 
   /**
@@ -41,7 +42,7 @@ export class MlKem512Base extends MlKemBase {
   ): Array<Int16Array> {
     const r = new Array<Int16Array>(size);
     for (let i = 0; i < size; i++) {
-      r[i] = byteopsCbd(prf(this._eta1 * N / 4, sigma, offset), this._eta1);
+      r[i] = byteopsCbd(this._prf1(sigma, offset), this._eta1);
       offset++;
     }
     return r;

@@ -3,7 +3,7 @@
  * which was deveploped under the MIT licence below:
  * https://github.com/antontutoveanu/crystals-kyber-javascript/blob/main/LICENSE
  */
-import { sha3_256, sha3_512, shake128, shake256 } from "./deps.ts";
+import { Keccak } from "./deps.ts";
 
 import { N, NTT_ZETAS, NTT_ZETAS_INV, Q, Q_INV } from "./consts.ts";
 import {
@@ -13,7 +13,6 @@ import {
   equalUint8Array,
   int16,
   loadCrypto,
-  prf,
   uint16,
 } from "./utils.ts";
 
@@ -65,63 +64,200 @@ export class MlKemBase {
   protected _compressedUSize = 0;
   protected _compressedVSize = 0;
 
+  // Keccak templates (immutable after _initPool)
+  private _tplG!: Keccak;
+  private _tplH!: Keccak;
+  private _tplKdf!: Keccak;
+  private _tplXof!: Keccak;
+  private _tplPrf1!: Keccak;
+  private _tplPrf2!: Keccak;
+  // Keccak pool instances (cloned from templates before each use)
+  private _poolG!: Keccak;
+  private _poolH!: Keccak;
+  private _poolKdf!: Keccak;
+  private _poolXof!: Keccak;
+  private _poolPrf1!: Keccak;
+  private _poolPrf2!: Keccak;
+  // Pre-allocated output buffers
+  private _bufG = new Uint8Array(64);
+  private _bufH = new Uint8Array(32);
+  private _bufKdf = new Uint8Array(32);
+  private _bufXof = new Uint8Array(672);
+  private _bufPrf1!: Uint8Array;
+  private _bufPrf2!: Uint8Array;
+  private _nonceBuf = new Uint8Array(1);
+  private _xofSeed = new Uint8Array(34);
+  private _kBuf!: Uint8Array;
+
   /**
    * Creates a new instance of the MlKemBase class.
    */
   constructor() {}
 
+  protected _initPool(): void {
+    // sha3_512: blockLen=72, suffix=0x06, outputLen=64
+    this._tplG = new Keccak(72, 0x06, 64);
+    this._poolG = this._tplG.clone();
+    // sha3_256: blockLen=136, suffix=0x06, outputLen=32
+    this._tplH = new Keccak(136, 0x06, 32);
+    this._poolH = this._tplH.clone();
+    // shake256: blockLen=136, suffix=0x1f, dkLen=32, enableXOF
+    this._tplKdf = new Keccak(136, 0x1f, 32, true);
+    this._poolKdf = this._tplKdf.clone();
+    // shake128: blockLen=168, suffix=0x1f, dkLen=672, enableXOF
+    this._tplXof = new Keccak(168, 0x1f, 672, true);
+    this._poolXof = this._tplXof.clone();
+    // shake256 for prf with eta1
+    const prf1Len = this._eta1 * N / 4;
+    this._tplPrf1 = new Keccak(136, 0x1f, prf1Len, true);
+    this._poolPrf1 = this._tplPrf1.clone();
+    this._bufPrf1 = new Uint8Array(prf1Len);
+    // shake256 for prf with eta2
+    const prf2Len = this._eta2 * N / 4;
+    this._tplPrf2 = new Keccak(136, 0x1f, prf2Len, true);
+    this._poolPrf2 = this._tplPrf2.clone();
+    this._bufPrf2 = new Uint8Array(prf2Len);
+    // constant buffer for k parameter
+    this._kBuf = new Uint8Array([this._k]);
+  }
+
+  protected _zeroPool(): void {
+    this._bufG.fill(0);
+    this._bufH.fill(0);
+    this._bufKdf.fill(0);
+    this._bufXof.fill(0);
+    this._bufPrf1.fill(0);
+    this._bufPrf2.fill(0);
+    this._nonceBuf[0] = 0;
+    this._xofSeed.fill(0);
+    this._poolG.destroy();
+    this._poolH.destroy();
+    this._poolKdf.destroy();
+    this._poolXof.destroy();
+    this._poolPrf1.destroy();
+    this._poolPrf2.destroy();
+  }
+
+  // Hash G: SHA3-512
+  private _g(a: Uint8Array, b?: Uint8Array): [Uint8Array, Uint8Array] {
+    this._tplG._cloneInto(this._poolG);
+    this._poolG.update(a);
+    if (b !== undefined) this._poolG.update(b);
+    this._poolG.digestInto(this._bufG);
+    return [this._bufG.subarray(0, 32), this._bufG.subarray(32, 64)];
+  }
+
+  // Hash H: SHA3-256
+  private _h(msg: Uint8Array): Uint8Array {
+    this._tplH._cloneInto(this._poolH);
+    this._poolH.update(msg).digestInto(this._bufH);
+    return this._bufH;
+  }
+
+  // KDF: SHAKE256(dkLen=32)
+  private _kdf(a: Uint8Array, b?: Uint8Array): Uint8Array {
+    this._tplKdf._cloneInto(this._poolKdf);
+    this._poolKdf.update(a);
+    if (b !== undefined) this._poolKdf.update(b);
+    this._poolKdf.digestInto(this._bufKdf);
+    return this._bufKdf;
+  }
+
+  // XOF: SHAKE128(dkLen=672)
+  private _xof(seed: Uint8Array): Uint8Array {
+    this._tplXof._cloneInto(this._poolXof);
+    this._poolXof.update(seed).digestInto(this._bufXof);
+    return this._bufXof;
+  }
+
+  // PRF for eta1 noise sampling: SHAKE256(dkLen=eta1*N/4)
+  protected _prf1(sigma: Uint8Array, nonce: number): Uint8Array {
+    this._nonceBuf[0] = nonce;
+    this._tplPrf1._cloneInto(this._poolPrf1);
+    this._poolPrf1.update(sigma).update(this._nonceBuf).digestInto(
+      this._bufPrf1,
+    );
+    return this._bufPrf1;
+  }
+
+  // PRF for eta2 noise sampling: SHAKE256(dkLen=eta2*N/4)
+  private _prf2(sigma: Uint8Array, nonce: number): Uint8Array {
+    this._nonceBuf[0] = nonce;
+    this._tplPrf2._cloneInto(this._poolPrf2);
+    this._poolPrf2.update(sigma).update(this._nonceBuf).digestInto(
+      this._bufPrf2,
+    );
+    return this._bufPrf2;
+  }
+
   protected _generateKeyPairCore(): [Uint8Array, Uint8Array] {
-    const rnd = new Uint8Array(64);
-    (this._api as Crypto).getRandomValues(rnd);
-    return this._deriveKeyPair(rnd);
+    try {
+      const rnd = new Uint8Array(64);
+      (this._api as Crypto).getRandomValues(rnd);
+      return this._deriveKeyPair(rnd);
+    } finally {
+      this._zeroPool();
+    }
   }
 
   protected _deriveKeyPairCore(seed: Uint8Array): [Uint8Array, Uint8Array] {
-    if (seed.byteLength !== 64) {
-      throw new Error("seed must be 64 bytes in length");
+    try {
+      if (seed.byteLength !== 64) {
+        throw new Error("seed must be 64 bytes in length");
+      }
+      return this._deriveKeyPair(seed);
+    } finally {
+      this._zeroPool();
     }
-    return this._deriveKeyPair(seed);
   }
 
   protected _encapCore(
     pk: Uint8Array,
     seed?: Uint8Array,
   ): [Uint8Array, Uint8Array] {
-    // validate key type; the modulo is checked in `_encap`.
-    if (pk.length !== 384 * this._k + 32) {
-      throw new Error("invalid encapsulation key");
+    try {
+      // validate key type; the modulo is checked in `_encap`.
+      if (pk.length !== 384 * this._k + 32) {
+        throw new Error("invalid encapsulation key");
+      }
+      const m = this._getSeed(seed);
+      const [k, r] = this._g(m, this._h(pk));
+      const ct = this._encap(pk, m, r);
+      return [ct, k.slice()];
+    } finally {
+      this._zeroPool();
     }
-    const m = this._getSeed(seed);
-    const [k, r] = g(m, h(pk));
-    const ct = this._encap(pk, m, r);
-    return [ct, k];
   }
 
   protected _decapCore(ct: Uint8Array, sk: Uint8Array): Uint8Array {
-    // ciphertext type check
-    if (ct.byteLength !== this._compressedUSize + this._compressedVSize) {
-      throw new Error("Invalid ct size");
-    }
-    // decapsulation key type check
-    if (sk.length !== 768 * this._k + 96) {
-      throw new Error("Invalid decapsulation key");
-    }
-    const sk2 = sk.subarray(0, this._skSize);
-    const pk = sk.subarray(this._skSize, this._skSize + this._pkSize);
-    const hpk = sk.subarray(
-      this._skSize + this._pkSize,
-      this._skSize + this._pkSize + 32,
-    );
-    const z = sk.subarray(
-      this._skSize + this._pkSize + 32,
-      this._skSize + this._pkSize + 64,
-    );
+    try {
+      // ciphertext type check
+      if (ct.byteLength !== this._compressedUSize + this._compressedVSize) {
+        throw new Error("Invalid ct size");
+      }
+      // decapsulation key type check
+      if (sk.length !== 768 * this._k + 96) {
+        throw new Error("Invalid decapsulation key");
+      }
+      const sk2 = sk.subarray(0, this._skSize);
+      const pk = sk.subarray(this._skSize, this._skSize + this._pkSize);
+      const hpk = sk.subarray(
+        this._skSize + this._pkSize,
+        this._skSize + this._pkSize + 32,
+      );
+      const z = sk.subarray(
+        this._skSize + this._pkSize + 32,
+        this._skSize + this._pkSize + 64,
+      );
 
-    const m2 = this._decap(ct, sk2);
-    const [k2, r2] = g(m2, hpk);
-    const kBar = kdf(z, ct);
-    const ct2 = this._encap(pk, m2, r2);
-    return constantTimeCompare(ct, ct2) === 1 ? k2 : kBar;
+      const m2 = this._decap(ct, sk2);
+      const [k2, r2] = this._g(m2, hpk);
+      const kBar = this._kdf(z, ct);
+      const ct2 = this._encap(pk, m2, r2);
+      return constantTimeCompare(ct, ct2) === 1 ? k2.slice() : kBar.slice();
+    } finally {
+      this._zeroPool();
+    }
   }
 
   /**
@@ -169,7 +305,7 @@ export class MlKemBase {
 
     const [pk, skBody] = this._deriveCpaKeyPair(cpaSeed);
 
-    const pkh = h(pk);
+    const pkh = this._h(pk);
     const sk = new Uint8Array(this._skSize + this._pkSize + 64);
     sk.set(skBody, 0);
     sk.set(pk, this._skSize);
@@ -188,7 +324,7 @@ export class MlKemBase {
    * @returns An array containing the public key and private key.
    */
   private _deriveCpaKeyPair(cpaSeed: Uint8Array): [Uint8Array, Uint8Array] {
-    const [publicSeed, noiseSeed] = g(cpaSeed, new Uint8Array([this._k]));
+    const [publicSeed, noiseSeed] = this._g(cpaSeed, this._kBuf);
     const a = this._sampleMatrix(publicSeed, false);
     const s = this._sampleNoise1(noiseSeed, 0, this._k);
     const e = this._sampleNoise1(noiseSeed, this._k, this._k);
@@ -332,8 +468,7 @@ export class MlKemBase {
     transposed: boolean,
   ): Array<Array<Int16Array>> {
     const a = new Array<Array<Int16Array>>(this._k);
-    const xofSeed = new Uint8Array(seed.length + 2);
-    xofSeed.set(seed);
+    this._xofSeed.set(seed);
 
     for (let ctr = 0, i = 0; i < this._k; i++) {
       a[i] = new Array<Int16Array>(this._k);
@@ -341,13 +476,13 @@ export class MlKemBase {
       for (let j = 0; j < this._k; j++) {
         // set if transposed matrix or not
         if (transposed) {
-          xofSeed[seed.length] = i;
-          xofSeed[seed.length + 1] = j;
+          this._xofSeed[seed.length] = i;
+          this._xofSeed[seed.length + 1] = j;
         } else {
-          xofSeed[seed.length] = j;
-          xofSeed[seed.length + 1] = i;
+          this._xofSeed[seed.length] = j;
+          this._xofSeed[seed.length + 1] = i;
         }
-        const output = xof(xofSeed);
+        const output = this._xof(this._xofSeed);
 
         // run rejection sampling on the output from above
         const result = indcpaRejUniform(output.subarray(0, 504), 504, N);
@@ -385,7 +520,7 @@ export class MlKemBase {
   ): Array<Int16Array> {
     const r = new Array<Int16Array>(size);
     for (let i = 0; i < size; i++) {
-      r[i] = byteopsCbd(prf(this._eta1 * N / 4, sigma, offset), this._eta1);
+      r[i] = byteopsCbd(this._prf1(sigma, offset), this._eta1);
       offset++;
     }
     return r;
@@ -406,7 +541,7 @@ export class MlKemBase {
   ): Array<Int16Array> {
     const r = new Array<Int16Array>(size);
     for (let i = 0; i < size; i++) {
-      r[i] = byteopsCbd(prf(this._eta2 * N / 4, sigma, offset), this._eta2);
+      r[i] = byteopsCbd(this._prf2(sigma, offset), this._eta2);
       offset++;
     }
     return r;
@@ -537,58 +672,6 @@ export class MlKemBase {
     }
     return r;
   }
-}
-
-/**
- * Computes the hash of the input array `a` and an optional input array `b`.
- * Returns an array containing two Uint8Arrays, representing the first 32 bytes and the next 32 bytes of the hash digest.
- * @param a - The input array to be hashed.
- * @param b - An optional input array to be hashed along with `a`.
- * @returns An array containing two Uint8Arrays representing the hash digest.
- */
-function g(a: Uint8Array, b?: Uint8Array): [Uint8Array, Uint8Array] {
-  const hash = sha3_512.create().update(a);
-  if (b !== undefined) {
-    hash.update(b);
-  }
-  const res = hash.digest();
-  return [res.subarray(0, 32), res.subarray(32, 64)];
-}
-
-/**
- * Computes the SHA3-256 hash of the given message.
- *
- * @param msg - The input message as a Uint8Array.
- * @returns The computed hash as a Uint8Array.
- */
-function h(msg: Uint8Array): Uint8Array {
-  return sha3_256.create().update(msg).digest();
-}
-
-/**
- * Key Derivation Function (KDF) that takes an input array `a` and an optional input array `b`.
- * It uses the SHAKE256 hash function to derive a 32-byte output.
- *
- * @param a - The input array.
- * @param b - The optional input array.
- * @returns The derived key as a Uint8Array.
- */
-function kdf(a: Uint8Array, b?: Uint8Array): Uint8Array {
-  const hash = shake256.create({ dkLen: 32 }).update(a);
-  if (b !== undefined) {
-    hash.update(b);
-  }
-  return hash.digest();
-}
-
-/**
- * Computes the extendable-output function (XOF) using the SHAKE128 algorithm.
- *
- * @param seed - The seed value for the XOF (including transpose bytes).
- * @returns The computed XOF value as a Uint8Array.
- */
-function xof(seed: Uint8Array): Uint8Array {
-  return shake128.create({ dkLen: 672 }).update(seed).digest();
 }
 
 // polyToBytes serializes a polynomial into an array of bytes.
