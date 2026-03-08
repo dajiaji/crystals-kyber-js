@@ -24,6 +24,7 @@ export class MlKem1024Base extends MlKemBase {
     this._pkSize = this._skSize + 32;
     this._compressedUSize = this._k * this._du * N / 8;
     this._compressedVSize = this._dv * N / 8;
+    this._initPool();
   }
 
   // compressU lossily compresses and serializes a vector of polynomials.

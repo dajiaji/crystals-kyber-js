@@ -39,6 +39,7 @@ export class MlKem768Impl extends MlKemBase implements MlKemInterface {
     this._pkSize = this._skSize + 32;
     this._compressedUSize = this._k * this._du * N / 8;
     this._compressedVSize = this._dv * N / 8;
+    this._initPool();
   }
 
   /** Generates a keypair [publicKey, privateKey]. */
