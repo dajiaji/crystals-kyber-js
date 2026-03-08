@@ -11,6 +11,8 @@ import { MlKem1024Base } from "./mlKem1024Base.ts";
  *
  * This class extends the MlKem1024Base class and provides specific implementation for MlKem1024.
  *
+ * @deprecated Use {@link createMlKem1024} instead. This async class-based API will be removed in a future release.
+ *
  * @remarks
  *
  * MlKem1024 is a specific implementation of the ML-KEM key encapsulation mechanism.
@@ -19,17 +21,17 @@ import { MlKem1024Base } from "./mlKem1024Base.ts";
  *
  * ```ts
  * // Using jsr:
- * import { MlKem1024 } from "@dajiaji/mlkem";
+ * import { createMlKem1024 } from "@dajiaji/mlkem";
  * // Using npm:
- * // import { MlKem1024 } from "mlkem"; // or "crystals-kyber-js"
+ * // import { createMlKem1024 } from "mlkem"; // or "crystals-kyber-js"
  *
- * const recipient = new MlKem1024();
- * const [pkR, skR] = await recipient.generateKeyPair();
+ * const recipient = await createMlKem1024();
+ * const [pkR, skR] = recipient.generateKeyPair();
  *
- * const sender = new MlKem1024();
- * const [ct, ssS] = await sender.encap(pkR);
+ * const sender = await createMlKem1024();
+ * const [ct, ssS] = sender.encap(pkR);
  *
- * const ssR = await recipient.decap(ct, skR);
+ * const ssR = recipient.decap(ct, skR);
  * // ssS === ssR
  * ```
  */

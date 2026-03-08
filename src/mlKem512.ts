@@ -11,6 +11,8 @@ import { MlKem512Base } from "./mlKem512Base.ts";
  *
  * This class extends the MlKem512Base class and provides specific implementation for MlKem512.
  *
+ * @deprecated Use {@link createMlKem512} instead. This async class-based API will be removed in a future release.
+ *
  * @remarks
  *
  * MlKem512 is a specific implementation of the ML-KEM key encapsulation mechanism.
@@ -19,17 +21,17 @@ import { MlKem512Base } from "./mlKem512Base.ts";
  *
  * ```ts
  * // Using jsr:
- * import { MlKem512 } from "@dajiaji/mlkem";
+ * import { createMlKem512 } from "@dajiaji/mlkem";
  * // Using npm:
- * // import { MlKem512 } from "mlkem"; // or "crystals-kyber-js"
+ * // import { createMlKem512 } from "mlkem"; // or "crystals-kyber-js"
  *
- * const recipient = new MlKem512();
- * const [pkR, skR] = await recipient.generateKeyPair();
+ * const recipient = await createMlKem512();
+ * const [pkR, skR] = recipient.generateKeyPair();
  *
- * const sender = new MlKem512();
- * const [ct, ssS] = await sender.encap(pkR);
+ * const sender = await createMlKem512();
+ * const [ct, ssS] = sender.encap(pkR);
  *
- * const ssR = await recipient.decap(ct, skR);
+ * const ssR = recipient.decap(ct, skR);
  * // ssS === ssR
  * ```
  */
