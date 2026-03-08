@@ -144,9 +144,9 @@ Then, you can use the module from code like this:
 
 ```ts
 import {
+  createMlKem1024,
   createMlKem512,
   createMlKem768,
-  createMlKem1024,
 } from "@dajiaji/mlkem";
 ```
 
@@ -174,7 +174,11 @@ pnpm dlx jsr add @dajiaji/mlkem
 ```
 
 ```ts
-import { createMlKem512, createMlKem768, createMlKem1024 } from "@dajiaji/mlkem";
+import {
+  createMlKem1024,
+  createMlKem512,
+  createMlKem768,
+} from "@dajiaji/mlkem";
 ```
 
 ### Bun
@@ -189,7 +193,11 @@ bunx jsr add @dajiaji/bhttp
 ```
 
 ```ts
-import { createMlKem512, createMlKem768, createMlKem1024 } from "@dajiaji/mlkem";
+import {
+  createMlKem1024,
+  createMlKem512,
+  createMlKem768,
+} from "@dajiaji/mlkem";
 ```
 
 ### Web Browsers
@@ -202,9 +210,9 @@ as well.
 <script type="module">
   // Using esm.sh:
   import {
+    createMlKem1024,
     createMlKem512,
     createMlKem768,
-    createMlKem1024,
   } from "https://esm.sh/mlkem@<SEMVER>";
   // Using unpkg.com:
   // import { createMlKem768 } from "https://unpkg.com/mlkem@SEMVER";
@@ -314,9 +322,9 @@ const ssR = await recipient.decap(ct, skR);
 // RECOMMENDED - use createMlKem* instead
 import { createMlKem768 } from "mlkem";
 const recipient = await createMlKem768();
-const [pkR, skR] = recipient.generateKeyPair();  // sync
-const [ct, ssS] = recipient.encap(pkR);          // sync
-const ssR = recipient.decap(ct, skR);            // sync
+const [pkR, skR] = recipient.generateKeyPair(); // sync
+const [ct, ssS] = recipient.encap(pkR); // sync
+const ssR = recipient.decap(ct, skR); // sync
 ```
 
 ## Contributing
