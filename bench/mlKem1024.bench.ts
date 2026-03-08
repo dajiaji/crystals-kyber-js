@@ -1,6 +1,6 @@
 import * as kyber from "crystals-kyber";
 import { ml_kem1024 } from "@noble/post-quantum/ml-kem.js";
-import { MlKem1024 } from "../mod.ts";
+import { createMlKem1024, MlKem1024 } from "../mod.ts";
 
 Deno.bench("deriveKeyPair:mlkem", async (b) => {
   const ctx = new MlKem1024();
@@ -11,10 +11,26 @@ Deno.bench("deriveKeyPair:mlkem", async (b) => {
   b.end();
 });
 
+Deno.bench("deriveKeyPair:mlkem-sync", async (b) => {
+  const ctx = await createMlKem1024();
+  const seed = new Uint8Array(64);
+  globalThis.crypto.getRandomValues(seed);
+  b.start();
+  const [_pk, _sk] = ctx.deriveKeyPair(seed);
+  b.end();
+});
+
 Deno.bench("keygen:mlkem", async (b) => {
   const ctx = new MlKem1024();
   b.start();
   const [_pk, _sk] = await ctx.generateKeyPair();
+  b.end();
+});
+
+Deno.bench("keygen:mlkem-sync", async (b) => {
+  const ctx = await createMlKem1024();
+  b.start();
+  const [_pk, _sk] = ctx.generateKeyPair();
   b.end();
 });
 
@@ -31,6 +47,14 @@ Deno.bench("encap:mlkem", async (b) => {
   const [pk, _sk] = await ctx.generateKeyPair();
   b.start();
   const [_ct, _ss] = await ctx.encap(pk);
+  b.end();
+});
+
+Deno.bench("encap:mlkem-sync", async (b) => {
+  const ctx = await createMlKem1024();
+  const [pk, _sk] = ctx.generateKeyPair();
+  b.start();
+  const [_ct, _ss] = ctx.encap(pk);
   b.end();
 });
 
@@ -57,6 +81,15 @@ Deno.bench("decap:mlkem", async (b) => {
   b.end();
 });
 
+Deno.bench("decap:mlkem-sync", async (b) => {
+  const ctx = await createMlKem1024();
+  const [pk, sk] = ctx.generateKeyPair();
+  const [ct, _ss1] = ctx.encap(pk);
+  b.start();
+  const _ss2 = ctx.decap(ct, sk);
+  b.end();
+});
+
 Deno.bench("decap:crystals-kyber", (b) => {
   const [pk, sk] = kyber.KeyGen1024();
   const [ct, _ss1] = kyber.Encrypt1024(pk);
@@ -79,6 +112,15 @@ Deno.bench("all (keygen/encap/decap):mlkem", async (b) => {
   const [pk, sk] = await ctx.generateKeyPair();
   const [ct, _ss1] = await ctx.encap(pk);
   const _ss2 = await ctx.decap(ct, sk);
+  b.end();
+});
+
+Deno.bench("all (keygen/encap/decap):mlkem-sync", async (b) => {
+  const ctx = await createMlKem1024();
+  b.start();
+  const [pk, sk] = ctx.generateKeyPair();
+  const [ct, _ss1] = ctx.encap(pk);
+  const _ss2 = ctx.decap(ct, sk);
   b.end();
 });
 
