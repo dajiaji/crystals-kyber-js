@@ -8,7 +8,8 @@
     "@std/fs": "jsr:@std/fs@^1.0.14",
     "@std/testing": "jsr:@std/testing@^1.0.9",
     "@noble/post-quantum": "npm:@noble/post-quantum@^0.5.4",
-    "crystals-kyber": "npm:crystals-kyber@^5.1.0"
+    "crystals-kyber": "npm:crystals-kyber@^5.1.0",
+    "mlkem-wasm": "npm:mlkem-wasm@^0.0.7"
   },
   "publish": {
     "exclude": [

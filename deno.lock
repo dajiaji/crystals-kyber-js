@@ -21,7 +21,8 @@
     "jsr:@ts-morph/common@0.27": "0.27.0",
     "npm:@noble/post-quantum@~0.5.4": "0.5.4",
     "npm:@types/node@*": "18.16.19",
-    "npm:crystals-kyber@^5.1.0": "5.1.0"
+    "npm:crystals-kyber@^5.1.0": "5.1.0",
+    "npm:mlkem-wasm@^0.0.7": "0.0.7"
   },
   "jsr": {
     "@david/code-block-writer@13.0.2": {
@@ -152,6 +153,9 @@
     "ieee754@1.2.1": {
       "integrity": "sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA=="
     },
+    "mlkem-wasm@0.0.7": {
+      "integrity": "sha512-q0kxtIlfUUrYGZpW8ebtLmEvZMenqMvHwsPfJGFSHDmprbiF6zI9VyAQc/MecHQXAqsMRYOdrzGVS0YQe4LW1w=="
+    },
     "sha3@2.1.4": {
       "integrity": "sha512-S8cNxbyb0UGUM2VhRD4Poe5N58gJnJsLJ5vC7FYWGUmGhcsj4++WaIOBFVDxlG0W3To6xBuiRh+i0Qp2oNCOtg==",
       "dependencies": [
@@ -166,7 +170,8 @@
       "jsr:@std/fs@^1.0.14",
       "jsr:@std/testing@^1.0.9",
       "npm:@noble/post-quantum@~0.5.4",
-      "npm:crystals-kyber@^5.1.0"
+      "npm:crystals-kyber@^5.1.0",
+      "npm:mlkem-wasm@^0.0.7"
     ]
   }
 }
