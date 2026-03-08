@@ -1,5 +1,19 @@
 # Changes
 
+## Version 2.7.0
+
+Released 2026-03-08
+
+- [(#570) Recommend `createMlKem*` API and deprecate class-based `MlKem512`/`MlKem768`/`MlKem1024`.](https://github.com/dajiaji/crystals-kyber-js/pull/570)
+- [(#569) Rename `_updateUnsafe`/`_writeIntoUnsafe` to `updateUnsafe`/`writeIntoUnsafe` in Keccak.](https://github.com/dajiaji/crystals-kyber-js/pull/569)
+- [(#568) Pre-allocate buffers for matrix A, noise polyvecs, pkCheck, ciphertext, polyToBytes, and polyFromBytes.](https://github.com/dajiaji/crystals-kyber-js/pull/568)
+- [(#567) Use per-instance Keccak pool with `reset()` and zero sensitive buffers after use.](https://github.com/dajiaji/crystals-kyber-js/pull/567)
+- [(#566) Add synchronous ML-KEM API (`createMlKem512`/`createMlKem768`/`createMlKem1024`).](https://github.com/dajiaji/crystals-kyber-js/pull/566)
+- [(#565) Update README performance claim.](https://github.com/dajiaji/crystals-kyber-js/pull/565)
+- [(#564) Inline `subtractQ`, simplify decompress, and unroll keccakP permutation.](https://github.com/dajiaji/crystals-kyber-js/pull/564)
+- [(#563) Unify ML-KEM benchmark names to `operation:implementation` format.](https://github.com/dajiaji/crystals-kyber-js/pull/563)
+- [(#562) Use Node 24 and set `NODE_AUTH_TOKEN` env for npm publish in CD.](https://github.com/dajiaji/crystals-kyber-js/pull/562)
+
 ## Version 2.6.0
 
 Released 2026-03-07
