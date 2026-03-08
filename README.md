@@ -28,19 +28,19 @@ This module is based on
 [ntontutoveanu/crystals-kyber-javascript](https://github.com/antontutoveanu/crystals-kyber-javascript),
 but includes the following improvements:
 
+- ✅ ML-KEM ([NIST FIPS 203](https://csrc.nist.gov/pubs/fips/203/final))
+  support.
 - ✅ Written in TypeScript.
 - ✅ Available on various JavaScript runtimes: Browsers, Node.js, Deno,
   Cloudflare Workers, etc.
 - ✅ Deterministic key generation support.
 - ✅ Constant-time validation for ciphertext.
 - ✅ Better performance: The fastest pure TypeScript/JavaScript ML-KEM
-  implementation available — approximately 3.5x faster than the original
+  implementation available — approximately 5x faster than the original
   implementation. Run `deno bench` to see the benchmark results.
 - ✅ No dependencies on other libraries.
 - ✅ Tree-shaking friendly.
 - ✅ Fix [KyberSlash](https://kyberslash.cr.yp.to/index.html) vulnerability.
-- ✅ ML-KEM ([NIST FIPS 203](https://csrc.nist.gov/pubs/fips/203/final))
-  support.
 - ✅ Passed all the tests published by:
   - [post-quantum-cryptography/KAT/MLKEM](https://github.com/post-quantum-cryptography/KAT/tree/main/MLKEM)
   - [C2SP/CCTV/ML-KEM](https://github.com/C2SP/CCTV/tree/main/ML-KEM)
@@ -71,7 +71,7 @@ Then, you can use it as follows:
 import { createMlKem768 } from "mlkem"; // or from "crystals-kyber-js"
 
 async function doMlKem() {
-  // Create a pre-initialized instance (async, only needed once).
+  // Create a pre-initialized instance (available since v2.7.0).
   // createMlKem512 and createMlKem1024 are also available.
   const recipient = await createMlKem768();
 
@@ -227,7 +227,7 @@ This section shows some typical usage examples.
 ### Node.js
 
 ```js
-import { createMlKem768 } from "mlkem";
+import { createMlKem768 } from "mlkem"; // Available since v2.7.0
 // const { createMlKem768 } = require("mlkem");
 
 async function doMlKem() {
@@ -253,7 +253,7 @@ try {
 ### Deno, Cloudflare Workers and Bun
 
 ```ts
-import { createMlKem512 } from "@dajiaji/mlkem";
+import { createMlKem512 } from "@dajiaji/mlkem"; // Available since v2.7.0
 
 async function doMlKem() {
   const recipient = await createMlKem512();
@@ -282,6 +282,7 @@ try {
   <head></head>
   <body>
     <script type="module">
+      // createMlKem* available since v2.7.0
       import { createMlKem1024 } from "https://esm.sh/mlkem";
 
       globalThis.doMlKem = async () => {
@@ -319,7 +320,7 @@ const [pkR, skR] = await recipient.generateKeyPair();
 const [ct, ssS] = await recipient.encap(pkR);
 const ssR = await recipient.decap(ct, skR);
 
-// RECOMMENDED - use createMlKem* instead
+// RECOMMENDED - use createMlKem* instead (available since v2.7.0)
 import { createMlKem768 } from "mlkem";
 const recipient = await createMlKem768();
 const [pkR, skR] = recipient.generateKeyPair(); // sync
