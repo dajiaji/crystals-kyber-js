@@ -147,7 +147,7 @@ export class MlKem1024 extends MlKemBase {
         t[7] = (uint16(a[aa + 9]) >> 5) | (uint16(a[aa + 10]) << 3);
         aa = aa + 11;
         for (let k = 0; k < 8; k++) {
-          r[i][8 * j + k] = (uint32(t[k] & 0x7FF) * Q + 1024) >> 11;
+          r[i][8 * j + k] = ((t[k] & 0x7FF) * Q + 1024) >> 11;
         }
       }
     }
@@ -183,7 +183,7 @@ export class MlKem1024 extends MlKemBase {
       t[7] = a[aa + 4] >> 3;
       aa = aa + 5;
       for (let j = 0; j < 8; j++) {
-        r[8 * i + j] = int16(((uint32(t[j] & 31) * uint32(Q)) + 16) >> 5);
+        r[8 * i + j] = int16((((t[j] & 31) * Q) + 16) >> 5);
       }
     }
     return r;

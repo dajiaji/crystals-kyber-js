@@ -16,7 +16,6 @@ import {
   loadCrypto,
   prf,
   uint16,
-  uint32,
 } from "./utils.ts";
 
 /**
@@ -629,7 +628,7 @@ export class MlKemBase {
         aa = aa + 5;
         for (let k = 0; k < 4; k++) {
           r[i][4 * j + k] = int16(
-            (((uint32(t[k] & 0x3FF)) * (uint32(Q))) + 512) >> 10,
+            (((t[k] & 0x3FF) * Q) + 512) >> 10,
           );
         }
       }
@@ -651,8 +650,8 @@ export class MlKemBase {
   protected _decompressV(a: Uint8Array): Int16Array {
     const r = new Int16Array(N);
     for (let aa = 0, i = 0; i < N / 2; i++, aa++) {
-      r[2 * i + 0] = int16(((uint16(a[aa] & 15) * uint16(Q)) + 8) >> 4);
-      r[2 * i + 1] = int16(((uint16(a[aa] >> 4) * uint16(Q)) + 8) >> 4);
+      r[2 * i + 0] = int16((((a[aa] & 15) * Q) + 8) >> 4);
+      r[2 * i + 1] = int16((((a[aa] >> 4) * Q) + 8) >> 4);
     }
     return r;
   }
@@ -720,18 +719,16 @@ function xof(seed: Uint8Array): Uint8Array {
  * @returns The Uint8Array representation of the polynomial.
  */
 function polyToBytes(a: Int16Array): Uint8Array {
-  let t0 = 0;
-  let t1 = 0;
+  let t0, t1;
   const r = new Uint8Array(384);
-  const a2 = subtractQ(a); // Returns: a - q if a >= q, else a (each coefficient of the polynomial)
-  // for 0-127
   for (let i = 0; i < N / 2; i++) {
-    // get two coefficient entries in the polynomial
-    t0 = uint16(a2[2 * i]);
-    t1 = uint16(a2[2 * i + 1]);
+    // inline subtractQ: a - q if a >= q, else a
+    t0 = a[2 * i] - Q;
+    t0 += (t0 >> 31) & Q;
+    t1 = a[2 * i + 1] - Q;
+    t1 += (t1 >> 31) & Q;
 
-    // convert the 2 coefficient into 3 bytes
-    r[3 * i + 0] = byte(t0 >> 0); // byte() does mod 256 of the input (output value 0-255)
+    r[3 * i + 0] = byte(t0);
     r[3 * i + 1] = byte(t0 >> 8) | byte(t1 << 4);
     r[3 * i + 2] = byte(t1 >> 4);
   }
@@ -772,12 +769,13 @@ function polyFromBytes(a: Uint8Array): Int16Array {
  */
 function polyToMsg(a: Int16Array): Uint8Array {
   const msg = new Uint8Array(32);
-  let t;
-  const a2 = subtractQ(a);
+  let t, v;
   for (let i = 0; i < N / 8; i++) {
-    msg[i] = 0;
     for (let j = 0; j < 8; j++) {
-      t = (((uint16(a2[8 * i + j]) << 1) + uint16(Q / 2)) /
+      // inline subtractQ: a - q if a >= q, else a
+      v = a[8 * i + j] - Q;
+      v += (v >> 31) & Q;
+      t = (((uint16(v) << 1) + uint16(Q / 2)) /
         uint16(Q)) & 1;
       msg[i] |= byte(t << j);
     }
@@ -1078,29 +1076,6 @@ function nttInverse(r: Int16Array): Int16Array {
   }
   for (j = 0; j < 256; j++) {
     r[j] = nttFqMul(r[j], NTT_ZETAS_INV[127]);
-  }
-  return r;
-}
-
-// subtractQ applies the conditional subtraction of q to each coefficient of a polynomial.
-// if a is 3329 then convert to 0
-// Returns:     a - q if a >= q, else a
-
-/**
- * Subtracts the value of Q from each element in the given array.
- * The result should be a negative integer for each element.
- * If the leftmost bit is 0 (positive number), the value of Q is added back.
- *
- * @param r - The array to subtract Q from.
- * @returns The resulting array after the subtraction.
- */
-function subtractQ(r: Int16Array): Int16Array {
-  for (let i = 0; i < N; i++) {
-    r[i] -= Q; // should result in a negative integer
-    // push left most signed bit to right most position
-    // javascript does bitwise in signed 32 bit so you need to convert
-    // add q back again if left most bit was 0 (positive number)
-    r[i] += (r[i] >> 31) & Q;
   }
   return r;
 }
