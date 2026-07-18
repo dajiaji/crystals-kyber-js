@@ -208,15 +208,15 @@ as well.
 ```html
 <!-- use a specific version -->
 <script type="module">
-  // Using esm.sh:
-  import {
-    createMlKem1024,
-    createMlKem512,
-    createMlKem768,
-  } from "https://esm.sh/mlkem@<SEMVER>";
-  // Using unpkg.com:
-  // import { createMlKem768 } from "https://unpkg.com/mlkem@SEMVER";
-  // ...
+// Using esm.sh:
+import {
+  createMlKem1024,
+  createMlKem512,
+  createMlKem768,
+} from "https://esm.sh/mlkem@<SEMVER>";
+// Using unpkg.com:
+// import { createMlKem768 } from "https://unpkg.com/mlkem@SEMVER";
+// ...
 </script>
 ```
 
@@ -282,25 +282,25 @@ try {
   <head></head>
   <body>
     <script type="module">
-      // createMlKem* available since v2.7.0
-      import { createMlKem1024 } from "https://esm.sh/mlkem";
+    // createMlKem* available since v2.7.0
+    import { createMlKem1024 } from "https://esm.sh/mlkem";
 
-      globalThis.doMlKem = async () => {
-        try {
-          const recipient = await createMlKem1024();
-          const [pkR, skR] = recipient.generateKeyPair();
+    globalThis.doMlKem = async () => {
+      try {
+        const recipient = await createMlKem1024();
+        const [pkR, skR] = recipient.generateKeyPair();
 
-          const sender = await createMlKem1024();
-          const [ct, ssS] = sender.encap(pkR);
+        const sender = await createMlKem1024();
+        const [ct, ssS] = sender.encap(pkR);
 
-          const ssR = recipient.decap(ct, skR);
+        const ssR = recipient.decap(ct, skR);
 
-          // ssS === ssR
-          return;
-        } catch (err) {
-          alert("failed: ", err.message);
-        }
-      };
+        // ssS === ssR
+        return;
+      } catch (err) {
+        alert("failed: ", err.message);
+      }
+    };
     </script>
     <button type="button" onclick="doMlKem()">do ML-KEM</button>
   </body>
