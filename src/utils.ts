@@ -62,8 +62,11 @@ export async function loadCrypto(): Promise<Crypto> {
   }
   // Node.js <= v18
   try {
-    // @ts-ignore: to ignore "crypto"
-    const { webcrypto } = await import("crypto"); // node:crypto
+    // The "node:" prefix is required to prevent `deno publish` from
+    // rewriting the specifier to a phantom relative path ("./crypto")
+    // in the published package.
+    // @ts-ignore: to ignore "node:crypto"
+    const { webcrypto } = await import("node:crypto");
     return (webcrypto as unknown as Crypto);
   } catch (_e: unknown) {
     throw new Error("failed to load Crypto");
