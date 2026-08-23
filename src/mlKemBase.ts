@@ -637,8 +637,11 @@ export class MlKemBase {
       for (let j = 0; j < N / 4; j++) {
         for (let k = 0; k < 4; k++) {
           // parse {0,...,3328} to {0,...,1023}
-          t[k] = (((u[i][4 * j + k] << 10) + Q / 2) / Q) &
-            0b1111111111;
+          // Branch-free division by Q, as in polyToMsg. The product reaches
+          // 2**42, past imul's range, so divide by 2**32 exactly instead.
+          t[k] = Math.floor(
+            (((u[i][4 * j + k] << 10) + 1665) * 1290167) / 4294967296,
+          ) & 0b1111111111;
         }
         // converts 4 12-bit coefficients {0,...,3328} to 5 8-bit bytes {0,...,255}
         // 48 bits down to 40 bits per block
@@ -666,7 +669,10 @@ export class MlKemBase {
     const t = new Uint8Array(8);
     for (let rr = 0, i = 0; i < N / 8; i++) {
       for (let j = 0; j < 8; j++) {
-        t[j] = byte(((v[8 * i + j] << 4) + Q / 2) / Q) & 0b1111;
+        // Branch-free division by Q; product reaches 2**32.0, so no imul.
+        t[j] = Math.floor(
+          (((v[8 * i + j] << 4) + 1665) * 80635) / 268435456,
+        ) & 0b1111;
       }
       r[rr++] = t[0] | (t[1] << 4);
       r[rr++] = t[2] | (t[3] << 4);
@@ -746,8 +752,10 @@ function polyToMsg(a: Int16Array): Uint8Array {
       // inline subtractQ: a - q if a >= q, else a
       v = a[8 * i + j] - Q;
       v += (v >> 31) & Q;
-      t = (((uint16(v) << 1) + uint16(Q / 2)) /
-        uint16(Q)) & 1;
+      // Branch-free division by Q: floor(((v << 1) + 1665) * 80635 / 2**28)
+      // equals round(2v / Q) for every v in [0, Q-1]. Avoids a divide on
+      // secret data (KyberSlash). Max product is 2**29.3, so imul is exact.
+      t = (Math.imul((v << 1) + 1665, 80635) >>> 28) & 1;
       msg[i] |= byte(t << j);
     }
   }
