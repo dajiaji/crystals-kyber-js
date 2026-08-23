@@ -76,6 +76,7 @@ export class MlKemBase {
   private _bufH = new Uint8Array(32);
   private _bufKdf = new Uint8Array(32);
   private _bufXof = new Uint8Array(672);
+  private _bufXofBlock = new Uint8Array(168);
   private _bufPrf1!: Uint8Array;
   private _bufPrf2!: Uint8Array;
   private _nonceBuf = new Uint8Array(1);
@@ -143,6 +144,7 @@ export class MlKemBase {
     this._bufH.fill(0);
     this._bufKdf.fill(0);
     this._bufXof.fill(0);
+    this._bufXofBlock.fill(0);
     this._bufPrf1.fill(0);
     this._bufPrf2.fill(0);
     this._nonceBuf[0] = 0;
@@ -552,9 +554,28 @@ export class MlKemBase {
         // run rejection sampling directly into pre-allocated matrix slot
         ctr = indcpaRejUniform(a[i][j], 0, output.subarray(0, 504), 504, N);
 
-        while (ctr < N) { // if the polynomial hasnt been filled yet with mod q entries
-          const outputn = output.subarray(504, 672); // take last 168 bytes of byte array from xof
-          ctr += indcpaRejUniform(a[i][j], ctr, outputn, 168, N - ctr);
+        if (ctr < N) {
+          // the tail of the first squeeze, bytes 504..672
+          ctr += indcpaRejUniform(
+            a[i][j],
+            ctr,
+            output.subarray(504, 672),
+            168,
+            N - ctr,
+          );
+          // Still short: squeeze further blocks. writeIntoUnsafe keeps posOut
+          // across calls, so each one continues the stream rather than
+          // repeating bytes already consumed, as FIPS 203 Alg 7 requires.
+          while (ctr < N) {
+            this._poolXof.writeIntoUnsafe(this._bufXofBlock);
+            ctr += indcpaRejUniform(
+              a[i][j],
+              ctr,
+              this._bufXofBlock,
+              168,
+              N - ctr,
+            );
+          }
         }
       }
     }
