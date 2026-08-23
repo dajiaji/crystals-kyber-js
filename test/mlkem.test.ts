@@ -207,3 +207,82 @@ function concat(a: Uint8Array, b: Uint8Array): Uint8Array {
     });
   })
 );
+
+describe("input validation", () => {
+  for (const MlKemClass of [MlKem512, MlKem768, MlKem1024]) {
+    describe(MlKemClass.name, () => {
+      it("rejects a deriveKeyPair seed that is not 64 bytes", async () => {
+        const kyber = new MlKemClass();
+        for (const len of [0, 63, 65, 128]) {
+          await assertRejects(
+            () => kyber.deriveKeyPair(new Uint8Array(len)),
+            MlKemError,
+            "seed must be 64 bytes in length",
+          );
+        }
+      });
+
+      it("rejects an encapsulation key of the wrong length", async () => {
+        const kyber = new MlKemClass();
+        const [pk] = await kyber.generateKeyPair();
+        for (const bad of [pk.subarray(0, pk.length - 1), new Uint8Array(0)]) {
+          await assertRejects(
+            () => kyber.encap(bad),
+            MlKemError,
+            "invalid encapsulation key",
+          );
+        }
+        // a longer key is rejected too
+        const longer = new Uint8Array(pk.length + 1);
+        longer.set(pk);
+        await assertRejects(
+          () => kyber.encap(longer),
+          MlKemError,
+          "invalid encapsulation key",
+        );
+      });
+
+      it("rejects an encap seed that is not 32 bytes", async () => {
+        const kyber = new MlKemClass();
+        const [pk] = await kyber.generateKeyPair();
+        for (const len of [31, 33]) {
+          await assertRejects(
+            () => kyber.encap(pk, new Uint8Array(len)),
+            MlKemError,
+            "seed must be 32 bytes in length",
+          );
+        }
+      });
+
+      it("rejects a ciphertext of the wrong length", async () => {
+        const kyber = new MlKemClass();
+        const [pk, sk] = await kyber.generateKeyPair();
+        const [ct] = await kyber.encap(pk);
+        const longer = new Uint8Array(ct.length + 1);
+        longer.set(ct);
+        for (const bad of [ct.subarray(0, ct.length - 1), longer]) {
+          await assertRejects(
+            () => kyber.decap(bad, sk),
+            MlKemError,
+            "Invalid ct size",
+          );
+        }
+      });
+
+      it("rejects a decapsulation key of the wrong length", async () => {
+        const kyber = new MlKemClass();
+        const [pk, sk] = await kyber.generateKeyPair();
+        const [ct] = await kyber.encap(pk);
+        const longer = new Uint8Array(sk.length + 1);
+        longer.set(sk);
+        for (const bad of [sk.subarray(0, sk.length - 1), longer]) {
+          await assertRejects(
+            () => kyber.decap(ct, bad),
+            MlKemError,
+            "Invalid decapsulation key",
+          );
+        }
+      });
+    });
+  }
+});
