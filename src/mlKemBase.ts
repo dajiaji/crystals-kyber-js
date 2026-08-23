@@ -916,7 +916,13 @@ const BARRETT_V = ((1 << 24) + Q / 2) / Q;
 function barrett(a: number): number {
   let t = BARRETT_V * a >> 24;
   t = t * Q;
-  return a - t;
+  t = a - t;
+  // BARRETT_V is a float and the shift is 24 rather than the reference 26,
+  // so the quotient can come out one too high and leave t at -1 or -2. That
+  // needs |a| >= 13315, which the NTT paths do not currently reach, but
+  // _polyToBytes subtracts Q only once, so a negative would serialise as a
+  // non-canonical coefficient. Fold it back rather than rely on the margin.
+  return t + ((t >> 31) & Q);
 }
 
 // polyToMont performs the in-place conversion of all coefficients
