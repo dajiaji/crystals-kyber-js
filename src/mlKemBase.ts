@@ -257,11 +257,13 @@ export class MlKemBase {
   }
 
   protected _generateKeyPairCore(): [Uint8Array, Uint8Array] {
+    const rnd = new Uint8Array(64);
     try {
-      const rnd = new Uint8Array(64);
       (this._api as Crypto).getRandomValues(rnd);
       return this._deriveKeyPair(rnd);
     } finally {
+      // d || z recovers the whole private key, so do not leave it behind
+      rnd.fill(0);
       this._zeroPool();
     }
   }
@@ -281,21 +283,25 @@ export class MlKemBase {
     pk: Uint8Array,
     seed?: Uint8Array,
   ): [Uint8Array, Uint8Array] {
+    let m: Uint8Array | undefined;
     try {
       // validate key type; the modulo is checked in `_encap`.
       if (pk.length !== 384 * this._k + 32) {
         throw new Error("invalid encapsulation key");
       }
-      const m = this._getSeed(seed);
+      m = this._getSeed(seed);
       const [k, r] = this._g(m, this._h(pk));
       this._encap(pk, m, r);
       return [this._bufCt.slice(), k.slice()];
     } finally {
+      // only wipe a message we generated; a supplied seed belongs to the caller
+      if (seed === undefined) m?.fill(0);
       this._zeroPool();
     }
   }
 
   protected _decapCore(ct: Uint8Array, sk: Uint8Array): Uint8Array {
+    let m2: Uint8Array | undefined;
     try {
       // ciphertext type check
       if (ct.byteLength !== this._compressedUSize + this._compressedVSize) {
@@ -316,7 +322,7 @@ export class MlKemBase {
         this._skSize + this._pkSize + 64,
       );
 
-      const m2 = this._decap(ct, sk2);
+      m2 = this._decap(ct, sk2);
       const [k2, r2] = this._g(m2, hpk);
       const kBar = this._kdf(z, ct);
       this._encap(pk, m2, r2);
@@ -324,6 +330,8 @@ export class MlKemBase {
         ? k2.slice()
         : kBar.slice();
     } finally {
+      // m2 determines the shared secret
+      m2?.fill(0);
       this._zeroPool();
     }
   }
@@ -516,7 +524,14 @@ export class MlKemBase {
     mp = nttInverse(mp);
     mp = subtract(v, mp);
     mp = reduce(mp);
-    return polyToMsg(mp);
+    const msg = polyToMsg(mp);
+    // subtract() returns v mutated in place, so mp aliases it and this wipes
+    // the recovered noisy plaintext along with the decompressed ciphertext
+    for (let i = 0; i < this._k; i++) {
+      u[i].fill(0);
+    }
+    v.fill(0);
+    return msg;
   }
 
   // generateMatrixA deterministically generates a matrix `A` (or the transpose of `A`)
