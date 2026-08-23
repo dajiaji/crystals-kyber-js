@@ -207,3 +207,38 @@ function concat(a: Uint8Array, b: Uint8Array): Uint8Array {
     });
   })
 );
+
+describe("caller-supplied seeds", () => {
+  for (const MlKemClass of [MlKem512, MlKem768, MlKem1024]) {
+    it(`${MlKemClass.name} does not mutate a seed passed to encap`, async () => {
+      const kyber = new MlKemClass();
+      const [pk] = await kyber.generateKeyPair();
+
+      const seed = new Uint8Array(32);
+      for (let i = 0; i < seed.length; i++) seed[i] = i + 1;
+      const original = seed.slice();
+
+      const [ct1, ss1] = await kyber.encap(pk, seed);
+      assertEquals(seed, original);
+
+      // and it still behaves deterministically on a second call
+      const [ct2, ss2] = await kyber.encap(pk, seed);
+      assertEquals(ct2, ct1);
+      assertEquals(ss2, ss1);
+    });
+
+    it(`${MlKemClass.name} does not mutate a seed passed to deriveKeyPair`, async () => {
+      const kyber = new MlKemClass();
+      const seed = new Uint8Array(64);
+      for (let i = 0; i < seed.length; i++) seed[i] = i;
+      const original = seed.slice();
+
+      const [pk1, sk1] = await kyber.deriveKeyPair(seed);
+      assertEquals(seed, original);
+
+      const [pk2, sk2] = await kyber.deriveKeyPair(seed);
+      assertEquals(pk2, pk1);
+      assertEquals(sk2, sk1);
+    });
+  }
+});
