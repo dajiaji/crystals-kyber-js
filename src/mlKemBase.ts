@@ -320,9 +320,16 @@ export class MlKemBase {
       const [k2, r2] = this._g(m2, hpk);
       const kBar = this._kdf(z, ct);
       this._encap(pk, m2, r2);
-      return constantTimeCompare(ct, this._bufCt) === 1
-        ? k2.slice()
-        : kBar.slice();
+      // Branch-free select. mask is all ones when the re-encryption matches
+      // and zero otherwise, so neither the branch predictor nor the memory
+      // access pattern depends on the comparison result, which is the bit
+      // the FO transform exists to hide.
+      const mask = -constantTimeCompare(ct, this._bufCt);
+      const ss = new Uint8Array(32);
+      for (let i = 0; i < 32; i++) {
+        ss[i] = kBar[i] ^ ((kBar[i] ^ k2[i]) & mask);
+      }
+      return ss;
     } finally {
       this._zeroPool();
     }
