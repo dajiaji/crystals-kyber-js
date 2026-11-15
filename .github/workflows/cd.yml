@@ -5,7 +5,7 @@ on:
     types: [created]
 
 jobs:
-  publish:
+  publish-to-jsr:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -17,17 +17,83 @@ jobs:
       - uses: denoland/setup-deno@e95548e56dfa95d4e1a28d6f422fafe75c4c26fb # v2.0.3
         with:
           deno-version: 2.x
+      - name: Run test
+        run: deno task test
+      - name: Run deno publish
+        # A version that already exists on JSR is skipped by `deno publish`.
+        run: deno publish
+
+  publish-to-npm:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
-          node-version: 24
+          # Node.js >= 24.18.0 bundles npm >= 11.16.0, which supports
+          # `npm stage publish` (staged publishing requires npm >= 11.15.0).
+          node-version: ^24.18.0
           registry-url: https://registry.npmjs.org/
-      - name: Install dependencies
-        run: npm install -g esbuild
-      - name: Run dnt
+          package-manager-cache: false
+      - uses: denoland/setup-deno@e95548e56dfa95d4e1a28d6f422fafe75c4c26fb # v2.0.3
+        with:
+          deno-version: 2.x
+      - name: Build npm packages
         run: deno task dnt
-      - name: Run deno publish
-        run: npx jsr publish
-      - name: Run npm publish
-        run: deno task npm-publish
+      - name: Stage updated packages to npm
         env:
           NODE_AUTH_TOKEN: ""
+        run: |
+          err_log=$(mktemp)
+          stage_log=$(mktemp)
+          failed=()
+          stage_if_needed() {
+            local dir="./npm/$1"
+            local name version published
+            name=$(node --input-type=module -e "import p from '$dir/package.json' with { type: 'json' }; console.log(p.name)")
+            version=$(node --input-type=module -e "import p from '$dir/package.json' with { type: 'json' }; console.log(p.version)")
+            # Check whether this exact version exists (not just the "latest" dist-tag).
+            # E404 means the version (or the package itself) is not published yet; any other error is fatal.
+            if ! published=$(npm view "$name@$version" version 2>"$err_log"); then
+              if grep -q "E404" "$err_log"; then
+                published=""
+              else
+                cat "$err_log" >&2
+                echo "::error::Failed to query the registry for $name@$version"
+                exit 1
+              fi
+            fi
+            if [ -n "$published" ]; then
+              echo "::notice::Skipped $name@$version (already published)"
+              return
+            fi
+            echo "Staging $name@$version"
+            if npm stage publish "$dir" >"$stage_log" 2>&1; then
+              cat "$stage_log"
+              echo "::notice::Staged $name@$version (approve it on npmjs.com to publish)"
+              return
+            fi
+            cat "$stage_log" >&2
+            # A staged (not yet approved) version is invisible to `npm view`, and
+            # OIDC tokens cannot run `npm stage list`, so a re-run hits a conflict
+            # here. Treat it as already staged so that the remaining packages are
+            # still processed.
+            if grep -Eqi "E409|already (been )?staged|exists as a staged version|cannot publish over" "$stage_log"; then
+              echo "::warning::Skipped $name@$version (already staged and awaiting approval)"
+              return
+            fi
+            echo "::error::Failed to stage $name@$version"
+            failed+=("$name@$version")
+          }
+          # A staging failure does not stop the remaining package; the step
+          # fails at the end if any package could not be staged.
+          stage_if_needed crystals-kyber-js
+          stage_if_needed mlkem
+          if [ ${#failed[@]} -gt 0 ]; then
+            echo "::error::Failed to stage: ${failed[*]}"
+            exit 1
+          fi
