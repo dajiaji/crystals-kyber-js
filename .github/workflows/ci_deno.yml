@@ -2,9 +2,13 @@ name: Deno CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
+    paths-ignore:
+      - "**/*.md"
   pull_request:
-    branches: [ main ]
+    branches: [main]
+    paths-ignore:
+      - "**/*.md"
 
 permissions:
   contents: read
@@ -12,29 +16,25 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        deno-version: [1.x, 2.x]
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
       - uses: denoland/setup-deno@e95548e56dfa95d4e1a28d6f422fafe75c4c26fb # v2.0.3
         with:
-          deno-version: ${{ matrix.deno-version }}
-      - name: Remove lock file
-        if: matrix.deno-version == '1.x'
-        run: rm deno.lock
+          deno-version: 2.x
       - name: Run deno test
         run: |
-          deno fmt --check
           deno task test
           deno task cov > coverage.lcov
+      - name: Check that deno.lock is up to date
+        # `deno publish` in the CD workflow aborts on a dirty working tree, so
+        # catch lock drift here.
+        run: git diff --exit-code deno.lock
       - uses: codecov/codecov-action@f32b3a3741e1053eb607407145bc9619351dc93b # v2.1.0
-        if: matrix.deno-version == '2.x'
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.lcov
           flags: unittests
       - name: Run deno publish (dry)
-        run: npx jsr publish --dry-run --allow-dirty
+        run: deno publish --dry-run --allow-dirty

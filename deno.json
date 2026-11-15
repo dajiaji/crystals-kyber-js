@@ -61,7 +61,7 @@
     ]
   },
   "tasks": {
-    "test": "deno fmt && deno lint && deno test ./test --fail-fast --doc --coverage=coverage --parallel --allow-read",
+    "test": "deno fmt --check && deno lint && deno test ./test --fail-fast --doc --coverage=coverage --parallel --allow-read",
     "test:cloudflare": "./scripts/test_cloudflare.sh",
     "cov": "deno coverage ./coverage --lcov --exclude='test'",
     "npm": "deno task dnt && deno task npm-link && deno task npm-pack && deno task npm-publish:dry",
