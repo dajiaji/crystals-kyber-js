@@ -5,7 +5,7 @@
  */
 import { N, Q } from "./consts.ts";
 import { MlKemBase } from "./mlKemBase.ts";
-import { byte, int16, uint16, uint32 } from "./utils.ts";
+import { byte, int16, uint16 } from "./utils.ts";
 
 /**
  * Shared base for MlKem1024 and MlKem1024Impl.
@@ -43,9 +43,12 @@ export class MlKem1024Base extends MlKemBase {
     for (let rr = 0, i = 0; i < this._k; i++) {
       for (let j = 0; j < N / 8; j++) {
         for (let k = 0; k < 8; k++) {
+          // Branch-free division by Q. For d = 11 the rounding term is 1664;
+          // product reaches 2**42, so divide by 2**31 exactly.
           t[k] = uint16(
-            (((uint32(u[i][8 * j + k]) << 11) + uint32(Q / 2)) /
-              uint32(Q)) & 0x7ff,
+            Math.floor(
+              (((u[i][8 * j + k] << 11) + 1664) * 645084) / 2147483648,
+            ) & 0x7ff,
           );
         }
         r[rr++] = byte(t[0] >> 0);
@@ -77,8 +80,9 @@ export class MlKem1024Base extends MlKemBase {
     const t = new Uint8Array(8);
     for (let rr = 0, i = 0; i < N / 8; i++) {
       for (let j = 0; j < 8; j++) {
-        t[j] = byte(
-          ((uint32(v[8 * i + j]) << 5) + uint32(Q / 2)) / uint32(Q),
+        // Branch-free division by Q; product reaches 2**33.0, so no imul.
+        t[j] = Math.floor(
+          (((v[8 * i + j] << 5) + 1665) * 80635) / 268435456,
         ) & 31;
       }
       r[rr++] = byte((t[0] >> 0) | (t[1] << 5));
