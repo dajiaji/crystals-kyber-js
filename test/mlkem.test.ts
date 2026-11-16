@@ -59,7 +59,7 @@ function concat(a: Uint8Array, b: Uint8Array): Uint8Array {
         const katData = await Deno.readTextFile(
           `${testVectorPath()}/kat/kat_MLKEM_${size}.rsp`,
         );
-        const { z, d, ct, sk, ss, msg, pk } = parseKAT(katData);
+        const { z, d, ct, sk, ss, msg, pk, ct_n, ss_n } = parseKAT(katData);
         console.log(`KAT test vector count: ${sk.length}`);
 
         for (let i = 0; i < sk.length; i++) {
@@ -75,6 +75,11 @@ function concat(a: Uint8Array, b: Uint8Array): Uint8Array {
           const [ctActual, ssEncapActual] = await kyber.encap(pk[i], msg[i]);
           assertEquals(ctActual, ct[i]);
           assertEquals(ssEncapActual, ss[i]);
+
+          // ct_n is an invalid ciphertext; decapsulating it must return the
+          // implicit rejection secret J(z || ct_n) rather than throwing.
+          const ssRejectActual = await kyber.decap(ct_n[i], sk[i]);
+          assertEquals(ssRejectActual, ss_n[i]);
         }
       });
     });
