@@ -1,6 +1,6 @@
 /**
  * This implementation is based on https://github.com/antontutoveanu/crystals-kyber-javascript,
- * which was deveploped under the MIT licence below:
+ * which was developed under the MIT licence below:
  * https://github.com/antontutoveanu/crystals-kyber-javascript/blob/main/LICENSE
  */
 

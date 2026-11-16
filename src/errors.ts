@@ -1,5 +1,5 @@
 /**
- * The base error class of kyber-ts.
+ * The base error class of mlkem / crystals-kyber-js.
  */
 export class MlKemError extends Error {
   public constructor(e: unknown) {

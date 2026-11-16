@@ -1,6 +1,6 @@
 /**
  * This implementation is based on https://github.com/antontutoveanu/crystals-kyber-javascript,
- * which was deveploped under the MIT licence below:
+ * which was developed under the MIT licence below:
  * https://github.com/antontutoveanu/crystals-kyber-javascript/blob/main/LICENSE
  */
 import { N } from "./consts.ts";
@@ -57,7 +57,7 @@ export class MlKem768 extends MlKemBase {
    *
    * If an error occurred, throws {@link MlKemError}.
    *
-   * @returns A kaypair [publicKey, privateKey].
+   * @returns A keypair [publicKey, privateKey].
    * @throws {@link MlKemError}
    */
   public async generateKeyPair(): Promise<[Uint8Array, Uint8Array]> {
@@ -75,7 +75,7 @@ export class MlKem768 extends MlKemBase {
    * If an error occurred, throws {@link MlKemError}.
    *
    * @param seed A 64-octet seed for the deterministic key generation.
-   * @returns A kaypair [publicKey, privateKey].
+   * @returns A keypair [publicKey, privateKey].
    * @throws {@link MlKemError}
    */
   public async deriveKeyPair(
@@ -90,13 +90,13 @@ export class MlKem768 extends MlKemBase {
   }
 
   /**
-   * Generates a shared secret from the encapsulated ciphertext and the private key.
+   * Generates a ciphertext for the public key and a shared secret.
    *
    * If an error occurred, throws {@link MlKemError}.
    *
    * @param pk A public key.
    * @param seed An optional 32-octet seed for the deterministic shared secret generation.
-   * @returns A ciphertext (encapsulated public key) and a shared secret.
+   * @returns A ciphertext (the encapsulation of the shared secret) and a shared secret.
    * @throws {@link MlKemError}
    */
   public async encap(
@@ -112,7 +112,7 @@ export class MlKem768 extends MlKemBase {
   }
 
   /**
-   * Generates a ciphertext for the public key and a shared secret.
+   * Generates a shared secret from the encapsulated ciphertext and the private key.
    *
    * If an error occurred, throws {@link MlKemError}.
    *

@@ -44,7 +44,7 @@ but includes the following improvements:
 - ✅ Passed all the tests published by:
   - [post-quantum-cryptography/KAT/MLKEM](https://github.com/post-quantum-cryptography/KAT/tree/main/MLKEM)
   - [C2SP/CCTV/ML-KEM](https://github.com/C2SP/CCTV/tree/main/ML-KEM)
-  - [pq-crystals/kyber](https://github.com/C2SP/CCTV/tree/main/ML-KEM) (10000
+  - [pq-crystals/kyber](https://github.com/pq-crystals/kyber) (10000
     consecutive tests)
 
 This repository has the following packages:
@@ -59,7 +59,7 @@ For Node.js, you can install `mlkem` or `crystals-kyber-js` via npm, yarn or
 pnpm:
 
 ```sh
-# RECOMMENTED using `mlkem`
+# RECOMMENDED using `mlkem`
 npm install mlkem
 # `crystals-kyber-js` is still available for use, but it may become deprecated in the near future.
 npm install crystals-kyber-js
@@ -93,11 +93,9 @@ async function doMlKem() {
   return;
 }
 
-try {
-  doMlKem();
-} catch (err: unknown) {
+doMlKem().catch((err: unknown) => {
   console.log("failed:", (err as Error).message);
-}
+});
 ```
 
 ## Index
@@ -189,7 +187,7 @@ npm install mlkem  # or crystals-kyber-js
 yarn add mlkem  # or crystals-kyber-js
 pnpm install mlkem  # or crystals-kyber-js
 # Using jsr:
-bunx jsr add @dajiaji/bhttp
+bunx jsr add @dajiaji/mlkem
 ```
 
 ```ts
@@ -243,11 +241,9 @@ async function doMlKem() {
   return;
 }
 
-try {
-  doMlKem();
-} catch (err) {
-  console.log("failed: ", err.message);
-}
+doMlKem().catch((err) => {
+  console.log("failed:", err.message);
+});
 ```
 
 ### Deno, Cloudflare Workers and Bun
@@ -268,11 +264,9 @@ async function doMlKem() {
   return;
 }
 
-try {
-  doMlKem();
-} catch (err: unknown) {
+doMlKem().catch((err: unknown) => {
   console.log("failed:", (err as Error).message);
-}
+});
 ```
 
 ### Browsers
@@ -298,7 +292,7 @@ try {
         // ssS === ssR
         return;
       } catch (err) {
-        alert("failed: ", err.message);
+        alert("failed: " + err.message);
       }
     };
     </script>
