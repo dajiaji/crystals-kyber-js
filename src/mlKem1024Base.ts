@@ -7,6 +7,11 @@ import { N, Q } from "./consts.ts";
 import { MlKemBase } from "./mlKemBase.ts";
 import { byte, int16, uint16 } from "./utils.ts";
 
+// Exact reciprocals of powers of two. Multiplying by these is bit-identical
+// to dividing by the power of two, without a divide on secret-derived data.
+const INV_2_27 = 1 / 134217728;
+const INV_2_31 = 1 / 2147483648;
+
 /**
  * Shared base for MlKem1024 and MlKem1024Impl.
  * Contains parameter configuration and compression/decompression overrides.
@@ -44,10 +49,10 @@ export class MlKem1024Base extends MlKemBase {
       for (let j = 0; j < N / 8; j++) {
         for (let k = 0; k < 8; k++) {
           // Branch-free division by Q. For d = 11 the rounding term is 1664;
-          // product reaches 2**42, so divide by 2**31 exactly.
+          // product reaches 2**42, so scale by the exact double 2**-31.
           t[k] = uint16(
             Math.floor(
-              (((u[i][8 * j + k] << 11) + 1664) * 645084) / 2147483648,
+              (((u[i][8 * j + k] << 11) + 1664) * 645084) * INV_2_31,
             ) & 0x7ff,
           );
         }
@@ -80,9 +85,10 @@ export class MlKem1024Base extends MlKemBase {
     const t = new Uint8Array(8);
     for (let rr = 0, i = 0; i < N / 8; i++) {
       for (let j = 0; j < 8; j++) {
-        // Branch-free division by Q; product reaches 2**33.0, so no imul.
+        // Branch-free division by Q, with the reference constants for d = 5;
+        // product reaches 2**32.0, so no imul.
         t[j] = Math.floor(
-          (((v[8 * i + j] << 5) + 1665) * 80635) / 268435456,
+          (((v[8 * i + j] << 5) + 1664) * 40318) * INV_2_27,
         ) & 31;
       }
       r[rr++] = byte((t[0] >> 0) | (t[1] << 5));
