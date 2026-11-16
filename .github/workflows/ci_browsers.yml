@@ -26,19 +26,16 @@ jobs:
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: 22.x
-      - name: Install dependencies
-        run: |
-          npm install -g typescript
-          npm install -g typedoc
-          npm install -g esbuild
       - name: Run dnt
         run: deno task dnt
-      - name: Run npm install
-        working-directory: ./npm/crystals-kyber-js
-        run: npm install
+      - name: Install build tools
+        working-directory: ./npm
+        run: npm ci
+      - name: Add npm binaries to PATH
+        run: echo "${GITHUB_WORKSPACE}/npm/node_modules/.bin" >> "$GITHUB_PATH"
       - name: Build docs for crystals-kyber-js
         run: |
-          npx typedoc --name "API reference for crystals-kyber-js/main" --out pages/docs/main mod.ts
+          typedoc --name "API reference for crystals-kyber-js/main" --out pages/docs/main mod.ts
           deno task minify:crystals-kyber-js > test/runtimes/browsers/pages/src/crystals-kyber.js
           mkdir pages/tests
           cp -rf test/runtimes/browsers/pages/* pages/tests

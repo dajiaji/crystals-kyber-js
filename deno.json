@@ -61,13 +61,14 @@
     ]
   },
   "tasks": {
-    "update": "deno task update:deno && deno task npm-update && deno task update:cloudflare && deno task update:browsers && deno task update:lock",
+    "update": "deno task update:deno && deno task npm-update && deno task update:cloudflare && deno task update:browsers && deno task update:npm-tools && deno task update:lock",
     "update:deno": "deno outdated --update",
     "npm-update": "deno task dnt && deno task npm-update:crystals-kyber-js && deno task npm-update:mlkem",
     "npm-update:crystals-kyber-js": "cd npm/crystals-kyber-js && npm update",
     "npm-update:mlkem": "cd npm/mlkem && npm update",
     "update:cloudflare": "cd test/runtimes/cloudflare && npm exec --yes npm-check-updates@23.1.1 -- --packageFile package.json -u --target minor && npm install --package-lock-only --ignore-scripts --no-audit --no-fund",
     "update:browsers": "cd test/runtimes/browsers && npm exec --yes npm-check-updates@23.1.1 -- --packageFile package.json -u --target minor && npm install --package-lock-only --ignore-scripts --no-audit --no-fund",
+    "update:npm-tools": "cd npm && npm exec --yes npm-check-updates@23.1.1 -- --packageFile package.json -u --target minor && npm install --package-lock-only --ignore-scripts --no-audit --no-fund",
     "update:lock": "deno install --lockfile-only --frozen=false --reload",
     "test": "deno fmt --check && deno lint && deno test ./test --fail-fast --doc --coverage=coverage --parallel --allow-read",
     "test:cloudflare": "./scripts/test_cloudflare.sh",
