@@ -10,6 +10,7 @@
 import { assertEquals, assertThrows } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 import { createHash } from "node:crypto";
+import { Keccak } from "../src/deps.ts";
 import {
   // sha3_224,
   sha3_256,
@@ -308,3 +309,26 @@ Object.values(HASHES).forEach((hash) =>
     }
   })
 );
+
+describe("Keccak XOF continuation", () => {
+  it("successive writeIntoUnsafe calls continue the squeeze", () => {
+    // SampleNTT (FIPS 203 Alg 7) keeps squeezing until the polynomial fills,
+    // so generateMatrixA relies on a second call returning the next bytes of
+    // the stream rather than repeating bytes already consumed.
+    const seed = new Uint8Array(34);
+    for (let i = 0; i < seed.length; i++) seed[i] = i * 7 + 1;
+
+    const contiguous = new Uint8Array(1008);
+    new Keccak(168, 0x1f, 1008, true).updateUnsafe(seed).writeIntoUnsafe(
+      contiguous,
+    );
+
+    const xof = new Keccak(168, 0x1f, 672, true).updateUnsafe(seed);
+    const stepwise = new Uint8Array(1008);
+    xof.writeIntoUnsafe(stepwise.subarray(0, 672));
+    xof.writeIntoUnsafe(stepwise.subarray(672, 840));
+    xof.writeIntoUnsafe(stepwise.subarray(840, 1008));
+
+    assertEquals(stepwise, contiguous);
+  });
+});
