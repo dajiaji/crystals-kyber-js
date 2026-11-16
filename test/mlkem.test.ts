@@ -291,3 +291,85 @@ describe("input validation", () => {
     });
   }
 });
+
+// The XOF refill path of SampleNTT (FIPS 203 Algorithm 7) is unreachable with
+// real SHAKE128 output (about 2^-105 per polynomial), so these tests replace
+// the instance's XOF with one whose stream starts with rejected bytes.
+describe("SampleNTT XOF refill", () => {
+  const Q = 3329;
+  const N = 256;
+
+  // `rejected` bytes of 0xff (every 12-bit candidate is 0xfff >= Q), followed
+  // by the genuine SHAKE128 output for the seed.
+  function fakeStream(seed: Uint8Array, rejected: number): Uint8Array {
+    const s = new Uint8Array(rejected + 1344).fill(0xff);
+    s.set(shake128(seed, { dkLen: 1344 }), rejected);
+    return s;
+  }
+
+  // A direct transcription of SampleNTT over a contiguous stream.
+  function sampleNtt(stream: Uint8Array): Int16Array {
+    const out = new Int16Array(N);
+    for (let n = 0, pos = 0; n < N; pos += 3) {
+      const d1 = (stream[pos] | (stream[pos + 1] << 8)) & 0xfff;
+      const d2 = ((stream[pos + 1] >> 4) | (stream[pos + 2] << 4)) & 0xfff;
+      if (d1 < Q) out[n++] = d1;
+      if (d2 < Q && n < N) out[n++] = d2;
+    }
+    return out;
+  }
+
+  type Internals = {
+    _k: number;
+    _poolXof: unknown;
+    _sampleMatrix(
+      seed: Uint8Array,
+      transposed: boolean,
+    ): Array<Array<Int16Array>>;
+  };
+
+  // 504: the first three blocks yield nothing, so the tail of the first
+  //      squeeze and two further blocks are needed.
+  // 600: the tail of the first squeeze is only partly usable.
+  // Both make the pre-fix code, which re-read bytes 504..672, produce a
+  // different matrix.
+  [504, 600].forEach((rejected) =>
+    [MlKem512, MlKem768, MlKem1024].forEach((MlKemClass) =>
+      it(`${MlKemClass.name} continues the stream after ${rejected} rejected bytes`, () => {
+        const kem = new MlKemClass() as unknown as Internals;
+        let stream: Uint8Array = new Uint8Array(0);
+        let pos = 0;
+        let refills = 0;
+        kem._poolXof = {
+          reset() {},
+          updateUnsafe(seed: Uint8Array) {
+            stream = fakeStream(seed, rejected);
+            pos = 0;
+            return this;
+          },
+          writeIntoUnsafe(out: Uint8Array) {
+            if (pos >= 672) refills++;
+            out.set(stream.subarray(pos, pos + out.length));
+            pos += out.length;
+            return out;
+          },
+        };
+
+        const rho = new Uint8Array(32).map((_, i) => i);
+        [false, true].forEach((transposed) => {
+          const a = kem._sampleMatrix(rho, transposed);
+          for (let i = 0; i < kem._k; i++) {
+            for (let j = 0; j < kem._k; j++) {
+              const seed = new Uint8Array(34);
+              seed.set(rho);
+              seed[32] = transposed ? i : j;
+              seed[33] = transposed ? j : i;
+              assertEquals(a[i][j], sampleNtt(fakeStream(seed, rejected)));
+            }
+          }
+        });
+        assertEquals(refills > 0, true);
+      })
+    )
+  );
+});
