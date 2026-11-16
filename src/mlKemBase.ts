@@ -16,6 +16,11 @@ import {
   uint16,
 } from "./utils.ts";
 
+// Exact reciprocals of powers of two. Multiplying by these is bit-identical
+// to dividing by the power of two, without a divide on secret-derived data.
+const INV_2_28 = 1 / 268435456;
+const INV_2_32 = 1 / 4294967296;
+
 /**
  * Represents the base class for the ML-KEM key encapsulation mechanism.
  *
@@ -638,9 +643,10 @@ export class MlKemBase {
         for (let k = 0; k < 4; k++) {
           // parse {0,...,3328} to {0,...,1023}
           // Branch-free division by Q, as in polyToMsg. The product reaches
-          // 2**42, past imul's range, so divide by 2**32 exactly instead.
+          // 2**42, past imul's range, so scale by the exact double 2**-32
+          // instead; no divide is emitted on secret data.
           t[k] = Math.floor(
-            (((u[i][4 * j + k] << 10) + 1665) * 1290167) / 4294967296,
+            (((u[i][4 * j + k] << 10) + 1665) * 1290167) * INV_2_32,
           ) & 0b1111111111;
         }
         // converts 4 12-bit coefficients {0,...,3328} to 5 8-bit bytes {0,...,255}
@@ -671,7 +677,7 @@ export class MlKemBase {
       for (let j = 0; j < 8; j++) {
         // Branch-free division by Q; product reaches 2**32.0, so no imul.
         t[j] = Math.floor(
-          (((v[8 * i + j] << 4) + 1665) * 80635) / 268435456,
+          (((v[8 * i + j] << 4) + 1665) * 80635) * INV_2_28,
         ) & 0b1111;
       }
       r[rr++] = t[0] | (t[1] << 4);
