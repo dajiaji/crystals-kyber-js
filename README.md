@@ -44,8 +44,8 @@ but includes the following improvements:
 - ✅ Passed all the tests published by:
   - [post-quantum-cryptography/KAT/MLKEM](https://github.com/post-quantum-cryptography/KAT/tree/main/MLKEM)
   - [C2SP/CCTV/ML-KEM](https://github.com/C2SP/CCTV/tree/main/ML-KEM)
-  - [pq-crystals/kyber](https://github.com/pq-crystals/kyber) (10000
-    consecutive tests)
+  - [pq-crystals/kyber](https://github.com/pq-crystals/kyber) (10000 consecutive
+    tests)
 
 This repository has the following packages:
 
