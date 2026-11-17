@@ -302,7 +302,7 @@ export class MlKemBase {
       return [this._bufCt.slice(), k.slice()];
     } finally {
       // only wipe a message we generated; a supplied seed belongs to the caller
-      if (seed === undefined) m?.fill(0);
+      if (m !== seed) m?.fill(0);
       this._zeroPool();
     }
   }
@@ -398,6 +398,8 @@ export class MlKemBase {
     const pkh = this._h(pk);
     const sk = new Uint8Array(this._skSize + this._pkSize + 64);
     sk.set(skBody, 0);
+    // sk now carries the secret vector; do not leave a second copy behind
+    skBody.fill(0);
     sk.set(pk, this._skSize);
     sk.set(pkh, this._skSize + this._pkSize);
     sk.set(z, this._skSize + this._pkSize + 32);
@@ -505,6 +507,9 @@ export class MlKemBase {
     v = nttInverse(v);
     v = add(v, e2);
     v = add(v, m);
+    // m is the message spread over a polynomial and determines the shared
+    // secret just as msg does
+    m.fill(0);
     v = reduce(v);
 
     // compress into pre-allocated ciphertext buffer
