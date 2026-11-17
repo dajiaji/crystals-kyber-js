@@ -5,7 +5,6 @@ import * as readline from "node:readline";
 import { shake128 } from "../src/deps.ts";
 
 import { MlKem1024, MlKem512, MlKem768, MlKemError } from "../mod.ts";
-import { loadCrypto } from "../src/utils.ts";
 import { bytesToHex, hexToBytes, parseKAT, testVectorPath } from "./utils.ts";
 import { getDeterministicMlKemClass } from "./drng.ts";
 
@@ -36,9 +35,8 @@ function concat(a: Uint8Array, b: Uint8Array): Uint8Array {
 
       it("should work normally with deriveKeyPair", async () => {
         const recipient = new MlKemClass();
-        const api = await loadCrypto();
         const seed = new Uint8Array(64);
-        api.getRandomValues(seed);
+        globalThis.crypto.getRandomValues(seed);
         const [pkR, skR] = await recipient.deriveKeyPair(seed);
         const [pkR2, skR2] = await recipient.deriveKeyPair(seed);
         assertEquals(pkR, pkR2);

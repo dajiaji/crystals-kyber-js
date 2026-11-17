@@ -12,7 +12,6 @@ import {
   constantTimeCompare,
   equalUint8Array,
   int16,
-  loadCrypto,
   uint16,
 } from "./utils.ts";
 
@@ -351,15 +350,19 @@ export class MlKemBase {
   }
 
   /**
-   * Sets up the MlKemBase instance by loading the necessary crypto library.
-   * If the crypto library is already loaded, this method does nothing.
+   * Sets up the MlKemBase instance by binding the Web Crypto API.
+   * If the API is already bound, this method does nothing.
    * @returns {Promise<void>} A promise that resolves when the setup is complete.
    */
+  // deno-lint-ignore require-await
   protected async _setup() {
     if (this._api !== undefined) {
       return;
     }
-    this._api = await loadCrypto();
+    if (globalThis.crypto === undefined) {
+      throw new Error("Web Crypto API is not available");
+    }
+    this._api = globalThis.crypto;
   }
 
   /**

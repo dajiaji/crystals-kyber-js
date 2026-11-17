@@ -55,24 +55,6 @@ export function equalUint8Array(x: Uint8Array, y: Uint8Array) {
   return true;
 }
 
-export async function loadCrypto(): Promise<Crypto> {
-  if (typeof globalThis !== "undefined" && globalThis.crypto !== undefined) {
-    // Browsers, Node.js >= v19, Cloudflare Workers, Bun, etc.
-    return globalThis.crypto;
-  }
-  // Node.js <= v18
-  try {
-    // The "node:" prefix is required to prevent `deno publish` from
-    // rewriting the specifier to a phantom relative path ("./crypto")
-    // in the published package.
-    // @ts-ignore: to ignore "node:crypto"
-    const { webcrypto } = await import("node:crypto");
-    return (webcrypto as unknown as Crypto);
-  } catch (_e: unknown) {
-    throw new Error("failed to load Crypto");
-  }
-}
-
 // prf provides a pseudo-random function (PRF) which returns
 // a byte array of length `l`, using the provided key and nonce
 // to instantiate the PRF's underlying hash function.
