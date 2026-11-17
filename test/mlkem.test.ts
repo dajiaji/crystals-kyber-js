@@ -408,3 +408,112 @@ describe("caller-supplied seeds", () => {
     });
   }
 });
+
+// Secrets that live outside the buffer pool have to be wiped one by one.
+// These tests record every typed array allocated during an operation and
+// check that none of them still holds a secret once the operation is over.
+describe("secret zeroization", () => {
+  type Buf = Uint8Array | Int16Array;
+
+  async function recordAllocations(fn: () => Promise<void>): Promise<Buf[]> {
+    const allocated: Buf[] = [];
+    // deno-lint-ignore no-explicit-any
+    const g = globalThis as any;
+    const originals = [g.Uint8Array, g.Int16Array];
+    // deno-lint-ignore no-explicit-any
+    const recording = (ctor: any) =>
+      new Proxy(ctor, {
+        construct(target, args, newTarget) {
+          const buf = Reflect.construct(target, args, newTarget);
+          allocated.push(buf);
+          return buf;
+        },
+      });
+    g.Uint8Array = recording(originals[0]);
+    g.Int16Array = recording(originals[1]);
+    try {
+      await fn();
+    } finally {
+      [g.Uint8Array, g.Int16Array] = originals;
+    }
+    return allocated;
+  }
+
+  function sameContent(a: Buf, b: Buf): boolean {
+    return a.length === b.length && a.every((x, i) => x === b[i]);
+  }
+
+  // The message as `polyFromMsg` spreads it: bit i becomes coefficient i,
+  // set to (Q + 1) / 2 when the bit is 1.
+  function messagePoly(msg: Uint8Array): Int16Array {
+    const r = new Int16Array(256);
+    for (let i = 0; i < 256; i++) {
+      r[i] = ((msg[i >> 3] >> (i & 7)) & 1) * 1665;
+    }
+    return r;
+  }
+
+  for (const MlKemClass of [MlKem512, MlKem768, MlKem1024]) {
+    describe(MlKemClass.name, () => {
+      const seed = new Uint8Array(64).map((_, i) => i + 1);
+      const msg = new Uint8Array(32).map((_, i) => 0xa5 ^ i);
+
+      it("keeps no second copy of the secret vector after deriveKeyPair", async () => {
+        const kyber = new MlKemClass();
+        let pk: Uint8Array = new Uint8Array(0);
+        let sk: Uint8Array = new Uint8Array(0);
+        const allocated = await recordAllocations(async () => {
+          [pk, sk] = await kyber.deriveKeyPair(seed);
+        });
+        const secretVector = sk.subarray(0, sk.length - pk.length - 64);
+        const copies = allocated.filter((b) =>
+          b !== sk && b instanceof Uint8Array && sameContent(b, secretVector)
+        );
+        assertEquals(copies.length, 0);
+      });
+
+      it("keeps no message polynomial after encap", async () => {
+        const kyber = new MlKemClass();
+        const [pk] = await kyber.deriveKeyPair(seed);
+        const allocated = await recordAllocations(async () => {
+          await kyber.encap(pk, msg);
+        });
+        const expected = messagePoly(msg);
+        const copies = allocated.filter((b) =>
+          b instanceof Int16Array && sameContent(b, expected)
+        );
+        assertEquals(copies.length, 0);
+      });
+
+      it("keeps no message polynomial after decap", async () => {
+        const kyber = new MlKemClass();
+        const [pk, sk] = await kyber.deriveKeyPair(seed);
+        const [ct] = await kyber.encap(pk, msg);
+        const allocated = await recordAllocations(async () => {
+          await kyber.decap(ct, sk);
+        });
+        const expected = messagePoly(msg);
+        const copies = allocated.filter((b) =>
+          b instanceof Int16Array && sameContent(b, expected)
+        );
+        assertEquals(copies.length, 0);
+      });
+
+      for (const noSeed of [undefined, null]) {
+        it(`wipes the message it generated when the seed is ${noSeed}`, async () => {
+          const kyber = new MlKemClass();
+          const [pk] = await kyber.deriveKeyPair(seed);
+          const allocated = await recordAllocations(async () => {
+            await kyber.encap(pk, noSeed as undefined);
+          });
+          // the generated message is the only 32-byte buffer encap allocates
+          const messages = allocated.filter((b) =>
+            b instanceof Uint8Array && b.length === 32
+          );
+          assertEquals(messages.length, 1);
+          assertEquals(messages[0], new Uint8Array(32));
+        });
+      }
+    });
+  }
+});
