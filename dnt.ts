@@ -34,7 +34,7 @@ await build({
   typeCheck: "both",
   test: true,
   declaration: "inline",
-  scriptModule: "umd",
+  scriptModule: false,
   importMap: "./npm/import_map.json",
   compilerOptions: {
     lib: ["ES2022", "DOM"],
@@ -54,14 +54,14 @@ await build({
     },
     homepage: "https://github.com/dajiaji/crystals-kyber-js#readme",
     license: "MIT",
+    main: "./esm/mod.js",
     module: "./esm/mod.js",
-    main: "./script/mod.js",
     types: "./esm/mod.d.ts",
     sideEffects: false,
     exports: {
       ".": {
-        "import": "./esm/mod.js",
-        "require": "./script/mod.js",
+        "types": "./esm/mod.d.ts",
+        "default": "./esm/mod.js",
       },
       "./package.json": "./package.json",
     },
@@ -78,7 +78,7 @@ await build({
       "post-quantum",
     ],
     engines: {
-      "node": ">=16.0.0",
+      "node": ">=20.0.0",
     },
     author: "Ajitomi Daisuke",
     bugs: {
@@ -98,7 +98,7 @@ Deno.copyFileSync("README.md", `./npm/${Deno.args[0]}/README.md`);
 
 // Remove test-only files from the npm package
 const outDir = `./npm/${Deno.args[0]}`;
-for (const dir of ["esm", "script"]) {
+for (const dir of ["esm"]) {
   await emptyDir(`${outDir}/${dir}/deps`);
   await Deno.remove(`${outDir}/${dir}/deps`, { recursive: true });
   await emptyDir(`${outDir}/${dir}/test`);

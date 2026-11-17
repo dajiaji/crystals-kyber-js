@@ -79,7 +79,7 @@ async function doMlKem() {
   const [pkR, skR] = recipient.generateKeyPair();
   //// Deterministic key generation is also supported
   // const seed = new Uint8Array(64);
-  // globalThis.crypto.getRandomValues(seed); // node >= 19
+  // globalThis.crypto.getRandomValues(seed);
   // const [pkR, skR] = recipient.deriveKeyPair(seed);
 
   // A sender generates a ciphertext and a shared secret with pkR.
@@ -112,6 +112,8 @@ doMlKem().catch((err: unknown) => {
 ## Installation
 
 ### Node.js
+
+Node.js v20 or later is required. The npm packages are ESM-only.
 
 ```sh
 # Using npm:
@@ -226,7 +228,6 @@ This section shows some typical usage examples.
 
 ```js
 import { createMlKem768 } from "mlkem"; // Available since v2.7.0
-// const { createMlKem768 } = require("mlkem");
 
 async function doMlKem() {
   const recipient = await createMlKem768();
