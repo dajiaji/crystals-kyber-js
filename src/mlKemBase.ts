@@ -965,8 +965,9 @@ function reduce(r: Int16Array): Int16Array {
 }
 
 // barrett computes a Barrett reduction; given
-// a integer `a`, returns a integer congruent to
-// `a mod Q` in {0,...,Q}.
+// a 16-bit integer `a`, returns an integer congruent to
+// `a mod Q` in {0,...,Q+2}. The result is not fully reduced,
+// so callers that need a canonical value must still subtract Q.
 
 /**
  * Performs the Barrett reduction algorithm on the given number.
@@ -981,9 +982,10 @@ function barrett(a: number): number {
   t = a - t;
   // BARRETT_V is a float and the shift is 24 rather than the reference 26,
   // so the quotient can come out one too high and leave t at -1 or -2. That
-  // needs |a| >= 13315, which the NTT paths do not currently reach, but
-  // _polyToBytes subtracts Q only once, so a negative would serialise as a
-  // non-canonical coefficient. Fold it back rather than rely on the margin.
+  // needs a >= 13315, which has not been observed in practice but is not
+  // ruled out by the worst-case bound on the NTT outputs. _polyToBytes
+  // subtracts Q only once, so a negative would serialise as a non-canonical
+  // coefficient. Fold it back rather than rely on the margin.
   return t + ((t >> 31) & Q);
 }
 
