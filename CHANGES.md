@@ -1,5 +1,27 @@
 # Changes
 
+## Version 2.7.1
+
+Released 2026-11-17
+
+- [(#642) Clarify Barrett reduction bounds.](https://github.com/dajiaji/crystals-kyber-js/pull/642)
+- [(#641) Zeroize transient secrets.](https://github.com/dajiaji/crystals-kyber-js/pull/641)
+- [(#640) Use repository-managed build tools in CI.](https://github.com/dajiaji/crystals-kyber-js/pull/640)
+- [(#639) Add test covering SampleNTT XOF refill.](https://github.com/dajiaji/crystals-kyber-js/pull/639)
+- [(#636) Avoid secret-derived divisions.](https://github.com/dajiaji/crystals-kyber-js/pull/636)
+- [(#635) Format README test line.](https://github.com/dajiaji/crystals-kyber-js/pull/635)
+- [(#633) Update publishing and runtime workflows.](https://github.com/dajiaji/crystals-kyber-js/pull/633)
+- [(#632) Keep `barrett` from returning a negative representative.](https://github.com/dajiaji/crystals-kyber-js/pull/632)
+- [(#631) Zeroize the secrets that were allocated outside the buffer pool.](https://github.com/dajiaji/crystals-kyber-js/pull/631)
+- [(#630) Squeeze fresh XOF blocks in SampleNTT instead of re-reading one.](https://github.com/dajiaji/crystals-kyber-js/pull/630)
+- [(#629) Select the implicit rejection secret without branching.](https://github.com/dajiaji/crystals-kyber-js/pull/629)
+- [(#628) Restore the branch-free division by Q in compression and `polyToMsg`.](https://github.com/dajiaji/crystals-kyber-js/pull/628)
+- [(#627) Add tests covering the input validation branches.](https://github.com/dajiaji/crystals-kyber-js/pull/627)
+- [(#626) Assert the implicit rejection vectors already in the KAT files.](https://github.com/dajiaji/crystals-kyber-js/pull/626)
+- [(#625) Correct the Bun install target, swapped `encap`/`decap` JSDoc, and typos.](https://github.com/dajiaji/crystals-kyber-js/pull/625)
+- [(#624) Apply newer deno formatter and linter.](https://github.com/dajiaji/crystals-kyber-js/pull/624)
+- [(#623) Use `node:crypto` instead of `crypto`.](https://github.com/dajiaji/crystals-kyber-js/pull/623)
+
 ## Version 2.7.0
 
 Released 2026-03-08
