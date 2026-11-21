@@ -14,8 +14,41 @@ permissions:
   contents: read
 
 jobs:
-  pages:
+  playwright-test:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - uses: denoland/setup-deno@e95548e56dfa95d4e1a28d6f422fafe75c4c26fb # v2.0.3
+        with:
+          deno-version: 2.x
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: 22.x
+      - name: Run dnt
+        run: deno task dnt
+      - name: Install build tools
+        working-directory: ./npm
+        run: npm ci
+      - name: Add npm binaries to PATH
+        run: echo "${GITHUB_WORKSPACE}/npm/node_modules/.bin" >> "$GITHUB_PATH"
+      - name: Build the test page for crystals-kyber-js
+        run: deno task minify:crystals-kyber-js > test/runtimes/browsers/pages/src/crystals-kyber.js
+      - name: Run Playwright tests against the local test page
+        working-directory: ./test/runtimes/browsers
+        run: |
+          npm ci
+          npx playwright install-deps
+          npx playwright install
+          npx playwright test
+
+  pages:
+    needs: playwright-test
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -41,20 +74,5 @@ jobs:
           cp -rf test/runtimes/browsers/pages/* pages/tests
       - uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e # v4.0.0
         with:
-          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./pages
-
-  playwright-test:
-    needs: pages
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
-      - working-directory: ./test/runtimes/browsers
-        run: |
-          npm ci
-          npx playwright install-deps
-          npx playwright install
-          npx playwright test
