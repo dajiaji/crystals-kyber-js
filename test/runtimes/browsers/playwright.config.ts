@@ -3,6 +3,15 @@ import type { PlaywrightTestConfig } from "@playwright/test";
 import { devices } from "@playwright/test";
 
 const config: PlaywrightTestConfig = {
+  use: {
+    baseURL: "http://127.0.0.1:8080",
+  },
+  // Serve the test page locally so that the tests run against the code under
+  // test rather than the published GitHub Pages site.
+  webServer: {
+    command: "python3 -m http.server 8080 --bind 127.0.0.1 --directory pages",
+    url: "http://127.0.0.1:8080/",
+  },
   projects: [
     {
       name: "chromium",
