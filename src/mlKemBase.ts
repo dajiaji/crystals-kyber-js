@@ -328,6 +328,13 @@ export class MlKemBase {
         this._skSize + this._pkSize + 64,
       );
 
+      // decapsulation key hash check (FIPS 203 section 7.3): the stored hash
+      // must be H of the embedded encapsulation key. Both are public values;
+      // the comparison is constant-time anyway.
+      if (constantTimeCompare(this._h(pk), hpk) !== 1) {
+        throw new Error("Invalid decapsulation key");
+      }
+
       m2 = this._decap(ct, sk2);
       const [k2, r2] = this._g(m2, hpk);
       const kBar = this._kdf(z, ct);
