@@ -288,6 +288,49 @@ describe("input validation", () => {
           );
         }
       });
+
+      // FIPS 203 section 7.3 hash check. The decapsulation key is
+      // dk_pke (384k) || ek (384k + 32) || H(ek) (32) || z (32).
+      it("rejects a decapsulation key whose stored hash is corrupted", async () => {
+        const kyber = new MlKemClass();
+        const [pk, sk] = await kyber.generateKeyPair();
+        const [ct] = await kyber.encap(pk);
+        const hOffset = sk.length - 64;
+        for (const i of [hOffset, hOffset + 31]) {
+          const bad = sk.slice();
+          bad[i] ^= 0x01;
+          await assertRejects(
+            () => kyber.decap(ct, bad),
+            MlKemError,
+            "Invalid decapsulation key",
+          );
+        }
+      });
+
+      it("rejects a decapsulation key whose embedded encapsulation key is corrupted", async () => {
+        const kyber = new MlKemClass();
+        const [pk, sk] = await kyber.generateKeyPair();
+        const [ct] = await kyber.encap(pk);
+        const ekOffset = sk.length - 64 - pk.length;
+        for (const i of [ekOffset, sk.length - 65]) {
+          const bad = sk.slice();
+          bad[i] ^= 0x01;
+          await assertRejects(
+            () => kyber.decap(ct, bad),
+            MlKemError,
+            "Invalid decapsulation key",
+          );
+        }
+      });
+
+      it("accepts a decapsulation key whose z is altered (implicit rejection value only)", async () => {
+        const kyber = new MlKemClass();
+        const [pk, sk] = await kyber.generateKeyPair();
+        const [ct, ss] = await kyber.encap(pk);
+        const altered = sk.slice();
+        altered[sk.length - 1] ^= 0x01;
+        assertEquals(await kyber.decap(ct, altered), ss);
+      });
     });
   }
 });
