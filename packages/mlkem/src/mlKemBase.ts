@@ -33,7 +33,7 @@ const INV_2_32 = 1 / 4294967296;
  *
  * ```ts
  * // Using jsr:
- * import { MlKemBase } from "@dajiaji/mlkem";
+ * import { MlKemBase } from "@webpqc/mlkem";
  * // Using npm:
  * // import { MlKemBase } from "mlkem"; // or "crystals-kyber-js"
  *
