@@ -13,6 +13,13 @@ This repository is a monorepo that has the following packages:
 
 See the README of each package for installation and usage.
 
+## Design Direction
+
+The algorithms are currently implemented in TypeScript. In the future, this
+project aims to use the native implementations defined by
+[Modern Algorithms in the Web Cryptography API](https://wicg.github.io/webcrypto-modern-algos/)
+when available, and fall back to the TypeScript ones otherwise.
+
 ## Contributing
 
 We welcome all kind of contributions, filing issues, suggesting new features or
