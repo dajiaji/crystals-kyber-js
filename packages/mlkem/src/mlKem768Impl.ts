@@ -12,7 +12,7 @@ import { MlKemBase } from "./mlKemBase.ts";
  *
  * ```ts
  * // Using jsr:
- * import { createMlKem768 } from "@dajiaji/mlkem";
+ * import { createMlKem768 } from "@webpqc/mlkem";
  * // Using npm:
  * // import { createMlKem768 } from "mlkem"; // or "crystals-kyber-js"
  *

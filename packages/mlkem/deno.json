@@ -1,0 +1,22 @@
+{
+  "name": "@webpqc/mlkem",
+  "version": "3.0.0",
+  "exports": "./mod.ts",
+  "publish": {
+    "exclude": [
+      "dnt.ts",
+      "bench/",
+      "coverage/",
+      "test/",
+      "tsconfig.json",
+      "CHANGES.md"
+    ]
+  },
+  "tasks": {
+    "test": "deno test ./test --fail-fast --doc --coverage=coverage --parallel --allow-read",
+    "cov": "deno coverage ./coverage --lcov --exclude='test'",
+    "dnt": "deno task dnt:crystals-kyber-js && deno task dnt:mlkem",
+    "dnt:crystals-kyber-js": "deno run -A dnt.ts crystals-kyber-js",
+    "dnt:mlkem": "deno run -A dnt.ts mlkem"
+  }
+}

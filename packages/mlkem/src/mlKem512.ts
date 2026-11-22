@@ -4,40 +4,40 @@
  * https://github.com/antontutoveanu/crystals-kyber-javascript/blob/main/LICENSE
  */
 import { MlKemError } from "./errors.ts";
-import { MlKem1024Base } from "./mlKem1024Base.ts";
+import { MlKem512Base } from "./mlKem512Base.ts";
 
 /**
- * Represents the MlKem1024 class, which extends the MlKem1024Base class.
+ * Represents the MlKem512 class.
  *
- * This class extends the MlKem1024Base class and provides specific implementation for MlKem1024.
+ * This class extends the MlKem512Base class and provides specific implementation for MlKem512.
  *
- * @deprecated Use {@link createMlKem1024} instead. This async class-based API will be removed in a future release.
+ * @deprecated Use {@link createMlKem512} instead. This async class-based API will be removed in a future release.
  *
  * @remarks
  *
- * MlKem1024 is a specific implementation of the ML-KEM key encapsulation mechanism.
+ * MlKem512 is a specific implementation of the ML-KEM key encapsulation mechanism.
  *
  * @example
  *
  * ```ts
  * // Using jsr:
- * import { createMlKem1024 } from "@dajiaji/mlkem";
+ * import { createMlKem512 } from "@webpqc/mlkem";
  * // Using npm:
- * // import { createMlKem1024 } from "mlkem"; // or "crystals-kyber-js"
+ * // import { createMlKem512 } from "mlkem"; // or "crystals-kyber-js"
  *
- * const recipient = await createMlKem1024();
+ * const recipient = await createMlKem512();
  * const [pkR, skR] = recipient.generateKeyPair();
  *
- * const sender = await createMlKem1024();
+ * const sender = await createMlKem512();
  * const [ct, ssS] = sender.encap(pkR);
  *
  * const ssR = recipient.decap(ct, skR);
  * // ssS === ssR
  * ```
  */
-export class MlKem1024 extends MlKem1024Base {
+export class MlKem512 extends MlKem512Base {
   /**
-   * Constructs a new instance of the MlKem1024 class.
+   * Constructs a new instance of the MlKem512 class.
    */
   constructor() {
     super();

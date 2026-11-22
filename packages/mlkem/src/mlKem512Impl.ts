@@ -11,7 +11,7 @@ import { MlKem512Base } from "./mlKem512Base.ts";
  *
  * ```ts
  * // Using jsr:
- * import { createMlKem512 } from "@dajiaji/mlkem";
+ * import { createMlKem512 } from "@webpqc/mlkem";
  * // Using npm:
  * // import { createMlKem512 } from "mlkem"; // or "crystals-kyber-js"
  *
