@@ -72,7 +72,8 @@ jobs:
               return
             fi
             echo "Staging $name@$version"
-            if npm stage publish "$dir" >"$stage_log" 2>&1; then
+            # Allow 2.7.x update releases without moving the "latest" dist-tag.
+            if npm stage publish "$dir" --tag release-2.7 >"$stage_log" 2>&1; then
               cat "$stage_log"
               echo "::notice::Staged $name@$version (approve it on npmjs.com to publish)"
               return
