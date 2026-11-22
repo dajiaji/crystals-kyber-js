@@ -2,11 +2,11 @@ name: Cloudflare Workers CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, "release/**"]
     paths-ignore:
       - "**/*.md"
   pull_request:
-    branches: [main]
+    branches: [main, "release/**"]
     paths-ignore:
       - "**/*.md"
 
