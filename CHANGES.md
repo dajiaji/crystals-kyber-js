@@ -10,6 +10,13 @@ Released 2026-11-22
 - [(#645) Mark generated npm package as ESM.](https://github.com/dajiaji/crystals-kyber-js/pull/645)
 - [(#644) Require Node.js 20 and ESM-only packages.](https://github.com/dajiaji/crystals-kyber-js/pull/644)
 
+## Version 2.7.2
+
+Released 2026-11-22
+
+- [(#654) Validate the decapsulation key hash in `decap` (FIPS 203 section 7.3).](https://github.com/dajiaji/crystals-kyber-js/pull/654)
+  Reported by [@RatioLabsEU](https://github.com/RatioLabsEU).
+
 ## Version 2.7.1
 
 Released 2026-11-17
