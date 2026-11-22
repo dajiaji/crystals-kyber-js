@@ -55,20 +55,16 @@ This repository has the following packages:
 | mlkem             | [![npm](https://img.shields.io/npm/v/mlkem?color=%23EE3214)](https://www.npmjs.com/package/mlkem)                                                                                             | Implements only ML-KEM (NIST FIPS 203). It is an alias for the above `crystals-kyber-js` starting from `v2` onwards. We recommend using this package going forward.                                                                                                           |
 | @webpqc/mlkem     | [![JSR](https://jsr.io/badges/@webpqc/mlkem)](https://jsr.io/@webpqc/mlkem) [![npm](https://img.shields.io/npm/v/@webpqc/mlkem?color=%23EE3214)](https://www.npmjs.com/package/@webpqc/mlkem) | Implements only ML-KEM (NIST FIPS 203). Available on both [jsr.io](https://jsr.io/) and npm. The npm packages (`@webpqc/mlkem`, `mlkem` and `crystals-kyber-js`) are built from the same source using [@deno/dnt](https://github.com/denoland/dnt) and have the same content. |
 
-For Node.js, you can install `@webpqc/mlkem`, `mlkem` or `crystals-kyber-js` via
-npm, yarn or pnpm:
+For Node.js, you can install `mlkem` via npm, yarn or pnpm:
 
 ```sh
-# RECOMMENDED using `mlkem`
 npm install mlkem
-# `crystals-kyber-js` is still available for use, but it may become deprecated in the near future.
-npm install crystals-kyber-js
 ```
 
 Then, you can use it as follows:
 
 ```ts
-import { createMlKem768 } from "mlkem"; // or from "crystals-kyber-js"
+import { createMlKem768 } from "mlkem";
 
 async function doMlKem() {
   // Create a pre-initialized instance (available since v2.7.0).
@@ -117,9 +113,9 @@ Node.js v20 or later is required. The npm packages are ESM-only.
 
 ```sh
 # Using npm:
-npm install mlkem  # or crystals-kyber-js
-yarn add mlkem  # or crystals-kyber-js
-pnpm install mlkem  # or crystals-kyber-js
+npm install mlkem
+yarn add mlkem
+pnpm install mlkem
 # Using jsr:
 npx jsr add @webpqc/mlkem
 yarn dlx jsr add @webpqc/mlkem
@@ -164,9 +160,9 @@ import {
 
 ```sh
 # Using npm:
-npm install mlkem  # or crystals-kyber-js
-yarn add mlkem  # or crystals-kyber-js
-pnpm install mlkem  # or crystals-kyber-js
+npm install mlkem
+yarn add mlkem
+pnpm install mlkem
 # Using jsr:
 npx jsr add @webpqc/mlkem
 yarn dlx jsr add @webpqc/mlkem
@@ -181,9 +177,9 @@ import { createMlKem1024, createMlKem512, createMlKem768 } from "@webpqc/mlkem";
 
 ```sh
 # Using npm:
-npm install mlkem  # or crystals-kyber-js
-yarn add mlkem  # or crystals-kyber-js
-pnpm install mlkem  # or crystals-kyber-js
+npm install mlkem
+yarn add mlkem
+pnpm install mlkem
 # Using jsr:
 bunx jsr add @webpqc/mlkem
 ```

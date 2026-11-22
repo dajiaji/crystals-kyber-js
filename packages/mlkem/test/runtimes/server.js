@@ -1,4 +1,4 @@
-import { MlKem1024, MlKem512, MlKem768 } from "./crystals-kyber.js";
+import { MlKem1024, MlKem512, MlKem768 } from "./mlkem.js";
 
 function compare(x, y) {
   if (x.length != y.length) {
