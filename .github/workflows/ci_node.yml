@@ -44,3 +44,7 @@ jobs:
         working-directory: ./npm/crystals-kyber-js
         if: matrix.node-version < 24
         run: npm publish --dry-run
+      - name: Run npm publish --dry-run
+        working-directory: ./npm/webpqc-mlkem
+        if: matrix.node-version < 24
+        run: npm publish --dry-run

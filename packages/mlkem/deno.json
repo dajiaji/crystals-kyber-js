@@ -15,8 +15,9 @@
   "tasks": {
     "test": "deno test ./test --fail-fast --doc --coverage=coverage --parallel --allow-read",
     "cov": "deno coverage ./coverage --lcov --exclude='test'",
-    "dnt": "deno task dnt:crystals-kyber-js && deno task dnt:mlkem",
+    "dnt": "deno task dnt:crystals-kyber-js && deno task dnt:mlkem && deno task dnt:webpqc-mlkem",
     "dnt:crystals-kyber-js": "deno run -A dnt.ts crystals-kyber-js",
-    "dnt:mlkem": "deno run -A dnt.ts mlkem"
+    "dnt:mlkem": "deno run -A dnt.ts mlkem",
+    "dnt:webpqc-mlkem": "deno run -A dnt.ts @webpqc/mlkem"
   }
 }

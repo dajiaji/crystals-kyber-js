@@ -89,10 +89,11 @@ jobs:
             echo "::error::Failed to stage $name@$version"
             failed+=("$name@$version")
           }
-          # A staging failure does not stop the remaining package; the step
+          # A staging failure does not stop the remaining packages; the step
           # fails at the end if any package could not be staged.
           stage_if_needed crystals-kyber-js
           stage_if_needed mlkem
+          stage_if_needed webpqc-mlkem
           if [ ${#failed[@]} -gt 0 ]; then
             echo "::error::Failed to stage: ${failed[*]}"
             exit 1
