@@ -23,7 +23,7 @@ import { MlKem1024Base } from "./mlKem1024Base.ts";
  * // Using jsr:
  * import { createMlKem1024 } from "@webpqc/mlkem";
  * // Using npm:
- * // import { createMlKem1024 } from "mlkem"; // or "crystals-kyber-js"
+ * // import { createMlKem1024 } from "mlkem";
  *
  * const recipient = await createMlKem1024();
  * const [pkR, skR] = recipient.generateKeyPair();

@@ -35,7 +35,7 @@ const INV_2_32 = 1 / 4294967296;
  * // Using jsr:
  * import { MlKemBase } from "@webpqc/mlkem";
  * // Using npm:
- * // import { MlKemBase } from "mlkem"; // or "crystals-kyber-js"
+ * // import { MlKemBase } from "mlkem";
  *
  * class MlKem768 extends MlKemBase {
  *   protected _k = 3;

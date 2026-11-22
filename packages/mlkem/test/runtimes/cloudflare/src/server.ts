@@ -1,4 +1,4 @@
-import { MlKem1024, MlKem512, MlKem768 } from "crystals-kyber-js";
+import { MlKem1024, MlKem512, MlKem768 } from "mlkem";
 
 function compare(x: Uint8Array, y: Uint8Array): boolean {
   if (x.length != y.length) {

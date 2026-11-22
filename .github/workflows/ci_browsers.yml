@@ -33,8 +33,8 @@ jobs:
         run: npm ci
       - name: Add npm binaries to PATH
         run: echo "${GITHUB_WORKSPACE}/npm/node_modules/.bin" >> "$GITHUB_PATH"
-      - name: Build the test page for crystals-kyber-js
-        run: deno task minify:crystals-kyber-js > packages/mlkem/test/runtimes/browsers/pages/src/crystals-kyber.js
+      - name: Build the test page for mlkem
+        run: deno task minify:mlkem > packages/mlkem/test/runtimes/browsers/pages/src/mlkem.js
       - name: Run Playwright tests against the local test page
         working-directory: ./packages/mlkem/test/runtimes/browsers
         run: |
@@ -66,10 +66,10 @@ jobs:
         run: npm ci
       - name: Add npm binaries to PATH
         run: echo "${GITHUB_WORKSPACE}/npm/node_modules/.bin" >> "$GITHUB_PATH"
-      - name: Build docs for crystals-kyber-js
+      - name: Build docs for mlkem
         run: |
-          (cd packages/mlkem && typedoc --name "API reference for crystals-kyber-js/main" --out ../../pages/docs/main mod.ts)
-          deno task minify:crystals-kyber-js > packages/mlkem/test/runtimes/browsers/pages/src/crystals-kyber.js
+          (cd packages/mlkem && typedoc --name "API reference for mlkem/main" --out ../../pages/docs/main mod.ts)
+          deno task minify:mlkem > packages/mlkem/test/runtimes/browsers/pages/src/mlkem.js
           mkdir pages/tests
           cp -rf packages/mlkem/test/runtimes/browsers/pages/* pages/tests
       - uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e # v4.0.0
