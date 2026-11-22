@@ -47,6 +47,11 @@ but includes the following improvements:
   - [pq-crystals/kyber](https://github.com/pq-crystals/kyber) (10000 consecutive
     tests)
 
+> [!NOTE]
+> In the future, this package aims to use the native ML-KEM defined by
+> [Modern Algorithms in the Web Cryptography API](https://wicg.github.io/webcrypto-modern-algos/)
+> when available, and fall back to the TypeScript implementation otherwise.
+
 This repository has the following packages:
 
 | package           | registry                                                                                                                                                                                      | description                                                                                                                                                                                                                                                                   |
