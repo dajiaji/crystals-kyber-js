@@ -12,6 +12,12 @@ An HQC (Hamming Quasi-Cyclic) implementation written in TypeScript.<br>
 </div>
 <p></p>
 
+<div align="center">
+
+[Documentation for main](https://dajiaji.github.io/crystals-kyber-js/docs/hqc/main/)
+
+</div>
+
 - ✅ HQC ([HQC specifications v5.1](https://pqc-hqc.org/resources.html))
   support: HQC-1, HQC-3 and HQC-5.
 - ✅ Written in TypeScript.

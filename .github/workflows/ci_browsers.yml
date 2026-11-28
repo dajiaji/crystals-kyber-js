@@ -88,6 +88,18 @@ jobs:
           deno task minify:mlkem > packages/mlkem/test/runtimes/browsers/pages/src/mlkem.js
           mkdir pages/tests
           cp -rf packages/mlkem/test/runtimes/browsers/pages/* pages/tests
+      - name: Build docs for mldsa
+        run: |
+          (cd packages/mldsa && typedoc --name "API reference for mldsa/main" --out ../../pages/docs/mldsa/main mod.ts)
+          deno task minify:webpqc-mldsa > packages/mldsa/test/runtimes/browsers/pages/src/mldsa.js
+          mkdir pages/tests/mldsa
+          cp -rf packages/mldsa/test/runtimes/browsers/pages/* pages/tests/mldsa
+      - name: Build docs for hqc
+        run: |
+          (cd packages/hqc && typedoc --name "API reference for hqc/main" --out ../../pages/docs/hqc/main mod.ts)
+          deno task minify:webpqc-hqc > packages/hqc/test/runtimes/browsers/pages/src/hqc.js
+          mkdir pages/tests/hqc
+          cp -rf packages/hqc/test/runtimes/browsers/pages/* pages/tests/hqc
       - uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e # v4.0.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
