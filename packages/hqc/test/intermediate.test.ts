@@ -1,7 +1,7 @@
 import { assertEquals, assertNotEquals } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 
-import { sha3_256, shake256 } from "../src/deps.ts";
+import { sha3_256, shake256 } from "../src/sha3/sha3.ts";
 import { wordsToBytes } from "../src/utils.ts";
 import { NistDrbg, setRandom } from "./drng.ts";
 import { HQC_PARAMS } from "./params.ts";

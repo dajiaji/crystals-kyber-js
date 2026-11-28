@@ -109,8 +109,8 @@ See [bench/bundle](../../bench/bundle/) for the bundle sizes.
 HQC is slower than ML-KEM, and so is this implementation: its cost is dominated
 by the multiplications of polynomials of 17669 to 57637 coefficients, which are
 done without using the sparsity of the secret operand in order not to leak it.
-Run `deno bench` in this directory to see the benchmark results. They are around
-the following on a laptop (AMD Ryzen 9 6900HX, Deno 2.9):
+Run `deno task bench` in this directory to see the benchmark results. They are
+around the following on a laptop (AMD Ryzen 9 6900HX, Deno 2.9):
 
 | Parameter set | `generateKeyPair` | `encap` | `decap` |
 | ------------- | ----------------- | ------- | ------- |

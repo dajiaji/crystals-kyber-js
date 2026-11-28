@@ -8,64 +8,43 @@
  */
 
 /**
- * SHA3 (keccak) hash function, based on a new "Sponge function" design.
- * Different from older hashes, the internal state is bigger than output size.
+ * The Keccak permutation and a minimal sponge on top of it.
  *
- * Check out [FIPS-202](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf),
- * [Website](https://keccak.team/keccak.html),
- * [the differences between SHA-3 and Keccak](https://crypto.stackexchange.com/questions/15727/what-are-the-key-differences-between-the-draft-sha-3-standard-and-the-keccak-sub).
- *
- * Check out `sha3-addons` module for cSHAKE, k12, and others.
+ * This is all an implementation of ML-KEM or ML-DSA needs, so it has no
+ * dependencies and no input validation, to keep the bundles small. The hash
+ * functions for applications (`sha3_256`, `shake256`, ...) are in `sha3.ts`.
  * @module
  */
-import { rotlBH, rotlBL, rotlSH, rotlSL, split } from "./_u64.ts";
-// prettier-ignore
-import {
-  abytes,
-  aexists,
-  anumber,
-  aoutput,
-  type CHash,
-  type CHashXOF,
-  clean,
-  createHasher,
-  type Hash,
-  type HashInfo,
-  type HashXOF,
-  oidNist,
-  swap32IfBE,
-  u32,
-} from "./utils.ts";
 
-// No __PURE__ annotations in sha3 header:
-// EVERYTHING is in fact used on every export.
-// Various per round constants calculations
-const _0n = 0n;
-const _1n = 1n;
-const _2n = 2n;
-const _7n = 7n;
-const _256n = 256n;
-const _0x71n = 0x71n;
-const SHA3_PI: number[] = [];
-const SHA3_ROTL: number[] = [];
-const _SHA3_IOTA: bigint[] = []; // no pure annotation: var is always used
-for (let round = 0, R = _1n, x = 1, y = 0; round < 24; round++) {
-  // Pi
-  [x, y] = [y, (2 * x + 3 * y) % 5];
-  SHA3_PI.push(2 * (5 * y + x));
-  // Rotational
-  SHA3_ROTL.push((((round + 1) * (round + 2)) / 2) % 64);
-  // Iota
-  let t = _0n;
+// The round constants of Iota. They are computed with 32-bit integers only:
+// they are 64-bit values with bits only at 2^j - 1 (j = 0..6), which are kept
+// as two 32-bit halves. (The constants of Rho and Pi are written out in
+// keccakP below.)
+const SHA3_IOTA_LO = /* @__PURE__ */ new Uint32Array(24);
+const SHA3_IOTA_HI = /* @__PURE__ */ new Uint32Array(24);
+for (let round = 0, R = 1; round < 24; round++) {
   for (let j = 0; j < 7; j++) {
-    R = ((R << _1n) ^ ((R >> _7n) * _0x71n)) % _256n;
-    if (R & _2n) t ^= _1n << ((_1n << BigInt(j)) - _1n);
+    R = ((R << 1) ^ ((R >> 7) * 0x71)) % 256;
+    if (R & 2) {
+      if (j < 6) {
+        SHA3_IOTA_LO[round] ^= 1 << ((1 << j) - 1);
+      } else {
+        SHA3_IOTA_HI[round] ^= 1 << 31;
+      }
+    }
   }
-  _SHA3_IOTA.push(t);
 }
-const IOTAS = split(_SHA3_IOTA, true);
-const SHA3_IOTA_H = IOTAS[0];
-const SHA3_IOTA_L = IOTAS[1];
+
+// Left rotate for Shift in [1, 32)
+const rotlSH = (h: number, l: number, s: number): number =>
+  (h << s) | (l >>> (32 - s));
+const rotlSL = (h: number, l: number, s: number): number =>
+  (l << s) | (h >>> (32 - s));
+// Left rotate for Shift in (32, 64), NOTE: 32 is special case.
+const rotlBH = (h: number, l: number, s: number): number =>
+  (l << (s - 32)) | (h >>> (64 - s));
+const rotlBL = (h: number, l: number, s: number): number =>
+  (h << (s - 32)) | (l >>> (64 - s));
 
 // Left rotation (without 0, 32, 64)
 const rotlH = (
@@ -378,25 +357,49 @@ export function keccakP(
       s[y + 9] ^= ~B[1] & B[3];
     }
     // Iota (ι)
-    s[0] ^= SHA3_IOTA_H[round];
-    s[1] ^= SHA3_IOTA_L[round];
+    s[0] ^= SHA3_IOTA_LO[round];
+    s[1] ^= SHA3_IOTA_HI[round];
   }
 }
 
-/** Keccak sponge function. */
-export class Keccak implements Hash<Keccak>, HashXOF<Keccak> {
+// Is current platform little-endian? Most are. Big-Endian platform: IBM
+const isLE: boolean =
+  /* @__PURE__ */ (() =>
+    new Uint8Array(new Uint32Array([0x11223344]).buffer)[0] === 0x44)();
+
+// In place byte swap for Uint32Array, on a big-endian platform only.
+function swap32IfBE(arr: Uint32Array): void {
+  if (isLE) return;
+  for (let i = 0; i < arr.length; i++) {
+    const word = arr[i];
+    arr[i] = ((word << 24) & 0xff000000) |
+      ((word << 8) & 0xff0000) |
+      ((word >>> 8) & 0xff00) |
+      ((word >>> 24) & 0xff);
+  }
+}
+
+/**
+ * A minimal Keccak sponge: absorb with `updateUnsafe()`, squeeze with
+ * `writeIntoUnsafe()` (which can be called repeatedly), and `reset()` to
+ * reuse the instance.
+ *
+ * Nothing is validated: the caller must pass Uint8Array, and must not absorb
+ * after squeezing without `reset()`. See `Keccak` in `sha3.ts` for the
+ * validating hash interface built on this.
+ */
+export class KeccakCore {
   protected state: Uint8Array;
   protected pos = 0;
   protected posOut = 0;
   protected finished = false;
   protected state32: Uint32Array;
-  protected destroyed = false;
-  private _B = new Uint32Array(10);
+  protected _B: Uint32Array = new Uint32Array(10);
 
   public blockLen: number;
   public suffix: number;
   public outputLen: number;
-  protected enableXOF = false;
+  protected enableXOF: boolean;
   protected rounds: number;
 
   // NOTE: we accept arguments in bytes instead of bits here.
@@ -412,18 +415,9 @@ export class Keccak implements Hash<Keccak>, HashXOF<Keccak> {
     this.outputLen = outputLen;
     this.enableXOF = enableXOF;
     this.rounds = rounds;
-    // Can be passed from user as dkLen
-    anumber(outputLen, "outputLen");
     // 1600 = 5x5 matrix of 64bit.  1600 bits === 200 bytes
-    // 0 < blockLen < 200
-    if (!(0 < blockLen && blockLen < 200)) {
-      throw new Error("only keccak-f1600 function is supported");
-    }
     this.state = new Uint8Array(200);
-    this.state32 = u32(this.state);
-  }
-  clone(): Keccak {
-    return this._cloneInto();
+    this.state32 = new Uint32Array(this.state.buffer);
   }
   /** Resets instance to initial (empty) state for reuse. */
   reset(): void {
@@ -433,7 +427,6 @@ export class Keccak implements Hash<Keccak>, HashXOF<Keccak> {
     this.pos = 0;
     this.posOut = 0;
     this.finished = false;
-    this.destroyed = false;
   }
   protected keccak(): void {
     swap32IfBE(this.state32);
@@ -442,12 +435,7 @@ export class Keccak implements Hash<Keccak>, HashXOF<Keccak> {
     this.posOut = 0;
     this.pos = 0;
   }
-  update(data: Uint8Array): this {
-    aexists(this);
-    abytes(data);
-    return this.updateUnsafe(data);
-  }
-  /** Like update(), but skips validation. Caller must ensure valid state and input. */
+  /** Absorbs data. Caller must ensure valid state and input. */
   updateUnsafe(data: Uint8Array): this {
     const { blockLen, state } = this;
     const len = data.length;
@@ -468,12 +456,7 @@ export class Keccak implements Hash<Keccak>, HashXOF<Keccak> {
     state[blockLen - 1] ^= 0x80;
     this.keccak();
   }
-  protected writeInto(out: Uint8Array): Uint8Array {
-    aexists(this, false);
-    abytes(out);
-    return this.writeIntoUnsafe(out);
-  }
-  /** Like writeInto(), but skips validation. Caller must ensure valid state and output. */
+  /** Squeezes into `out`. Caller must ensure valid state and output. */
   writeIntoUnsafe(out: Uint8Array): Uint8Array {
     this.finish();
     const bufferOut = this.state;
@@ -487,129 +470,4 @@ export class Keccak implements Hash<Keccak>, HashXOF<Keccak> {
     }
     return out;
   }
-  xofInto(out: Uint8Array): Uint8Array {
-    // Sha3/Keccak usage with XOF is probably mistake, only SHAKE instances can do XOF
-    if (!this.enableXOF) {
-      throw new Error("XOF is not possible for this instance");
-    }
-    return this.writeInto(out);
-  }
-  xof(bytes: number): Uint8Array {
-    anumber(bytes);
-    return this.xofInto(new Uint8Array(bytes));
-  }
-  digestInto(out: Uint8Array): Uint8Array {
-    aoutput(out, this);
-    if (this.finished) throw new Error("digest() was already called");
-    this.writeInto(out);
-    this.destroy();
-    return out;
-  }
-  digest(): Uint8Array {
-    return this.digestInto(new Uint8Array(this.outputLen));
-  }
-  destroy(): void {
-    this.destroyed = true;
-    clean(this.state, this._B);
-  }
-  _cloneInto(to?: Keccak): Keccak {
-    const { blockLen, suffix, outputLen, rounds, enableXOF } = this;
-    to ||= new Keccak(blockLen, suffix, outputLen, enableXOF, rounds);
-    to.state32.set(this.state32);
-    to.pos = this.pos;
-    to.posOut = this.posOut;
-    to.finished = this.finished;
-    to.rounds = rounds;
-    // Suffix can change in cSHAKE
-    to.suffix = suffix;
-    to.outputLen = outputLen;
-    to.enableXOF = enableXOF;
-    to.destroyed = this.destroyed;
-    return to;
-  }
 }
-
-const genKeccak = (
-  suffix: number,
-  blockLen: number,
-  outputLen: number,
-  info: HashInfo = {},
-) => createHasher(() => new Keccak(blockLen, suffix, outputLen), info);
-
-// /** SHA3-224 hash function. */
-// export const sha3_224: CHash = /* @__PURE__ */ genKeccak(
-//   0x06,
-//   144,
-//   28,
-//   /* @__PURE__ */ oidNist(0x07),
-// );
-
-/** SHA3-256 hash function. Different from keccak-256. */
-export const sha3_256: CHash = /* @__PURE__ */ genKeccak(
-  0x06,
-  136,
-  32,
-  /* @__PURE__ */ oidNist(0x08),
-);
-
-// /** SHA3-384 hash function. */
-// export const sha3_384: CHash = /* @__PURE__ */ genKeccak(
-//   0x06,
-//   104,
-//   48,
-//   /* @__PURE__ */ oidNist(0x09),
-// );
-
-/** SHA3-512 hash function. */
-export const sha3_512: CHash = /* @__PURE__ */ genKeccak(
-  0x06,
-  72,
-  64,
-  /* @__PURE__ */ oidNist(0x0a),
-);
-
-/** keccak-224 hash function. */
-export const keccak_224: CHash = /* @__PURE__ */ genKeccak(0x01, 144, 28);
-/** keccak-256 hash function. Different from SHA3-256. */
-export const keccak_256: CHash = /* @__PURE__ */ genKeccak(0x01, 136, 32);
-/** keccak-384 hash function. */
-export const keccak_384: CHash = /* @__PURE__ */ genKeccak(0x01, 104, 48);
-/** keccak-512 hash function. */
-export const keccak_512: CHash = /* @__PURE__ */ genKeccak(0x01, 72, 64);
-
-export type ShakeOpts = { dkLen?: number };
-
-const genShake = (
-  suffix: number,
-  blockLen: number,
-  outputLen: number,
-  info: HashInfo = {},
-) =>
-  createHasher<Keccak, ShakeOpts>(
-    (opts: ShakeOpts = {}) =>
-      new Keccak(
-        blockLen,
-        suffix,
-        opts.dkLen === undefined ? outputLen : opts.dkLen,
-        true,
-      ),
-    info,
-  );
-
-/** SHAKE128 XOF with 128-bit security. */
-export const shake128: CHashXOF<Keccak, ShakeOpts> =
-  /* @__PURE__ */
-  genShake(0x1f, 168, 16, /* @__PURE__ */ oidNist(0x0b));
-/** SHAKE256 XOF with 256-bit security. */
-export const shake256: CHashXOF<Keccak, ShakeOpts> =
-  /* @__PURE__ */
-  genShake(0x1f, 136, 32, /* @__PURE__ */ oidNist(0x0c));
-
-// /** SHAKE128 XOF with 256-bit output (NIST version). */
-// export const shake128_32: CHashXOF<Keccak, ShakeOpts> =
-//   /* @__PURE__ */
-//   genShake(0x1f, 168, 32, /* @__PURE__ */ oidNist(0x0b));
-// /** SHAKE256 XOF with 512-bit output (NIST version). */
-// export const shake256_64: CHashXOF<Keccak, ShakeOpts> =
-//   /* @__PURE__ */
-//   genShake(0x1f, 136, 64, /* @__PURE__ */ oidNist(0x0c));

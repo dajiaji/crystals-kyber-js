@@ -100,8 +100,8 @@ class TestableVerifier extends MlDsaVerifier {
 // H: SHAKE256 over the concatenation of `inputs`, with a 64-octet output.
 function h64(...inputs: Uint8Array[]): Uint8Array {
   const h = new Keccak(136, 0x1f, 64, true);
-  for (const input of inputs) h.update(input);
-  return h.digest();
+  for (const input of inputs) h.updateUnsafe(input);
+  return h.writeIntoUnsafe(new Uint8Array(64));
 }
 
 /** The parameter sets, by the name the test vectors use. */

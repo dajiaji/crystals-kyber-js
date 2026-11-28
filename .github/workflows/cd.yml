@@ -18,6 +18,8 @@ jobs:
         with:
           deno-version: 2.x
       - name: Run test
+        # This also generates the copies of packages/sha3, which are not
+        # tracked by Git and are a part of the published package.
         run: deno task test
       - name: Run deno publish
         # A version that already exists on JSR is skipped by `deno publish`.

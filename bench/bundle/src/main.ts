@@ -60,6 +60,31 @@ function gitRevision(): string {
   }
 }
 
+/**
+ * Updates the copies of packages/sha3 in the packages, which are not tracked
+ * by Git, so that the bundles are built from the current working tree.
+ */
+function syncSha3(): void {
+  try {
+    execFileSync(
+      "deno",
+      [
+        "run",
+        "--allow-read",
+        "--allow-write",
+        join(REPO_ROOT, "scripts", "sync_sha3.ts"),
+      ],
+      { stdio: ["ignore", "inherit", "inherit"] },
+    );
+  } catch (e: unknown) {
+    throw new Error(
+      "Failed to update the copies of packages/sha3 with Deno, which this " +
+        "repository requires (scripts/sync_sha3.ts)",
+      { cause: e },
+    );
+  }
+}
+
 async function packageVersion(name: string): Promise<string> {
   const path = join(TOOL_ROOT, "node_modules", name, "package.json");
   const pkg = JSON.parse(await readFile(path, "utf8")) as { version: string };
@@ -90,6 +115,7 @@ async function main(): Promise<void> {
   if (suites.length === 0) {
     throw new Error(`No suite matches --filter ${opts.filter}`);
   }
+  syncSha3();
   const bundlers = opts.bundler === undefined
     ? BUNDLERS
     : opts.bundler.map((id) => {

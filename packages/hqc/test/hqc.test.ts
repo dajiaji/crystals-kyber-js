@@ -3,7 +3,7 @@ import { describe, it } from "@std/testing/bdd";
 import { Buffer } from "node:buffer";
 
 import { HqcError } from "../mod.ts";
-import { sha3_256, shake256 } from "../src/deps.ts";
+import { sha3_256, shake256 } from "../src/sha3/sha3.ts";
 import { setRandom } from "./drng.ts";
 import { HQC_PARAMS, type HqcTestParams } from "./params.ts";
 import { concat } from "./utils.ts";
