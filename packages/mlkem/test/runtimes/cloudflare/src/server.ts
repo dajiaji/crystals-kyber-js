@@ -1,4 +1,5 @@
-import { MlKem1024, MlKem512, MlKem768 } from "mlkem";
+// The package built by dnt, which dnt.ts copies next to this file.
+import { MlKem1024, MlKem512, MlKem768 } from "./mlkem/mod.js";
 
 function compare(x: Uint8Array, y: Uint8Array): boolean {
   if (x.length != y.length) {
@@ -33,7 +34,7 @@ export async function testServer(request: Request): Promise<Response> {
 
       // deriveKeyPair
       const seed = new Uint8Array(64);
-      globalThis.crypto.getRandomValues(seed);
+      crypto.getRandomValues(seed);
       const [dPkR, dSkR] = await recipient.deriveKeyPair(seed);
       const [dPkR2, dSkR2] = await recipient.deriveKeyPair(seed);
       if (!compare(dPkR, dPkR2) || !compare(dSkR, dSkR2)) {
@@ -58,7 +59,7 @@ export async function testServer(request: Request): Promise<Response> {
 
       // deriveKeyPair
       const seed = new Uint8Array(64);
-      globalThis.crypto.getRandomValues(seed);
+      crypto.getRandomValues(seed);
       const [dPkR, dSkR] = await recipient.deriveKeyPair(seed);
       const [dPkR2, dSkR2] = await recipient.deriveKeyPair(seed);
       if (!compare(dPkR, dPkR2) || !compare(dSkR, dSkR2)) {
@@ -83,7 +84,7 @@ export async function testServer(request: Request): Promise<Response> {
 
       // deriveKeyPair
       const seed = new Uint8Array(64);
-      globalThis.crypto.getRandomValues(seed);
+      crypto.getRandomValues(seed);
       const [dPkR, dSkR] = await recipient.deriveKeyPair(seed);
       const [dPkR2, dSkR2] = await recipient.deriveKeyPair(seed);
       if (!compare(dPkR, dPkR2) || !compare(dSkR, dSkR2)) {

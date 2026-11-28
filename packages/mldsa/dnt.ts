@@ -13,15 +13,29 @@ const isScoped = pkgName.startsWith("@");
 await emptyDir(`../../npm/${dirName}`);
 await emptyDir(`../../npm/test/${dirName}/runtimes/cloudflare`);
 
+// The directory in the Cloudflare Workers test which holds the built package.
+const BUILT_PACKAGE_DIR = "mldsa";
+
 // Directories of the runtime tests which are installed or generated locally.
-// They are left as they are: the build neither removes nor copies them.
-const LOCAL_ONLY = new Set(["node_modules", ".wrangler", "test-results"]);
+// They are left as they are: the build neither removes nor copies them. The
+// built package is placed separately at the end.
+const LOCAL_ONLY = new Set([
+  "node_modules",
+  ".wrangler",
+  "test-results",
+  BUILT_PACKAGE_DIR,
+]);
 
 function copyTestFiles(from: string, to: string): void {
   ensureDirSync(to);
   for (const entry of Deno.readDirSync(from)) {
     if (LOCAL_ONLY.has(entry.name)) continue;
-    if (entry.isDirectory) {
+    if (entry.isSymlink) {
+      // copySync keeps a link as a link, also one to a directory
+      copySync(`${from}/${entry.name}`, `${to}/${entry.name}`, {
+        overwrite: true,
+      });
+    } else if (entry.isDirectory) {
       copyTestFiles(`${from}/${entry.name}`, `${to}/${entry.name}`);
     } else {
       Deno.copyFileSync(`${from}/${entry.name}`, `${to}/${entry.name}`);
@@ -131,9 +145,25 @@ for (const dir of ["esm"]) {
 }
 
 // The Cloudflare Workers test imports the package built above, rather than
-// one from the npm registry, so that it tests the current sources.
-copySync(
-  `${outDir}/esm`,
-  `../../npm/test/${dirName}/runtimes/cloudflare/src/mldsa`,
-  { overwrite: true },
-);
+// one from the npm registry, so that it tests the current sources. It is
+// placed both in the copy of the test under npm/test/, which the CI uses, and
+// in the test directory of the sources (ignored by Git), so that the test
+// also runs from there.
+const builtPackageDirs = [
+  `../../npm/test/${dirName}/runtimes/cloudflare`,
+  "test/runtimes/cloudflare",
+];
+for (const dir of builtPackageDirs) {
+  const dest = `${dir}/src/${BUILT_PACKAGE_DIR}`;
+  // If the destination is a link, e.g. to another build output, only the
+  // link is removed: emptyDir() would delete the files it points to.
+  try {
+    if ((await Deno.lstat(dest)).isSymlink) {
+      await Deno.remove(dest);
+    }
+  } catch (e: unknown) {
+    if (!(e instanceof Deno.errors.NotFound)) throw e;
+  }
+  await emptyDir(dest);
+  copySync(`${outDir}/esm`, dest, { overwrite: true });
+}

@@ -1,5 +1,5 @@
 import { build, emptyDir } from "@deno/dnt";
-import { copySync } from "@std/fs";
+import { copySync, ensureDirSync } from "@std/fs";
 
 const denoPkg = JSON.parse(await Deno.readTextFile("./deno.json"));
 
@@ -12,26 +12,35 @@ const isScoped = pkgName.startsWith("@");
 // pre build steps
 await emptyDir(`../../npm/${dirName}`);
 await emptyDir(`../../npm/test/${dirName}/runtimes/cloudflare`);
-try {
-  await Deno.remove("test/runtimes/browsers/node_modules", {
-    recursive: true,
-  });
-} catch {
-  // ignore
-}
-try {
-  await Deno.remove("test/runtimes/bun/node_modules", {
-    recursive: true,
-  });
-} catch {
-  // ignore
-}
-try {
-  await Deno.remove("test/runtimes/cloudflare/node_modules", {
-    recursive: true,
-  });
-} catch {
-  // ignore
+
+// The directory in the Cloudflare Workers test which holds the built package.
+const BUILT_PACKAGE_DIR = "mlkem";
+
+// Directories of the runtime tests which are installed or generated locally.
+// They are left as they are: the build neither removes nor copies them. The
+// built package is placed separately at the end.
+const LOCAL_ONLY = new Set([
+  "node_modules",
+  ".wrangler",
+  "test-results",
+  BUILT_PACKAGE_DIR,
+]);
+
+function copyTestFiles(from: string, to: string): void {
+  ensureDirSync(to);
+  for (const entry of Deno.readDirSync(from)) {
+    if (LOCAL_ONLY.has(entry.name)) continue;
+    if (entry.isSymlink) {
+      // copySync keeps a link as a link, also one to a directory
+      copySync(`${from}/${entry.name}`, `${to}/${entry.name}`, {
+        overwrite: true,
+      });
+    } else if (entry.isDirectory) {
+      copyTestFiles(`${from}/${entry.name}`, `${to}/${entry.name}`);
+    } else {
+      Deno.copyFileSync(`${from}/${entry.name}`, `${to}/${entry.name}`);
+    }
+  }
 }
 
 await build({
@@ -48,7 +57,9 @@ await build({
   shims: {
     deno: "dev",
   },
-  testPattern: "test/**/*.test.ts",
+  // Only the tests directly under test/: test/runtimes/ has the tests for
+  // the other runtimes, and may have node_modules installed for them.
+  testPattern: "test/*.test.ts",
   package: {
     name: pkgName,
     version: denoPkg.version,
@@ -97,10 +108,9 @@ await build({
 });
 
 // post build steps
-copySync(
+copyTestFiles(
   "test/runtimes/cloudflare",
   `../../npm/test/${dirName}/runtimes/cloudflare`,
-  { overwrite: true },
 );
 Deno.copyFileSync("LICENSE", `../../npm/${dirName}/LICENSE`);
 Deno.copyFileSync("README.md", `../../npm/${dirName}/README.md`);
@@ -133,4 +143,31 @@ for (const dir of ["esm"]) {
   try {
     await Deno.remove(`${outDir}/${dir}/_dnt.test_shims.js`);
   } catch { /* ignore */ }
+}
+
+// The Cloudflare Workers test imports the package built above, rather than
+// one from the npm registry, so that it tests the current sources. It is
+// placed both in the copy of the test under npm/test/, which the CI uses, and
+// in the test directory of the sources (ignored by Git), so that the test
+// also runs from there.
+// The copy in the sources is shared by all the npm package names this script
+// builds, which may be built in parallel, so only the build of "mlkem" (the
+// one scripts/test_cloudflare.sh uses) updates it.
+const builtPackageDirs = [`../../npm/test/${dirName}/runtimes/cloudflare`];
+if (pkgName === "mlkem") {
+  builtPackageDirs.push("test/runtimes/cloudflare");
+}
+for (const dir of builtPackageDirs) {
+  const dest = `${dir}/src/${BUILT_PACKAGE_DIR}`;
+  // If the destination is a link, e.g. to another build output, only the
+  // link is removed: emptyDir() would delete the files it points to.
+  try {
+    if ((await Deno.lstat(dest)).isSymlink) {
+      await Deno.remove(dest);
+    }
+  } catch (e: unknown) {
+    if (!(e instanceof Deno.errors.NotFound)) throw e;
+  }
+  await emptyDir(dest);
+  copySync(`${outDir}/esm`, dest, { overwrite: true });
 }

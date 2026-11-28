@@ -428,6 +428,8 @@ export class Keccak implements Hash<Keccak>, HashXOF<Keccak> {
   /** Resets instance to initial (empty) state for reuse. */
   reset(): void {
     this.state.fill(0);
+    // the scratch buffer of the permutation holds values derived from the state
+    this._B.fill(0);
     this.pos = 0;
     this.posOut = 0;
     this.finished = false;
@@ -508,7 +510,7 @@ export class Keccak implements Hash<Keccak>, HashXOF<Keccak> {
   }
   destroy(): void {
     this.destroyed = true;
-    clean(this.state);
+    clean(this.state, this._B);
   }
   _cloneInto(to?: Keccak): Keccak {
     const { blockLen, suffix, outputLen, rounds, enableXOF } = this;
