@@ -1,0 +1,100 @@
+<html>
+  <head>
+    <title>hqc test</title>
+  </head>
+  <body>
+    <script type="module">
+    import { createHqc1, createHqc3, createHqc5 } from "./src/hqc.js";
+
+    function isEqual(x, y) {
+      if (x.length !== y.length) {
+        return false;
+      }
+      for (let i = 0; i < x.length; i++) {
+        if (x[i] !== y[i]) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    async function doHqc(createHqc) {
+      try {
+        // generateKeyPair/encap/decap
+        const recipient = await createHqc();
+        const [pkR, skR] = recipient.generateKeyPair();
+        const sender = await createHqc();
+        const [ct, ssS] = sender.encap(pkR);
+        const ssR = recipient.decap(ct, skR);
+        if (!isEqual(ssS, ssR)) {
+          return false;
+        }
+
+        // deriveKeyPair
+        const seed = new Uint8Array(32);
+        globalThis.crypto.getRandomValues(seed);
+        const [dPkR, dSkR] = recipient.deriveKeyPair(seed);
+        const [dPkR2, dSkR2] = recipient.deriveKeyPair(seed);
+        if (!isEqual(dPkR, dPkR2) || !isEqual(dSkR, dSkR2)) {
+          return false;
+        }
+        const [dCt, dSsS] = sender.encap(dPkR);
+        const dSsR = recipient.decap(dCt, dSkR);
+        return isEqual(dSsS, dSsR);
+      } catch (e) {
+        console.error(e);
+        return false;
+      }
+    }
+
+    globalThis.run = async () => {
+      let pass = 0;
+      let fail = 0;
+
+      for (const createHqc of [createHqc1, createHqc3, createHqc5]) {
+        if (await doHqc(createHqc)) {
+          pass++;
+        } else {
+          fail++;
+        }
+      }
+      document.getElementById("pass").innerHTML = pass;
+      document.getElementById("fail").innerHTML = fail;
+    };
+
+    globalThis.reset = () => {
+      document.getElementById("pass").innerHTML = "-";
+      document.getElementById("fail").innerHTML = "-";
+    };
+    </script>
+
+    <h1>
+      <a href="https://github.com/dajiaji/crystals-kyber-js"
+      >hqc</a> test
+    </h1>
+
+    <div id="operation">
+      <button type="button" onclick="run()">run</button>
+      <button type="button" onclick="reset()">reset</button>
+    </div>
+
+    <br />
+
+    <div id="test">
+      <table>
+        <tr>
+          <th>
+            <font color="green">pass:</font>
+          </th>
+          <td id="pass">-</td>
+        </tr>
+        <tr>
+          <th>
+            <font color="red">fail:</font>
+          </th>
+          <td id="fail">-</td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

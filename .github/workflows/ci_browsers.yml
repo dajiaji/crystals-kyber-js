@@ -50,6 +50,14 @@ jobs:
           npm ci
           npx playwright install
           npx playwright test
+      - name: Build the test page for hqc
+        run: deno task minify:webpqc-hqc > packages/hqc/test/runtimes/browsers/pages/src/hqc.js
+      - name: Run Playwright tests against the local test page for hqc
+        working-directory: ./packages/hqc/test/runtimes/browsers
+        run: |
+          npm ci
+          npx playwright install
+          npx playwright test
 
   pages:
     needs: playwright-test

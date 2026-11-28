@@ -1,0 +1,6 @@
+# Built from the npm package by the CI workflows (see the root deno.json).
+/hqc.js
+/browsers/pages/src/hqc.js
+/browsers/test-results/
+# The package built by dnt, for the Cloudflare Workers test (see dnt.ts).
+/cloudflare/src/hqc/

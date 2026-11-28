@@ -57,3 +57,11 @@ jobs:
           nohup bun src/index.js &
           sleep 3
           deno test --import-map=../../../../../npm/import_map.json mldsa.spec.ts --allow-net --config=../../../../../deno.json
+      - name: Build test bundle for hqc
+        run: deno task minify:webpqc-hqc > packages/hqc/test/runtimes/hqc.js
+      - name: Run test for hqc
+        working-directory: ./packages/hqc/test/runtimes/bun
+        run: |
+          nohup bun src/index.js &
+          sleep 3
+          deno test --import-map=../../../../../npm/import_map.json hqc.spec.ts --allow-net --config=../../../../../deno.json

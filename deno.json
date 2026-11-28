@@ -43,7 +43,7 @@
     ]
   },
   "tasks": {
-    "update": "deno task update:deno && deno task npm-update && deno task update:cloudflare && deno task update:cloudflare:mldsa && deno task update:browsers && deno task update:browsers:mldsa && deno task update:npm-tools && deno task update:lock",
+    "update": "deno task update:deno && deno task npm-update && deno task update:cloudflare && deno task update:cloudflare:mldsa && deno task update:cloudflare:hqc && deno task update:browsers && deno task update:browsers:mldsa && deno task update:browsers:hqc && deno task update:npm-tools && deno task update:lock",
     "update:deno": "deno outdated --update",
     "npm-update": "deno task dnt && deno task npm-update:crystals-kyber-js && deno task npm-update:mlkem && deno task npm-update:webpqc-mlkem && deno task npm-update:webpqc-mldsa && deno task npm-update:webpqc-hqc",
     "npm-update:crystals-kyber-js": "cd npm/crystals-kyber-js && npm update",
@@ -54,7 +54,9 @@
     "update:cloudflare": "cd packages/mlkem/test/runtimes/cloudflare && npm exec --yes npm-check-updates@23.1.1 -- --packageFile package.json -u --target minor && npm install --package-lock-only --ignore-scripts --no-audit --no-fund",
     "update:browsers": "cd packages/mlkem/test/runtimes/browsers && npm exec --yes npm-check-updates@23.1.1 -- --packageFile package.json -u --target minor && npm install --package-lock-only --ignore-scripts --no-audit --no-fund",
     "update:cloudflare:mldsa": "cd packages/mldsa/test/runtimes/cloudflare && npm exec --yes npm-check-updates@23.1.1 -- --packageFile package.json -u --target minor && npm install --package-lock-only --ignore-scripts --no-audit --no-fund",
+    "update:cloudflare:hqc": "cd packages/hqc/test/runtimes/cloudflare && npm exec --yes npm-check-updates@23.1.1 -- --packageFile package.json -u --target minor && npm install --package-lock-only --ignore-scripts --no-audit --no-fund",
     "update:browsers:mldsa": "cd packages/mldsa/test/runtimes/browsers && npm exec --yes npm-check-updates@23.1.1 -- --packageFile package.json -u --target minor && npm install --package-lock-only --ignore-scripts --no-audit --no-fund",
+    "update:browsers:hqc": "cd packages/hqc/test/runtimes/browsers && npm exec --yes npm-check-updates@23.1.1 -- --packageFile package.json -u --target minor && npm install --package-lock-only --ignore-scripts --no-audit --no-fund",
     "update:npm-tools": "cd npm && npm exec --yes npm-check-updates@23.1.1 -- --packageFile package.json -u --target minor && npm install --package-lock-only --ignore-scripts --no-audit --no-fund",
     "update:lock": "deno install --lockfile-only --frozen=false --reload",
     "test": "deno task sync:sha3 && deno fmt --check && deno lint && deno task test:mlkem && deno task test:mldsa && deno task test:hqc",
