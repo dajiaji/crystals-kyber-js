@@ -42,6 +42,14 @@ jobs:
           npx playwright install-deps
           npx playwright install
           npx playwright test
+      - name: Build the test page for mldsa
+        run: deno task minify:webpqc-mldsa > packages/mldsa/test/runtimes/browsers/pages/src/mldsa.js
+      - name: Run Playwright tests against the local test page for mldsa
+        working-directory: ./packages/mldsa/test/runtimes/browsers
+        run: |
+          npm ci
+          npx playwright install
+          npx playwright test
 
   pages:
     needs: playwright-test

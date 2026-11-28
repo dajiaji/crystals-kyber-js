@@ -1,0 +1,124 @@
+<html>
+  <head>
+    <title>mldsa test</title>
+  </head>
+  <body>
+    <script type="module">
+    import {
+      createMlDsa44Signer,
+      createMlDsa44Verifier,
+      createMlDsa65Signer,
+      createMlDsa65Verifier,
+      createMlDsa87Signer,
+      createMlDsa87Verifier,
+    } from "./src/mldsa.js";
+
+    function isEqual(x, y) {
+      if (x.length !== y.length) {
+        return false;
+      }
+      for (let i = 0; i < x.length; i++) {
+        if (x[i] !== y[i]) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    async function doMlDsa(createSigner, createVerifier) {
+      try {
+        // generateKeyPair/sign/verify
+        const signer = await createSigner();
+        const [pk, sk] = signer.generateKeyPair();
+        const msg = new TextEncoder().encode("hello world");
+        const sig = signer.sign(sk, msg);
+        const verifier = await createVerifier();
+        if (!verifier.verify(pk, sig, msg)) {
+          return false;
+        }
+        if (verifier.verify(pk, sig, new TextEncoder().encode("hello world!"))) {
+          return false;
+        }
+
+        // sign/verify with a context string
+        const context = new TextEncoder().encode("context");
+        const ctxSig = signer.sign(sk, msg, { context });
+        if (!verifier.verify(pk, ctxSig, msg, { context })) {
+          return false;
+        }
+        if (verifier.verify(pk, ctxSig, msg)) {
+          return false;
+        }
+
+        // deriveKeyPair
+        const seed = new Uint8Array(32);
+        globalThis.crypto.getRandomValues(seed);
+        const [dPk, dSk] = signer.deriveKeyPair(seed);
+        const [dPk2, dSk2] = signer.deriveKeyPair(seed);
+        if (!isEqual(dPk, dPk2) || !isEqual(dSk, dSk2)) {
+          return false;
+        }
+        return true;
+      } catch (e) {
+        console.error(e);
+        return false;
+      }
+    }
+
+    globalThis.run = async () => {
+      let pass = 0;
+      let fail = 0;
+
+      for (
+        const [createSigner, createVerifier] of [
+          [createMlDsa44Signer, createMlDsa44Verifier],
+          [createMlDsa65Signer, createMlDsa65Verifier],
+          [createMlDsa87Signer, createMlDsa87Verifier],
+        ]
+      ) {
+        if (await doMlDsa(createSigner, createVerifier)) {
+          pass++;
+        } else {
+          fail++;
+        }
+      }
+      document.getElementById("pass").innerHTML = pass;
+      document.getElementById("fail").innerHTML = fail;
+    };
+
+    globalThis.reset = () => {
+      document.getElementById("pass").innerHTML = "-";
+      document.getElementById("fail").innerHTML = "-";
+    };
+    </script>
+
+    <h1>
+      <a href="https://github.com/dajiaji/crystals-kyber-js"
+      >mldsa</a> test
+    </h1>
+
+    <div id="operation">
+      <button type="button" onclick="run()">run</button>
+      <button type="button" onclick="reset()">reset</button>
+    </div>
+
+    <br />
+
+    <div id="test">
+      <table>
+        <tr>
+          <th>
+            <font color="green">pass:</font>
+          </th>
+          <td id="pass">-</td>
+        </tr>
+        <tr>
+          <th>
+            <font color="red">fail:</font>
+          </th>
+          <td id="fail">-</td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>
