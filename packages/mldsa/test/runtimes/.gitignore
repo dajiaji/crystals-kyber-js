@@ -1,0 +1,4 @@
+# Built from the npm package by the CI workflows (see the root deno.json).
+/mldsa.js
+/browsers/pages/src/mldsa.js
+/browsers/test-results/

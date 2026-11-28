@@ -1,4 +1,5 @@
 import { build, emptyDir } from "@deno/dnt";
+import { copySync, ensureDirSync } from "@std/fs";
 
 const denoPkg = JSON.parse(await Deno.readTextFile("./deno.json"));
 
@@ -10,6 +11,23 @@ const isScoped = pkgName.startsWith("@");
 
 // pre build steps
 await emptyDir(`../../npm/${dirName}`);
+await emptyDir(`../../npm/test/${dirName}/runtimes/cloudflare`);
+
+// Directories of the runtime tests which are installed or generated locally.
+// They are left as they are: the build neither removes nor copies them.
+const LOCAL_ONLY = new Set(["node_modules", ".wrangler", "test-results"]);
+
+function copyTestFiles(from: string, to: string): void {
+  ensureDirSync(to);
+  for (const entry of Deno.readDirSync(from)) {
+    if (LOCAL_ONLY.has(entry.name)) continue;
+    if (entry.isDirectory) {
+      copyTestFiles(`${from}/${entry.name}`, `${to}/${entry.name}`);
+    } else {
+      Deno.copyFileSync(`${from}/${entry.name}`, `${to}/${entry.name}`);
+    }
+  }
+}
 
 await build({
   entryPoints: ["./mod.ts"],
@@ -25,7 +43,9 @@ await build({
   shims: {
     deno: "dev",
   },
-  testPattern: "test/**/*.test.ts",
+  // Only the tests directly under test/: test/runtimes/ has the tests for
+  // the other runtimes, and may have node_modules installed for them.
+  testPattern: "test/*.test.ts",
   package: {
     name: pkgName,
     version: denoPkg.version,
@@ -73,6 +93,10 @@ await build({
 });
 
 // post build steps
+copyTestFiles(
+  "test/runtimes/cloudflare",
+  `../../npm/test/${dirName}/runtimes/cloudflare`,
+);
 Deno.copyFileSync("LICENSE", `../../npm/${dirName}/LICENSE`);
 Deno.copyFileSync("README.md", `../../npm/${dirName}/README.md`);
 
@@ -105,3 +129,11 @@ for (const dir of ["esm"]) {
     await Deno.remove(`${outDir}/${dir}/_dnt.test_shims.js`);
   } catch { /* ignore */ }
 }
+
+// The Cloudflare Workers test imports the package built above, rather than
+// one from the npm registry, so that it tests the current sources.
+copySync(
+  `${outDir}/esm`,
+  `../../npm/test/${dirName}/runtimes/cloudflare/src/mldsa`,
+  { overwrite: true },
+);

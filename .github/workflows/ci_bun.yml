@@ -49,3 +49,11 @@ jobs:
           nohup bun src/index.js &
           sleep 3
           deno test --import-map=../../../../../npm/import_map.json mlkem.spec.ts --allow-net --config=../../../../../deno.json
+      - name: Build test bundle for mldsa
+        run: deno task minify:webpqc-mldsa > packages/mldsa/test/runtimes/mldsa.js
+      - name: Run test for mldsa
+        working-directory: ./packages/mldsa/test/runtimes/bun
+        run: |
+          nohup bun src/index.js &
+          sleep 3
+          deno test --import-map=../../../../../npm/import_map.json mldsa.spec.ts --allow-net --config=../../../../../deno.json
