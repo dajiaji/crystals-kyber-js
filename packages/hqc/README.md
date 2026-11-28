@@ -2,6 +2,7 @@
 
 <div align="center">
 <a href="https://jsr.io/@webpqc/hqc"><img src="https://jsr.io/badges/@webpqc/hqc" alt="JSR"/></a>
+<a href="https://www.npmjs.com/package/@webpqc/hqc"><img src="https://img.shields.io/npm/v/@webpqc/hqc?color=%23EE3214" alt="NPM"/></a>
 <img src="https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_node.yml/badge.svg" alt="Node.js CI" />
 <img src="https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_deno.yml/badge.svg" alt="Deno CI" />
 </div>
@@ -41,6 +42,21 @@ An HQC (Hamming Quasi-Cyclic) implementation written in TypeScript.<br>
 > [!WARNING]
 > This package is at an early stage. The API may change, and the implementation
 > has not been audited.
+
+## Installation
+
+`@webpqc/hqc` is published on [JSR](https://jsr.io/@webpqc/hqc) and
+[npm](https://www.npmjs.com/package/@webpqc/hqc). It is an ESM-only package, and
+requires Node.js 20 or later.
+
+```sh
+# Node.js, Cloudflare Workers and Bun, using npm:
+npm install @webpqc/hqc
+# Node.js, Cloudflare Workers and Bun, using jsr:
+npx jsr add @webpqc/hqc
+# Deno:
+deno add jsr:@webpqc/hqc
+```
 
 ## Usage
 

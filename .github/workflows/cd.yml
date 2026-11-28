@@ -18,19 +18,23 @@ jobs:
         with:
           deno-version: 2.x
       - name: Run test
+        id: tests
         # This also generates the copies of packages/sha3, which are not
         # tracked by Git and are a part of the published package.
         run: deno task test
       # A version that already exists on JSR is skipped by `deno publish`.
-      # hqc is not published for now: it is under development.
       - name: Run deno publish for mlkem
         working-directory: ./packages/mlkem
         run: deno publish
       - name: Run deno publish for mldsa
-        # Runs even if the step above failed, so that a failure of one package
-        # does not stop the other.
-        if: ${{ !cancelled() }}
+        # Runs even if the publish step of another package failed, so that it
+        # does not stop this one, but never if the tests did not pass.
+        if: ${{ !cancelled() && steps.tests.outcome == 'success' }}
         working-directory: ./packages/mldsa
+        run: deno publish
+      - name: Run deno publish for hqc
+        if: ${{ !cancelled() && steps.tests.outcome == 'success' }}
+        working-directory: ./packages/hqc
         run: deno publish
 
   publish-to-npm:
@@ -105,6 +109,7 @@ jobs:
           stage_if_needed mlkem
           stage_if_needed webpqc-mlkem
           stage_if_needed webpqc-mldsa
+          stage_if_needed webpqc-hqc
           if [ ${#failed[@]} -gt 0 ]; then
             echo "::error::Failed to stage: ${failed[*]}"
             exit 1
