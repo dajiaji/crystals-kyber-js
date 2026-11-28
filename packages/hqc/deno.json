@@ -15,7 +15,7 @@
   },
   "tasks": {
     "sync:sha3": "deno run --allow-read --allow-write ../../scripts/sync_sha3.ts",
-    "test": "deno task sync:sha3 && deno test ./test --fail-fast --doc --coverage=coverage --parallel --allow-read",
+    "test": "deno task sync:sha3 && deno test ./test --ignore=test/runtimes/ --fail-fast --doc --coverage=coverage --parallel --allow-read",
     "cov": "deno coverage ./coverage --lcov --exclude='test'",
     "bench": "deno task sync:sha3 && deno bench",
     "dnt": "deno task dnt:webpqc-hqc",
