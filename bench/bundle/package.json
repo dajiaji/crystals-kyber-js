@@ -1,0 +1,24 @@
+{
+  "name": "webpqc-bench-bundle",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Bundle size benchmark: ML-KEM and ML-DSA applications",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "bench": "node --disable-warning=ExperimentalWarning src/main.ts --md results.md --json results.json",
+    "start": "node --disable-warning=ExperimentalWarning src/main.ts",
+    "typecheck": "tsc"
+  },
+  "devDependencies": {
+    "@noble/post-quantum": "0.7.1",
+    "@rollup/plugin-node-resolve": "16.0.3",
+    "@rollup/plugin-terser": "1.0.2",
+    "@types/node": "24.19.2",
+    "esbuild": "0.28.2",
+    "rollup": "4.67.5",
+    "typescript": "7.0.2"
+  }
+}
