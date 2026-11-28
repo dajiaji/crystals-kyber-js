@@ -21,10 +21,16 @@ jobs:
         # This also generates the copies of packages/sha3, which are not
         # tracked by Git and are a part of the published package.
         run: deno task test
-      - name: Run deno publish
-        # A version that already exists on JSR is skipped by `deno publish`.
-        # Only mlkem is published for now: mldsa and hqc are under development.
+      # A version that already exists on JSR is skipped by `deno publish`.
+      # hqc is not published for now: it is under development.
+      - name: Run deno publish for mlkem
         working-directory: ./packages/mlkem
+        run: deno publish
+      - name: Run deno publish for mldsa
+        # Runs even if the step above failed, so that a failure of one package
+        # does not stop the other.
+        if: ${{ !cancelled() }}
+        working-directory: ./packages/mldsa
         run: deno publish
 
   publish-to-npm:
@@ -98,6 +104,7 @@ jobs:
           stage_if_needed crystals-kyber-js
           stage_if_needed mlkem
           stage_if_needed webpqc-mlkem
+          stage_if_needed webpqc-mldsa
           if [ ${#failed[@]} -gt 0 ]; then
             echo "::error::Failed to stage: ${failed[*]}"
             exit 1

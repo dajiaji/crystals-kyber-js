@@ -2,6 +2,7 @@
 
 <div align="center">
 <a href="https://jsr.io/@webpqc/mldsa"><img src="https://jsr.io/badges/@webpqc/mldsa" alt="JSR"/></a>
+<a href="https://www.npmjs.com/package/@webpqc/mldsa"><img src="https://img.shields.io/npm/v/@webpqc/mldsa?color=%23EE3214" alt="NPM"/></a>
 <img src="https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_node.yml/badge.svg" alt="Node.js CI" />
 <img src="https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_deno.yml/badge.svg" alt="Deno CI" />
 </div>
@@ -35,6 +36,21 @@ An ML-DSA (NIST FIPS 204) implementation written in TypeScript.<br>
 > In the future, this package aims to use the native ML-DSA defined by
 > [Modern Algorithms in the Web Cryptography API](https://wicg.github.io/webcrypto-modern-algos/)
 > when available, and fall back to the TypeScript implementation otherwise.
+
+## Installation
+
+`@webpqc/mldsa` is published on [JSR](https://jsr.io/@webpqc/mldsa) and
+[npm](https://www.npmjs.com/package/@webpqc/mldsa). It is an ESM-only package,
+and requires Node.js 20 or later.
+
+```sh
+# Node.js, Cloudflare Workers and Bun, using npm:
+npm install @webpqc/mldsa
+# Node.js, Cloudflare Workers and Bun, using jsr:
+npx jsr add @webpqc/mldsa
+# Deno:
+deno add jsr:@webpqc/mldsa
+```
 
 ## Usage
 
