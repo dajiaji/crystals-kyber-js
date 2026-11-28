@@ -1,4 +1,4 @@
-<h1 align="center">mlkem / crystals-kyber-js</h1>
+<h1 align="center"> @webpqc/mlkem</h1>
 
 <div align="center">
 <a href="https://jsr.io/@webpqc/mlkem"><img src="https://jsr.io/badges/@webpqc/mlkem" alt="JSR"/></a>

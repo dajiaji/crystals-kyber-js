@@ -1,4 +1,4 @@
-<h1 align="center">mldsa</h1>
+<h1 align="center">@webpqc/mldsa</h1>
 
 <div align="center">
 <a href="https://jsr.io/@webpqc/mldsa"><img src="https://jsr.io/badges/@webpqc/mldsa" alt="JSR"/></a>
