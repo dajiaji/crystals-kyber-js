@@ -2,3 +2,5 @@
 /mldsa.js
 /browsers/pages/src/mldsa.js
 /browsers/test-results/
+# The package built by dnt, for the Cloudflare Workers test (see dnt.ts).
+/cloudflare/src/mldsa/

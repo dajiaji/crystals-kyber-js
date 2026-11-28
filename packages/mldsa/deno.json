@@ -13,7 +13,7 @@
     ]
   },
   "tasks": {
-    "test": "deno test ./test --fail-fast --doc --coverage=coverage --parallel --allow-read",
+    "test": "deno test ./test --ignore=test/runtimes/ --fail-fast --doc --coverage=coverage --parallel --allow-read",
     "cov": "deno coverage ./coverage --lcov --exclude='test'",
     "dnt": "deno task dnt:webpqc-mldsa",
     "dnt:webpqc-mldsa": "deno run -A dnt.ts @webpqc/mldsa"

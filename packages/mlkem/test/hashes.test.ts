@@ -332,3 +332,36 @@ describe("Keccak XOF continuation", () => {
     assertEquals(stepwise, contiguous);
   });
 });
+
+describe("Keccak zeroization", () => {
+  // deno-lint-ignore no-explicit-any
+  const internals = (v: unknown): any => v;
+  const isZero = (v: ArrayLike<number>) =>
+    Array.prototype.every.call(v, (x: number) => x === 0);
+  const msg = new TextEncoder().encode("hello world");
+
+  it("reset should clear the state and the scratch buffer", () => {
+    const h = new Keccak(136, 0x1f, 32, true);
+    h.updateUnsafe(msg).writeIntoUnsafe(new Uint8Array(32));
+    assertEquals(isZero(internals(h).state), false);
+    assertEquals(isZero(internals(h)._B), false);
+    h.reset();
+    assertEquals(isZero(internals(h).state), true);
+    assertEquals(isZero(internals(h)._B), true);
+  });
+
+  it("destroy should clear the state and the scratch buffer", () => {
+    const h = new Keccak(136, 0x1f, 32, true);
+    h.updateUnsafe(msg).writeIntoUnsafe(new Uint8Array(32));
+    h.destroy();
+    assertEquals(isZero(internals(h).state), true);
+    assertEquals(isZero(internals(h)._B), true);
+  });
+
+  it("digest should clear the state and the scratch buffer", () => {
+    const h = sha3_256.create();
+    h.update(msg).digest();
+    assertEquals(isZero(internals(h).state), true);
+    assertEquals(isZero(internals(h)._B), true);
+  });
+});
