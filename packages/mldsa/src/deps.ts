@@ -1,1 +1,1 @@
-export { Keccak } from "./sha3/sha3.ts";
+export { KeccakCore as Keccak } from "./sha3/keccak.ts";

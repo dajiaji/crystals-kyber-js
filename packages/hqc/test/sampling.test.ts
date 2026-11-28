@@ -1,7 +1,7 @@
 import { assertEquals } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 
-import { shake256 } from "../src/deps.ts";
+import { shake256 } from "../src/sha3/sha3.ts";
 import { reduce24 } from "../src/utils.ts";
 import { HQC_PARAMS } from "./params.ts";
 

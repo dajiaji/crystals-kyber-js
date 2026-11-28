@@ -9,13 +9,16 @@
       "coverage/",
       "test/",
       "tsconfig.json",
-      "CHANGES.md"
+      "CHANGES.md",
+      "!src/sha3/"
     ]
   },
   "tasks": {
-    "test": "deno test ./test --fail-fast --doc --coverage=coverage --parallel --allow-read",
+    "sync:sha3": "deno run --allow-read --allow-write ../../scripts/sync_sha3.ts",
+    "test": "deno task sync:sha3 && deno test ./test --fail-fast --doc --coverage=coverage --parallel --allow-read",
     "cov": "deno coverage ./coverage --lcov --exclude='test'",
+    "bench": "deno task sync:sha3 && deno bench",
     "dnt": "deno task dnt:webpqc-hqc",
-    "dnt:webpqc-hqc": "deno run -A dnt.ts @webpqc/hqc"
+    "dnt:webpqc-hqc": "deno task sync:sha3 && deno run -A dnt.ts @webpqc/hqc"
   }
 }

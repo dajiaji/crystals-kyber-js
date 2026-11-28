@@ -13,8 +13,9 @@ import { createHash } from "node:crypto";
 import { Keccak } from "../src/deps.ts";
 import {
   // sha3_224,
-  sha3_256,
   // sha3_384,
+  Keccak as KeccakHash,
+  sha3_256,
   sha3_512,
   shake128,
   shake256,
@@ -340,18 +341,22 @@ describe("Keccak zeroization", () => {
     Array.prototype.every.call(v, (x: number) => x === 0);
   const msg = new TextEncoder().encode("hello world");
 
-  it("reset should clear the state and the scratch buffer", () => {
-    const h = new Keccak(136, 0x1f, 32, true);
-    h.updateUnsafe(msg).writeIntoUnsafe(new Uint8Array(32));
-    assertEquals(isZero(internals(h).state), false);
-    assertEquals(isZero(internals(h)._B), false);
-    h.reset();
-    assertEquals(isZero(internals(h).state), true);
-    assertEquals(isZero(internals(h)._B), true);
-  });
+  // the minimal sponge, and the hash interface on it
+  for (const Class of [Keccak, KeccakHash]) {
+    it(`${Class.name}.reset should clear the state and the scratch buffer`, () => {
+      const h = new Class(136, 0x1f, 32, true);
+      h.updateUnsafe(msg).writeIntoUnsafe(new Uint8Array(32));
+      assertEquals(isZero(internals(h).state), false);
+      assertEquals(isZero(internals(h)._B), false);
+      h.reset();
+      assertEquals(isZero(internals(h).state), true);
+      assertEquals(isZero(internals(h)._B), true);
+    });
+  }
 
   it("destroy should clear the state and the scratch buffer", () => {
-    const h = new Keccak(136, 0x1f, 32, true);
+    // destroy() is of the hash interface, not of the minimal sponge
+    const h = new KeccakHash(136, 0x1f, 32, true);
     h.updateUnsafe(msg).writeIntoUnsafe(new Uint8Array(32));
     h.destroy();
     assertEquals(isZero(internals(h).state), true);

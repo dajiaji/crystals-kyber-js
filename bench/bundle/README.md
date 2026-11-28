@@ -18,7 +18,7 @@ are verified against each other: the report has `-` for the other side.
 
 ## Usage
 
-Requires Node.js >= 24 and npm. The sources are TypeScript, which Node.js runs
+Requires Node.js >= 24, npm and Deno. The sources are TypeScript, which Node.js runs
 directly.
 
 ```sh
@@ -26,6 +26,11 @@ cd bench/bundle
 npm ci
 npm run bench
 ```
+
+Each run first updates the copies of [packages/sha3](../../packages/sha3/) in
+the packages, which Git does not track, with Deno (`scripts/sync_sha3.ts`), so
+that the bundles are built from the current working tree. Deno therefore has to
+be installed as well.
 
 Results are written to `results.md` and `results.json`, which are ignored by
 Git.

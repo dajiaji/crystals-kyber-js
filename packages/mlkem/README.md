@@ -37,7 +37,8 @@ but includes the following improvements:
 - ✅ Constant-time validation for ciphertext.
 - ✅ Better performance: The fastest pure TypeScript/JavaScript ML-KEM
   implementation available — approximately 5x faster than the original
-  implementation. Run `deno bench` to see the benchmark results.
+  implementation. Run `deno task bench` in [packages/mlkem](./) to see the
+  benchmark results.
 - ✅ No dependencies on other libraries.
 - ✅ Tree-shaking friendly.
 - ✅ Fix [KyberSlash](https://kyberslash.cr.yp.to/index.html) vulnerability.
