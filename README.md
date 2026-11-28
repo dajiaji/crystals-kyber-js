@@ -1,4 +1,4 @@
-<h1 align="center">WebPQC</h1>
+<h1 align="center">webpqc</h1>
 
 <div align="center">
 Post-quantum cryptography implementations written in TypeScript for various JavaScript runtimes.
