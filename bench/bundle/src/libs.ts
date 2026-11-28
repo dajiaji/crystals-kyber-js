@@ -6,8 +6,8 @@
  * as an async function named after the role:
  *
  * - keygen: derive a key pair from a seed
- * - encap:  encapsulate to a public key          (ML-KEM)
- * - decap:  decapsulate with a private key       (ML-KEM)
+ * - encap:  encapsulate to a public key          (ML-KEM, HQC)
+ * - decap:  decapsulate with a private key       (ML-KEM, HQC)
  * - sign:   sign a message with a private key    (ML-DSA)
  * - verify: verify a signature with a public key (ML-DSA)
  */
@@ -22,6 +22,8 @@ export type LibId = "@webpqc" | "@noble/post-quantum";
 
 export interface Lib {
   readonly id: LibId;
+  /** Whether the library implements the algorithm of the suite. */
+  supports(suite: Suite): boolean;
   /** Generates the ESM source of the application entry point. */
   entry(suite: Suite, role: Role): string;
   /** Packages the application depends on for the suite. */
@@ -30,6 +32,7 @@ export interface Lib {
 
 const webpqc: Lib = {
   id: "@webpqc",
+  supports: () => true,
   packages: (suite) => [suite.webpqc("keygen")[0]],
   entry(suite, role) {
     const [pkg, create] = suite.webpqc(role);
@@ -65,9 +68,13 @@ ${body[role]}
 
 const noble: Lib = {
   id: "@noble/post-quantum",
+  supports: (suite) => suite.noble !== undefined,
   // The dependencies (@noble/hashes, @noble/curves) come along with it.
   packages: () => ["@noble/post-quantum"],
   entry(suite, role) {
+    if (suite.noble === undefined) {
+      throw new Error(`${suite.id}: not implemented by @noble/post-quantum`);
+    }
     const [pkg, alg] = suite.noble;
     // Async, as the applications of the other side are.
     const body: Record<Role, string> = {
@@ -96,3 +103,8 @@ ${body[role]}
 };
 
 export const LIBS: readonly Lib[] = [webpqc, noble];
+
+/** The libraries which implement the algorithm of the suite. */
+export function libsOf(suite: Suite): readonly Lib[] {
+  return LIBS.filter((lib) => lib.supports(suite));
+}

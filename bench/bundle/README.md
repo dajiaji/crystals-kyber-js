@@ -1,15 +1,20 @@
 # Bundle size benchmark
 
 Measures minified, gzip (level 9), and brotli (quality 11) bundle sizes for
-ML-KEM and ML-DSA applications, each of which does one operation with one
-parameter set. `@webpqc/mlkem` and `@webpqc/mldsa` are bundled from the current
-repository sources, and `@noble/post-quantum` is measured the same way for
-comparison.
+ML-KEM, ML-DSA and HQC applications, each of which does one operation with one
+parameter set. `@webpqc/mlkem`, `@webpqc/mldsa` and `@webpqc/hqc` are bundled
+from the current repository sources, and `@noble/post-quantum` is measured the
+same way for comparison, for the algorithms which it implements.
 
 Generated bundles are verified by running them against each other: all key
 generation bundles must derive the same key pair from a seed, and every encap
 (sign) bundle must interoperate with every decap (verify) bundle, across the
 libraries.
+
+`@noble/post-quantum` does not implement HQC, and no other JavaScript library
+implements the version of it which `@webpqc/hqc` does (HQC specifications v5.1).
+The HQC suites are therefore measured for `@webpqc/hqc` only, and their bundles
+are verified against each other: the report has `-` for the other side.
 
 ## Usage
 
@@ -30,6 +35,7 @@ To select suites or a bundler, or inspect module sizes:
 ```sh
 npm start -- --filter mldsa --bundler rollup
 npm start -- --filter mlkem768 --bundler esbuild --analyze
+npm start -- --filter hqc
 ```
 
 Each run writes its bundles to a directory of its own, `dist/run-*`, and removes
@@ -72,6 +78,9 @@ Each suite is measured for the roles of its kind. Definitions are in
 | `mldsa44`   | ML-DSA-44   | `@webpqc/mldsa`   | `keygen` / `sign` / `verify` |
 | `mldsa65`   | ML-DSA-65   | `@webpqc/mldsa`   | `keygen` / `sign` / `verify` |
 | `mldsa87`   | ML-DSA-87   | `@webpqc/mldsa`   | `keygen` / `sign` / `verify` |
+| `hqc1`      | HQC-1       | `@webpqc/hqc`     | `keygen` / `encap` / `decap` |
+| `hqc3`      | HQC-3       | `@webpqc/hqc`     | `keygen` / `encap` / `decap` |
+| `hqc5`      | HQC-5       | `@webpqc/hqc`     | `keygen` / `encap` / `decap` |
 
 - **keygen**: derives a key pair from a seed.
 - **encap** / **decap**: encapsulates to a public key, and decapsulates with a
@@ -88,6 +97,7 @@ parameter set (e.g. `ml_kem768`).
 | `@webpqc/mlkem` | `keygen` / `encap` / `decap` | `createMlKem768()`        |
 | `@webpqc/mldsa` | `keygen` / `sign`            | `createMlDsa65Signer()`   |
 | `@webpqc/mldsa` | `verify`                     | `createMlDsa65Verifier()` |
+| `@webpqc/hqc`   | `keygen` / `encap` / `decap` | `createHqc3()`            |
 
 `@webpqc/mldsa` separates the verifier from the signer, so that an application
 which only verifies signatures does not bundle the code for key generation and

@@ -1,12 +1,13 @@
 /**
- * Bundle size benchmark for `@webpqc/mlkem` and `@webpqc/mldsa`.
+ * Bundle size benchmark for `@webpqc/mlkem`, `@webpqc/mldsa` and
+ * `@webpqc/hqc`.
  *
  * For each parameter set, bundles a minimal "typical" application per
  * operation (key generation, encap / decap, sign / verify) with real-world
  * bundlers (esbuild, rollup + terser) and reports the minified / gzip /
  * brotli sizes. `@noble/post-quantum` is measured the same way for
- * comparison. `sideEffects: false` is honored for every package on both
- * sides.
+ * comparison, for the algorithms which it implements. `sideEffects: false` is
+ * honored for every package on both sides.
  */
 
 import { execFileSync } from "node:child_process";
@@ -16,12 +17,12 @@ import { parseArgs } from "node:util";
 
 import { BUNDLERS } from "./bundlers/index.ts";
 import type { BundlerId } from "./bundlers/index.ts";
-import { LIBS, ROLES } from "./libs.ts";
-import type { LibId, Role } from "./libs.ts";
+import { libsOf, ROLES } from "./libs.ts";
+import type { Role } from "./libs.ts";
 import { measure } from "./measure.ts";
 import { DIST, REPO_ROOT, TOOL_ROOT } from "./paths.ts";
 import { printModules, printTable, toMarkdown } from "./report.ts";
-import type { LibResult, Meta, Result } from "./report.ts";
+import type { ByLib, LibResult, Meta, Result } from "./report.ts";
 import { SUITES } from "./suites.ts";
 import { verify } from "./verify.ts";
 import type { BundleFiles } from "./verify.ts";
@@ -107,20 +108,22 @@ async function main(): Promise<void> {
   try {
     for (const suite of suites) {
       const roles: readonly Role[] = ROLES[suite.kind];
+      const libs = libsOf(suite);
       const packages = Object.fromEntries(
-        LIBS.map((lib) => [lib.id, lib.packages(suite)]),
-      ) as Record<LibId, string[]>;
+        libs.map((lib) => [lib.id, lib.packages(suite)]),
+      ) as ByLib<string[]>;
       const byRole = Object.fromEntries(
         roles.map((role) => [role, {}]),
       ) as Record<Role, Result["sizes"]>;
 
       for (const bundler of bundlers) {
-        const files = {} as BundleFiles;
+        const files: BundleFiles = {};
         for (const role of roles) {
-          byRole[role][bundler.id] = {} as Record<LibId, LibResult>;
+          byRole[role][bundler.id] = {} as ByLib<LibResult>;
         }
-        for (const lib of LIBS) {
-          files[lib.id] = {};
+        for (const lib of libs) {
+          const libFiles: Partial<Record<Role, string>> = {};
+          files[lib.id] = libFiles;
           for (const role of roles) {
             const { code, modules } = await bundler.bundle(
               lib.entry(suite, role),
@@ -132,7 +135,7 @@ async function main(): Promise<void> {
             );
             await mkdir(join(outDir, bundler.id), { recursive: true });
             await writeFile(file, code);
-            files[lib.id][role] = file;
+            libFiles[role] = file;
             byRole[role][bundler.id]![lib.id] = { ...measure(code), modules };
             if (opts.analyze && modules !== undefined) {
               printModules(
