@@ -12,13 +12,11 @@
  * - verify: verify a signature with a public key (ML-DSA)
  */
 
-import type { Kind, Suite } from "./suites.ts";
+import { ROLES } from "./suites.ts";
+import type { Role, Suite } from "./suites.ts";
 
-export const ROLES = {
-  kem: ["keygen", "encap", "decap"],
-  dsa: ["keygen", "sign", "verify"],
-} as const satisfies Record<Kind, readonly string[]>;
-export type Role = (typeof ROLES)[Kind][number];
+export { ROLES };
+export type { Role };
 
 export type LibId = "@webpqc" | "@noble/post-quantum";
 
@@ -32,9 +30,9 @@ export interface Lib {
 
 const webpqc: Lib = {
   id: "@webpqc",
-  packages: (suite) => [suite.webpqc[0]],
+  packages: (suite) => [suite.webpqc("keygen")[0]],
   entry(suite, role) {
-    const [pkg, create] = suite.webpqc;
+    const [pkg, create] = suite.webpqc(role);
     const body: Record<Role, string> = {
       keygen: `export async function keygen(seed) {
   const ctx = await ${create}();
