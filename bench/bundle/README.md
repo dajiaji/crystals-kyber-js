@@ -79,9 +79,19 @@ Each suite is measured for the roles of its kind. Definitions are in
 - **sign** / **verify**: signs a message with a private key, and verifies the
   signature with a public key.
 
-The `@webpqc` applications create an instance with the factory function of the
-parameter set (e.g. `createMlKem768()`), and the `@noble/post-quantum` ones
-import the object of the parameter set (e.g. `ml_kem768`).
+The `@webpqc` applications create an instance with a factory function of the
+parameter set, and the `@noble/post-quantum` ones import the object of the
+parameter set (e.g. `ml_kem768`).
+
+| Package         | Role                         | Factory function (e.g.)   |
+| --------------- | ---------------------------- | ------------------------- |
+| `@webpqc/mlkem` | `keygen` / `encap` / `decap` | `createMlKem768()`        |
+| `@webpqc/mldsa` | `keygen` / `sign`            | `createMlDsa65Signer()`   |
+| `@webpqc/mldsa` | `verify`                     | `createMlDsa65Verifier()` |
+
+`@webpqc/mldsa` separates the verifier from the signer, so that an application
+which only verifies signatures does not bundle the code for key generation and
+signing.
 
 ## Bundlers
 

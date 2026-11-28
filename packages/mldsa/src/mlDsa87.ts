@@ -1,117 +1,60 @@
-import { Q } from "./consts.ts";
-import { MlDsaError } from "./errors.ts";
 import type {
-  MlDsaInterface,
-  MlDsaSignOptions,
-  MlDsaVerifyOptions,
+  MlDsaSignerInterface,
+  MlDsaVerifierInterface,
 } from "./interfaces.ts";
-import { MlDsaBase } from "./mlDsaBase.ts";
+import { MlDsaSigner } from "./mlDsaSigner.ts";
+import { MlDsaVerifier } from "./mlDsaVerifier.ts";
+import { ML_DSA_87 } from "./params.ts";
 
 /**
- * Synchronous implementation of ML-DSA-87 (NIST security category 5).
+ * Creates a pre-initialized ML-DSA-87 (NIST security category 5) signer
+ * with synchronous key generation and signing.
  *
  * The public key, the private key and the signature are 2592, 4896 and
  * 4627 octets in length respectively.
  *
- * Use {@link createMlDsa87} to create an initialized instance.
+ * @returns A promise that resolves to an {@link MlDsaSignerInterface} instance.
  *
  * @example
  *
  * ```ts
- * import { createMlDsa87 } from "@webpqc/mldsa";
+ * import { createMlDsa87Signer, createMlDsa87Verifier } from "@webpqc/mldsa";
  *
- * const signer = await createMlDsa87();
- * const [pk, sk] = signer.generateKeyPair();
+ * const signer = await createMlDsa87Signer();
+ * const [pk, sk] = signer.generateKeyPair();                 // sync
  *
  * const msg = new TextEncoder().encode("hello world");
- * const sig = signer.sign(sk, msg);
+ * const sig = signer.sign(sk, msg);                          // sync
  *
- * const verifier = await createMlDsa87();
- * const ok = verifier.verify(pk, sig, msg);
+ * const verifier = await createMlDsa87Verifier();
+ * const ok = verifier.verify(pk, sig, msg);                  // sync
  * // ok === true
  * ```
  */
-export class MlDsa87Impl extends MlDsaBase implements MlDsaInterface {
-  override _k = 8;
-  override _l = 7;
-  override _eta = 2;
-  override _tau = 60;
-  override _gamma1Bits = 19;
-  override _gamma2 = (Q - 1) / 32;
-  override _omega = 75;
-  override _cTildeSize = 64;
-
-  constructor() {
-    super();
-    this._init();
-  }
-
-  /** Generates a keypair [publicKey, privateKey]. */
-  generateKeyPair(): [Uint8Array, Uint8Array] {
-    try {
-      return this._generateKeyPairCore();
-    } catch (e: unknown) {
-      throw new MlDsaError(e);
-    }
-  }
-
-  /** Derives a keypair [publicKey, privateKey] deterministically from a 32-octet seed. */
-  deriveKeyPair(seed: Uint8Array): [Uint8Array, Uint8Array] {
-    try {
-      return this._deriveKeyPairCore(seed);
-    } catch (e: unknown) {
-      throw new MlDsaError(e);
-    }
-  }
-
-  /** Signs a message: returns signature. */
-  sign(sk: Uint8Array, msg: Uint8Array, opts?: MlDsaSignOptions): Uint8Array {
-    try {
-      return this._signCore(sk, msg, opts);
-    } catch (e: unknown) {
-      throw new MlDsaError(e);
-    }
-  }
-
-  /** Verifies a signature: returns true if the signature is valid. */
-  verify(
-    pk: Uint8Array,
-    sig: Uint8Array,
-    msg: Uint8Array,
-    opts?: MlDsaVerifyOptions,
-  ): boolean {
-    try {
-      return this._verifyCore(pk, sig, msg, opts);
-    } catch (e: unknown) {
-      throw new MlDsaError(e);
-    }
-  }
-
-  /** @internal */
-  static async _create(): Promise<MlDsa87Impl> {
-    const impl = new MlDsa87Impl();
-    await impl._setup();
-    return impl;
-  }
+export function createMlDsa87Signer(): Promise<MlDsaSignerInterface> {
+  return MlDsaSigner._create(ML_DSA_87);
 }
 
 /**
- * Creates a pre-initialized ML-DSA-87 instance with synchronous operations.
+ * Creates a pre-initialized ML-DSA-87 (NIST security category 5) verifier
+ * with synchronous verification.
  *
- * @returns A promise that resolves to an {@link MlDsaInterface} instance.
+ * An application which uses only this does not bundle the code for key
+ * generation and signing.
+ *
+ * @returns A promise that resolves to an {@link MlDsaVerifierInterface} instance.
  *
  * @example
  *
  * ```ts
- * import { createMlDsa87 } from "@webpqc/mldsa";
+ * import { createMlDsa87Verifier } from "@webpqc/mldsa";
  *
- * const ctx = await createMlDsa87();
- * const [pk, sk] = ctx.generateKeyPair();                    // sync
- * const msg = new TextEncoder().encode("hello world");
- * const sig = ctx.sign(sk, msg);                             // sync
- * const ok = ctx.verify(pk, sig, msg);                       // sync
+ * async function verify(pk: Uint8Array, sig: Uint8Array, msg: Uint8Array) {
+ *   const verifier = await createMlDsa87Verifier();
+ *   return verifier.verify(pk, sig, msg);                    // sync
+ * }
  * ```
  */
-export function createMlDsa87(): Promise<MlDsaInterface> {
-  return MlDsa87Impl._create();
+export function createMlDsa87Verifier(): Promise<MlDsaVerifierInterface> {
+  return MlDsaVerifier._create(ML_DSA_87);
 }

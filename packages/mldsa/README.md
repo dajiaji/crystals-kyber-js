@@ -17,7 +17,9 @@ An ML-DSA (NIST FIPS 204) implementation written in TypeScript.<br>
 - ✅ Hedged and deterministic signing, with a context string.
 - ✅ Deterministic key generation support.
 - ✅ No dependencies on other libraries.
-- ✅ Tree-shaking friendly.
+- ✅ Tree-shaking friendly: the verifier is separated from the signer, so an
+  application which only verifies signatures does not bundle the code for key
+  generation and signing.
 - ✅ The same API style as [`@webpqc/mlkem`](../mlkem/).
 - ✅ Passed all the tests for the pure ML-DSA published by:
   - [usnistgov/ACVP-Server](https://github.com/usnistgov/ACVP-Server/tree/master/gen-val/json-files)
@@ -37,13 +39,13 @@ An ML-DSA (NIST FIPS 204) implementation written in TypeScript.<br>
 ## Usage
 
 ```ts
-import { createMlDsa65 } from "@webpqc/mldsa";
+import { createMlDsa65Signer, createMlDsa65Verifier } from "@webpqc/mldsa";
 
-// Create a pre-initialized instance.
-// createMlDsa44 and createMlDsa87 are also available.
-const signer = await createMlDsa65();
+// Create a pre-initialized signer, which generates keys and signs.
+// createMlDsa44Signer and createMlDsa87Signer are also available.
+const signer = await createMlDsa65Signer();
 
-// A signer generates a key pair.
+// The signer generates a key pair.
 const [pk, sk] = signer.generateKeyPair();
 //// Deterministic key generation is also supported
 // const seed = new Uint8Array(32);
@@ -54,8 +56,11 @@ const [pk, sk] = signer.generateKeyPair();
 const msg = new TextEncoder().encode("hello world");
 const sig = signer.sign(sk, msg);
 
-// A verifier verifies the signature with pk.
-const verifier = await createMlDsa65();
+// Create a pre-initialized verifier, which only verifies.
+// createMlDsa44Verifier and createMlDsa87Verifier are also available.
+const verifier = await createMlDsa65Verifier();
+
+// The verifier verifies the signature with pk.
 const ok = verifier.verify(pk, sig, msg);
 // ok === true
 ```
@@ -66,15 +71,16 @@ A signature can be bound to a context string of at most 255 octets. The verifier
 has to pass the same one.
 
 ```ts
-import { createMlDsa65 } from "@webpqc/mldsa";
+import { createMlDsa65Signer, createMlDsa65Verifier } from "@webpqc/mldsa";
 
-const ctx = await createMlDsa65();
-const [pk, sk] = ctx.generateKeyPair();
+const signer = await createMlDsa65Signer();
+const verifier = await createMlDsa65Verifier();
+const [pk, sk] = signer.generateKeyPair();
 const msg = new TextEncoder().encode("hello world");
 const context = new TextEncoder().encode("my protocol v1");
 
-const sig = ctx.sign(sk, msg, { context });
-const ok = ctx.verify(pk, sig, msg, { context });
+const sig = signer.sign(sk, msg, { context });
+const ok = verifier.verify(pk, sig, msg, { context });
 // ok === true
 ```
 
@@ -85,26 +91,32 @@ FIPS 204 recommends. Passing a 32-octet `seed` (`rnd` in FIPS 204) makes it
 reproducible, and 32 zero octets give the deterministic variant of FIPS 204.
 
 ```ts
-import { createMlDsa65 } from "@webpqc/mldsa";
+import { createMlDsa65Signer } from "@webpqc/mldsa";
 
-const ctx = await createMlDsa65();
-const [_pk, sk] = ctx.generateKeyPair();
+const signer = await createMlDsa65Signer();
+const [_pk, sk] = signer.generateKeyPair();
 const msg = new TextEncoder().encode("hello world");
 
-const sig = ctx.sign(sk, msg, { seed: new Uint8Array(32) });
+const sig = signer.sign(sk, msg, { seed: new Uint8Array(32) });
 ```
 
 ## API
 
-`createMlDsa44()`, `createMlDsa65()` and `createMlDsa87()` return a promise of
-an `MlDsaInterface`, whose operations are synchronous:
+The factory functions return a promise of an instance whose operations are
+synchronous. There are two kinds of them for each parameter set, so that a
+bundler includes only the code of the role which an application uses:
 
-| Method                        | Description                                                        |
-| ----------------------------- | ------------------------------------------------------------------ |
-| `generateKeyPair()`           | Generates a key pair `[publicKey, privateKey]`.                    |
-| `deriveKeyPair(seed)`         | Derives a key pair `[publicKey, privateKey]` from a 32-octet seed. |
-| `sign(sk, msg, opts?)`        | Signs a message and returns the signature.                         |
-| `verify(pk, sig, msg, opts?)` | Verifies a signature and returns `true` if it is valid.            |
+| Factory function                                                                  | Returns                  |
+| --------------------------------------------------------------------------------- | ------------------------ |
+| `createMlDsa44Signer()` / `createMlDsa65Signer()` / `createMlDsa87Signer()`       | `MlDsaSignerInterface`   |
+| `createMlDsa44Verifier()` / `createMlDsa65Verifier()` / `createMlDsa87Verifier()` | `MlDsaVerifierInterface` |
+
+| Interface                | Method                        | Description                                                        |
+| ------------------------ | ----------------------------- | ------------------------------------------------------------------ |
+| `MlDsaSignerInterface`   | `generateKeyPair()`           | Generates a key pair `[publicKey, privateKey]`.                    |
+| `MlDsaSignerInterface`   | `deriveKeyPair(seed)`         | Derives a key pair `[publicKey, privateKey]` from a 32-octet seed. |
+| `MlDsaSignerInterface`   | `sign(sk, msg, opts?)`        | Signs a message and returns the signature.                         |
+| `MlDsaVerifierInterface` | `verify(pk, sig, msg, opts?)` | Verifies a signature and returns `true` if it is valid.            |
 
 The private key is in the expanded form of FIPS 204 (`skEncode`).
 
@@ -119,6 +131,8 @@ longer than 255 octets, or a seed of an incorrect length.
 | ML-DSA-44     | 1312       | 2560        | 2420      |
 | ML-DSA-65     | 1952       | 4032        | 3309      |
 | ML-DSA-87     | 2592       | 4896        | 4627      |
+
+See [bench/bundle](../../bench/bundle/) for the bundle sizes of each role.
 
 ## Limitations
 

@@ -4,17 +4,49 @@ import * as vm from "node:vm";
 
 import { Keccak } from "../src/deps.ts";
 import {
-  createMlDsa44,
-  createMlDsa65,
-  createMlDsa87,
+  createMlDsa44Signer,
+  createMlDsa44Verifier,
+  createMlDsa65Signer,
+  createMlDsa65Verifier,
+  createMlDsa87Signer,
+  createMlDsa87Verifier,
   MlDsaError,
 } from "../mod.ts";
+import { createPair, createTestableMlDsa } from "./utils.ts";
 
 const PARAMS = [
-  { name: "MlDsa44", create: createMlDsa44, pk: 1312, sk: 2560, sig: 2420 },
-  { name: "MlDsa65", create: createMlDsa65, pk: 1952, sk: 4032, sig: 3309 },
-  { name: "MlDsa87", create: createMlDsa87, pk: 2592, sk: 4896, sig: 4627 },
-];
+  {
+    name: "MlDsa44",
+    createSigner: createMlDsa44Signer,
+    createVerifier: createMlDsa44Verifier,
+    pk: 1312,
+    sk: 2560,
+    sig: 2420,
+  },
+  {
+    name: "MlDsa65",
+    createSigner: createMlDsa65Signer,
+    createVerifier: createMlDsa65Verifier,
+    pk: 1952,
+    sk: 4032,
+    sig: 3309,
+  },
+  {
+    name: "MlDsa87",
+    createSigner: createMlDsa87Signer,
+    createVerifier: createMlDsa87Verifier,
+    pk: 2592,
+    sk: 4896,
+    sig: 4627,
+  },
+].map((p) => ({
+  ...p,
+  // a signer and a verifier as one object
+  create: () => createPair(p.createSigner, p.createVerifier),
+}));
+
+const createMlDsa44 = PARAMS[0].create;
+const createMlDsa65 = PARAMS[1].create;
 
 const msg = new TextEncoder().encode("hello world");
 
@@ -22,7 +54,7 @@ PARAMS.forEach((p) =>
   describe(p.name, () => {
     describe("A sample code in README.", () => {
       it("should work normally", async () => {
-        const signer = await p.create();
+        const signer = await p.createSigner();
         const [pk, sk] = signer.generateKeyPair();
         assertEquals(pk.length, p.pk);
         assertEquals(sk.length, p.sk);
@@ -30,7 +62,7 @@ PARAMS.forEach((p) =>
         const sig = signer.sign(sk, msg);
         assertEquals(sig.length, p.sig);
 
-        const verifier = await p.create();
+        const verifier = await p.createVerifier();
         assertEquals(verifier.verify(pk, sig, msg), true);
       });
 
@@ -247,6 +279,23 @@ describe("interoperability between parameter sets", () => {
   });
 });
 
+describe("separation of the signer and the verifier", () => {
+  PARAMS.forEach((p) =>
+    it(`${p.name} should expose only the operations of each role`, async () => {
+      const signer = await p.createSigner();
+      const verifier = await p.createVerifier();
+      assertEquals(typeof signer.generateKeyPair, "function");
+      assertEquals(typeof signer.deriveKeyPair, "function");
+      assertEquals(typeof signer.sign, "function");
+      assertEquals("verify" in signer, false);
+      assertEquals(typeof verifier.verify, "function");
+      for (const name of ["generateKeyPair", "deriveKeyPair", "sign"]) {
+        assertEquals(name in verifier, false, name);
+      }
+    })
+  );
+});
+
 // deno-lint-ignore no-explicit-any
 const asAny = (v: unknown): any => v;
 
@@ -420,14 +469,16 @@ describe("zeroization of the hash states", () => {
     assertEquals(isZero(internals(h)._B), true);
   });
 
-  function assertHashesCleared(ctx: unknown) {
-    for (const name of ["_shake128", "_shake256"]) {
-      const h = internals(ctx)[name];
-      assertEquals(isZero(h.state), true, `${name}.state`);
-      assertEquals(isZero(h._B), true, `${name}._B`);
+  function assertHashesCleared(pair: { signer: unknown; verifier: unknown }) {
+    for (const ctx of [pair.signer, pair.verifier]) {
+      for (const name of ["_shake128", "_shake256"]) {
+        const h = internals(ctx)[name];
+        assertEquals(isZero(h.state), true, `${name}.state`);
+        assertEquals(isZero(h._B), true, `${name}._B`);
+      }
+      assertEquals(isZero(internals(ctx)._block128), true);
+      assertEquals(isZero(internals(ctx)._block256), true);
     }
-    assertEquals(isZero(internals(ctx)._block128), true);
-    assertEquals(isZero(internals(ctx)._block256), true);
   }
 
   PARAMS.forEach((p) =>
@@ -460,4 +511,24 @@ describe("zeroization of the hash states", () => {
       assertHashesCleared(ctx);
     })
   );
+
+  it("should leave nothing behind after the internal interfaces", async () => {
+    const ctx = await createTestableMlDsa("ML-DSA-44");
+    const [pk, sk] = ctx.generateKeyPair();
+    const mPrime = new Uint8Array(40).fill(0x5a);
+    const rnd = new Uint8Array(32);
+    const mu = new Uint8Array(64).fill(0xa5);
+
+    const sig = ctx.signInternal(sk, mPrime, rnd);
+    assertHashesCleared(ctx);
+    assertEquals(ctx.verifyInternal(pk, sig, mPrime), true);
+    assertHashesCleared(ctx);
+
+    const sig2 = ctx.signMu(sk, mu, rnd);
+    assertHashesCleared(ctx);
+    assertEquals(ctx.verifyMu(pk, sig2, mu), true);
+    assertHashesCleared(ctx);
+    assertEquals(ctx.verifyMu(pk, sig, mu), false);
+    assertHashesCleared(ctx);
+  });
 });
