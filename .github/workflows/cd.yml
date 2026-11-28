@@ -21,6 +21,8 @@ jobs:
         run: deno task test
       - name: Run deno publish
         # A version that already exists on JSR is skipped by `deno publish`.
+        # Only mlkem is published for now: mldsa is under development.
+        working-directory: ./packages/mlkem
         run: deno publish
 
   publish-to-npm:

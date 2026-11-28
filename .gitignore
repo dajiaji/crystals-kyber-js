@@ -133,4 +133,5 @@ dist
 npm/crystals-kyber-js
 npm/mlkem
 npm/webpqc-mlkem
+npm/webpqc-mldsa
 npm/test
