@@ -2,7 +2,19 @@
   <img src="./assets/webpqc-logo.png" alt="webpqc logo" width="200" />
 </p>
 
-<h3 align="center">webpqc - PQC implementations written in TypeScript for various JS runtimes</h3>
+<h1 align="center">webpqc</h1>
+
+<div align="center">
+<img src="https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_browsers.yml/badge.svg" alt="Browser CI" />
+<img src="https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_node.yml/badge.svg" alt="Node.js CI" />
+<img src="https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_deno.yml/badge.svg" alt="Deno CI" />
+<img src="https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_cloudflare.yml/badge.svg" alt="Cloudflare Workers CI" />
+<img src="https://github.com/dajiaji/crystals-kyber-js/actions/workflows/ci_bun.yml/badge.svg" alt="bun CI" />
+</div>
+
+<div align="center">
+Post-Quantum Cryptography implementations written in TypeScript for various JavaScript runtimes.<br>
+</div>
 <p></p>
 
 This repository is a monorepo that has the following packages:
