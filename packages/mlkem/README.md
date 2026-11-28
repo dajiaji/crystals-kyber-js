@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/dajiaji/crystals-kyber-js/main/assets/webpqc-logo.png" alt="webpqc logo" width="200" />
+</p>
+
 <h1 align="center"> @webpqc/mlkem</h1>
 
 <div align="center">

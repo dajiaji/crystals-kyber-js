@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./assets/webpqc-logo.png" alt="webpqc logo" width="200" />
+</p>
+
 <h1 align="center">webpqc</h1>
 
 <div align="center">

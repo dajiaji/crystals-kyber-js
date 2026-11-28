@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/dajiaji/crystals-kyber-js/main/assets/webpqc-logo.png" alt="webpqc logo" width="200" />
+</p>
+
 <h1 align="center">@webpqc/mldsa</h1>
 
 <div align="center">
@@ -11,6 +15,12 @@
 An ML-DSA (NIST FIPS 204) implementation written in TypeScript.<br>
 </div>
 <p></p>
+
+<div align="center">
+
+[Documentation for main](https://dajiaji.github.io/crystals-kyber-js/docs/mldsa/main/)
+
+</div>
 
 - ✅ ML-DSA ([NIST FIPS 204](https://csrc.nist.gov/pubs/fips/204/final))
   support: ML-DSA-44, ML-DSA-65 and ML-DSA-87.

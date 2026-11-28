@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/dajiaji/crystals-kyber-js/main/assets/webpqc-logo.png" alt="webpqc logo" width="200" />
+</p>
+
 <h1 align="center">@webpqc/hqc</h1>
 
 <div align="center">
@@ -11,6 +15,12 @@
 An HQC (Hamming Quasi-Cyclic) implementation written in TypeScript.<br>
 </div>
 <p></p>
+
+<div align="center">
+
+[Documentation for main](https://dajiaji.github.io/crystals-kyber-js/docs/hqc/main/)
+
+</div>
 
 - ✅ HQC ([HQC specifications v5.1](https://pqc-hqc.org/resources.html))
   support: HQC-1, HQC-3 and HQC-5.
