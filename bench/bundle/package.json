@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "Bundle size benchmark: ML-KEM and ML-DSA applications",
+  "description": "Bundle size benchmark: ML-KEM, ML-DSA and HQC applications",
   "engines": {
     "node": ">=24"
   },

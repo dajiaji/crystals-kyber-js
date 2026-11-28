@@ -1,7 +1,8 @@
 {
   "workspace": [
     "./packages/mlkem",
-    "./packages/mldsa"
+    "./packages/mldsa",
+    "./packages/hqc"
   ],
   "exclude": [
     "bench/"
@@ -44,38 +45,44 @@
   "tasks": {
     "update": "deno task update:deno && deno task npm-update && deno task update:cloudflare && deno task update:browsers && deno task update:npm-tools && deno task update:lock",
     "update:deno": "deno outdated --update",
-    "npm-update": "deno task dnt && deno task npm-update:crystals-kyber-js && deno task npm-update:mlkem && deno task npm-update:webpqc-mlkem && deno task npm-update:webpqc-mldsa",
+    "npm-update": "deno task dnt && deno task npm-update:crystals-kyber-js && deno task npm-update:mlkem && deno task npm-update:webpqc-mlkem && deno task npm-update:webpqc-mldsa && deno task npm-update:webpqc-hqc",
     "npm-update:crystals-kyber-js": "cd npm/crystals-kyber-js && npm update",
     "npm-update:mlkem": "cd npm/mlkem && npm update",
     "npm-update:webpqc-mlkem": "cd npm/webpqc-mlkem && npm update",
     "npm-update:webpqc-mldsa": "cd npm/webpqc-mldsa && npm update",
+    "npm-update:webpqc-hqc": "cd npm/webpqc-hqc && npm update",
     "update:cloudflare": "cd packages/mlkem/test/runtimes/cloudflare && npm exec --yes npm-check-updates@23.1.1 -- --packageFile package.json -u --target minor && npm install --package-lock-only --ignore-scripts --no-audit --no-fund",
     "update:browsers": "cd packages/mlkem/test/runtimes/browsers && npm exec --yes npm-check-updates@23.1.1 -- --packageFile package.json -u --target minor && npm install --package-lock-only --ignore-scripts --no-audit --no-fund",
     "update:npm-tools": "cd npm && npm exec --yes npm-check-updates@23.1.1 -- --packageFile package.json -u --target minor && npm install --package-lock-only --ignore-scripts --no-audit --no-fund",
     "update:lock": "deno install --lockfile-only --frozen=false --reload",
-    "test": "deno fmt --check && deno lint && deno task test:mlkem && deno task test:mldsa",
+    "test": "deno fmt --check && deno lint && deno task test:mlkem && deno task test:mldsa && deno task test:hqc",
     "test:mlkem": "cd packages/mlkem && deno task test",
     "test:mldsa": "cd packages/mldsa && deno task test",
+    "test:hqc": "cd packages/hqc && deno task test",
     "test:cloudflare": "./scripts/test_cloudflare.sh",
-    "cov": "deno task cov:mlkem && deno task cov:mldsa",
+    "cov": "deno task cov:mlkem && deno task cov:mldsa && deno task cov:hqc",
     "cov:mlkem": "cd packages/mlkem && deno task cov",
     "cov:mldsa": "cd packages/mldsa && deno task cov",
+    "cov:hqc": "cd packages/hqc && deno task cov",
     "npm": "deno task dnt && deno task npm-link && deno task npm-pack && deno task npm-publish:dry",
-    "dnt": "deno task dnt:crystals-kyber-js && deno task dnt:mlkem && deno task dnt:webpqc-mlkem && deno task dnt:webpqc-mldsa",
+    "dnt": "deno task dnt:crystals-kyber-js && deno task dnt:mlkem && deno task dnt:webpqc-mlkem && deno task dnt:webpqc-mldsa && deno task dnt:webpqc-hqc",
     "dnt:crystals-kyber-js": "cd packages/mlkem && deno task dnt:crystals-kyber-js",
     "dnt:mlkem": "cd packages/mlkem && deno task dnt:mlkem",
     "dnt:webpqc-mlkem": "cd packages/mlkem && deno task dnt:webpqc-mlkem",
     "dnt:webpqc-mldsa": "cd packages/mldsa && deno task dnt:webpqc-mldsa",
-    "npm-link": "deno task npm-link:crystals-kyber-js && deno task npm-link:mlkem && deno task npm-link:webpqc-mlkem && deno task npm-link:webpqc-mldsa",
+    "dnt:webpqc-hqc": "cd packages/hqc && deno task dnt:webpqc-hqc",
+    "npm-link": "deno task npm-link:crystals-kyber-js && deno task npm-link:mlkem && deno task npm-link:webpqc-mlkem && deno task npm-link:webpqc-mldsa && deno task npm-link:webpqc-hqc",
     "npm-link:crystals-kyber-js": "cd npm/crystals-kyber-js && npm link",
     "npm-link:mlkem": "cd npm/mlkem && npm link",
     "npm-link:webpqc-mlkem": "cd npm/webpqc-mlkem && npm link",
     "npm-link:webpqc-mldsa": "cd npm/webpqc-mldsa && npm link",
-    "npm-pack": "deno task npm-pack:crystals-kyber-js && deno task npm-pack:mlkem && deno task npm-pack:webpqc-mlkem && deno task npm-pack:webpqc-mldsa",
+    "npm-link:webpqc-hqc": "cd npm/webpqc-hqc && npm link",
+    "npm-pack": "deno task npm-pack:crystals-kyber-js && deno task npm-pack:mlkem && deno task npm-pack:webpqc-mlkem && deno task npm-pack:webpqc-mldsa && deno task npm-pack:webpqc-hqc",
     "npm-pack:crystals-kyber-js": "cd npm/crystals-kyber-js && npm pack --dry-run",
     "npm-pack:mlkem": "cd npm/mlkem && npm pack --dry-run",
     "npm-pack:webpqc-mlkem": "cd npm/webpqc-mlkem && npm pack --dry-run",
     "npm-pack:webpqc-mldsa": "cd npm/webpqc-mldsa && npm pack --dry-run",
+    "npm-pack:webpqc-hqc": "cd npm/webpqc-hqc && npm pack --dry-run",
     "npm-publish:dry": "deno task npm-publish:crystals-kyber-js:dry && deno task npm-publish:mlkem:dry && deno task npm-publish:webpqc-mlkem:dry",
     "npm-publish:crystals-kyber-js:dry": "cd npm/crystals-kyber-js && npm publish --dry-run",
     "npm-publish:mlkem:dry": "cd npm/mlkem && npm publish --dry-run",
@@ -87,6 +94,7 @@
     "minify:crystals-kyber-js": "esbuild npm/crystals-kyber-js/esm/mod.js --bundle --format=esm --minify",
     "minify:mlkem": "esbuild npm/mlkem/esm/mod.js --bundle --format=esm --minify",
     "minify:webpqc-mlkem": "esbuild npm/webpqc-mlkem/esm/mod.js --bundle --format=esm --minify",
-    "minify:webpqc-mldsa": "esbuild npm/webpqc-mldsa/esm/mod.js --bundle --format=esm --minify"
+    "minify:webpqc-mldsa": "esbuild npm/webpqc-mldsa/esm/mod.js --bundle --format=esm --minify",
+    "minify:webpqc-hqc": "esbuild npm/webpqc-hqc/esm/mod.js --bundle --format=esm --minify"
   }
 }

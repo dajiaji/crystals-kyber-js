@@ -1,0 +1,21 @@
+{
+  "name": "@webpqc/hqc",
+  "version": "0.1.0",
+  "exports": "./mod.ts",
+  "publish": {
+    "exclude": [
+      "dnt.ts",
+      "bench/",
+      "coverage/",
+      "test/",
+      "tsconfig.json",
+      "CHANGES.md"
+    ]
+  },
+  "tasks": {
+    "test": "deno test ./test --fail-fast --doc --coverage=coverage --parallel --allow-read",
+    "cov": "deno coverage ./coverage --lcov --exclude='test'",
+    "dnt": "deno task dnt:webpqc-hqc",
+    "dnt:webpqc-hqc": "deno run -A dnt.ts @webpqc/hqc"
+  }
+}

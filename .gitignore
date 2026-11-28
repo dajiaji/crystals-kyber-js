@@ -134,4 +134,5 @@ npm/crystals-kyber-js
 npm/mlkem
 npm/webpqc-mlkem
 npm/webpqc-mldsa
+npm/webpqc-hqc
 npm/test

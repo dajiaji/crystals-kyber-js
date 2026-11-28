@@ -11,12 +11,18 @@ export interface LibResult extends Sizes {
   modules?: Record<string, number>;
 }
 
+/**
+ * A value for each library which implements the algorithm of a suite:
+ * `@webpqc` always does.
+ */
+export type ByLib<T> = Record<"@webpqc", T> & Partial<Record<LibId, T>>;
+
 export interface Result {
   id: string;
   label: string;
   role: Role;
-  packages: Record<LibId, string[]>;
-  sizes: Partial<Record<BundlerId, Record<LibId, LibResult>>>;
+  packages: ByLib<string[]>;
+  sizes: Partial<Record<BundlerId, ByLib<LibResult>>>;
 }
 
 export interface Meta {
@@ -28,14 +34,23 @@ export interface Meta {
   node: string;
 }
 
+/** Shown where `@noble/post-quantum` does not implement the algorithm. */
+const NONE = "-";
+
 const fmt = (n: number): string => n.toLocaleString("en-US");
 const pkgs = (list: string[]): string =>
   list.map((p) => `\`${p}\``).join(" + ");
-const ratio = (
-  s: Record<LibId, LibResult>,
-  format: "gzip" | "brotli",
-): string =>
-  (s["@webpqc"][format] / s["@noble/post-quantum"][format]).toFixed(2);
+/** `a`, `a and b`, or `a, b and c`. */
+const enumerate = (list: string[]): string =>
+  list.length < 2
+    ? list.join("")
+    : `${list.slice(0, -1).join(", ")} and ${list.at(-1)}`;
+const ratio = (s: ByLib<LibResult>, format: "gzip" | "brotli"): string => {
+  const noble = s["@noble/post-quantum"];
+  return noble === undefined
+    ? NONE
+    : (s["@webpqc"][format] / noble[format]).toFixed(2);
+};
 
 export function printTable(results: Result[], bundlers: BundlerId[]): void {
   for (const format of ["gzip", "brotli"] as const) {
@@ -49,7 +64,7 @@ export function printTable(results: Result[], bundlers: BundlerId[]): void {
         for (const b of bundlers) {
           const s = r.sizes[b]!;
           row[`${b} @webpqc`] = s["@webpqc"][format];
-          row[`${b} noble`] = s["@noble/post-quantum"][format];
+          row[`${b} noble`] = s["@noble/post-quantum"]?.[format] ?? NONE;
           row[`${b} ratio`] = ratio(s, format);
         }
         return row;
@@ -73,16 +88,33 @@ export function toMarkdown(
   meta: Meta,
   bundlers: BundlerId[],
 ): string {
+  const webpqcPackages = [
+    ...new Set(results.flatMap((r) => r.packages["@webpqc"])),
+  ].map((p) => `\`${p}\``);
+  const webpqcOnly = results.some((r) =>
+    r.packages["@noble/post-quantum"] === undefined
+  );
   const lines = [
     "# Bundle size benchmark",
     "",
-    `- @webpqc: \`@webpqc/mlkem\` and \`@webpqc/mldsa\`, repository sources @ \`${meta.revision}\``,
+    `- @webpqc: ${
+      enumerate(webpqcPackages)
+    }, repository sources @ \`${meta.revision}\``,
     `- noble: \`@noble/post-quantum@${meta.nobleVersion}\``,
     "- `sideEffects: false` is honored for all packages on both sides",
     meta.verified
       ? "- bundles verified by cross-library key derivation, encap/decap and sign/verify"
       : "- **bundles NOT verified** (`--no-verify`)",
     "- sizes in bytes (min / gzip -9 / brotli -11); ratios = @webpqc / noble",
+    ...(webpqcOnly
+      ? [
+        `- \`${NONE}\`: not implemented by noble${
+          meta.verified
+            ? "; the bundles of such an algorithm are verified within @webpqc only"
+            : ""
+        }`,
+      ]
+      : []),
     `- Node.js ${meta.node}`,
     "",
     "Bundlers:",
@@ -106,9 +138,9 @@ export function toMarkdown(
         lines.push(
           `| ${r.label} | ${r.role} | ${pkgs(r.packages["@webpqc"])} | ${
             fmt(a.min)
-          } | ${fmt(a[format])} | ${fmt(n.min)} | ${fmt(n[format])} | ${
-            ratio(s, format)
-          } |`,
+          } | ${fmt(a[format])} | ${n === undefined ? NONE : fmt(n.min)} | ${
+            n === undefined ? NONE : fmt(n[format])
+          } | ${ratio(s, format)} |`,
         );
       }
     }
